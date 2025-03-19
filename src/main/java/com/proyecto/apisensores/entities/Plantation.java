@@ -1,6 +1,7 @@
 package com.proyecto.apisensores.entities;
 
 import jakarta.persistence.Column;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import  lombok.*;
@@ -15,7 +16,7 @@ import java.util.List;
 @Builder
 public class Plantation extends Model  {
 
-  @Column(unique = true)
+  @Indexed(unique = true)
   private String name; // Hace que el campo "name" sea único
   private String country;
   private String province;
