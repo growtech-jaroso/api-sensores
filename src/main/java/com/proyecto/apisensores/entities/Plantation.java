@@ -23,6 +23,7 @@ public class Plantation extends Model  {
   private String type;
 
   public Plantation(String name, String country, String province, String city, String type) {
+    super();
     this.name = name;
     this.country = country;
     this.province = province;
