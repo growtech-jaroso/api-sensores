@@ -20,6 +20,7 @@ public class Node extends Model {
   private String plantationId;
 
   public Node(String name, String plantationId) {
+    super();
     this.name = name;
     this.plantationId = plantationId;
   }
