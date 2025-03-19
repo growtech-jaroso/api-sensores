@@ -1,0 +1,26 @@
+server:
+  port: ${APP_PORT:8080}
+
+spring:
+  application:
+    name: api-sensores
+
+  data:
+    mongodb:
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      username: ${MONGO_USERNAME}
+      password: ${MONGO_PASSWORD}
+      database: ${MONGO_DATABASE}
+      authentication-database: ${MONGO_AUTH_DATABASE}
+      auto-index-creation: true
+
+  config:
+    import: optional:file:.env[.properties]
+
+logging:
+  file:
+    name: "logs/application.log"
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
