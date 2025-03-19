@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 public abstract class Model {
   @Id
-  private String id;
+  protected String id;
 
   @Field("created_at")
   @CreatedDate
