@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import  lombok.*;
 import java.util.List;
 
-@Document(collation = "plantations")
+@Document("plantations")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
