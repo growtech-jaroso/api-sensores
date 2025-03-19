@@ -1,6 +1,5 @@
 package com.proyecto.apisensores.entities;
 
-import jakarta.persistence.Column;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
