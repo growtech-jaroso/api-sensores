@@ -2,7 +2,7 @@ package com.proyecto.apisensores.handlers;
 
 import com.proyecto.apisensores.dtos.UserRegisterDto;
 import com.proyecto.apisensores.entities.User;
-import com.proyecto.apisensores.security.JwtUtil;
+import com.proyecto.apisensores.utils.JwtUtil;
 import com.proyecto.apisensores.services.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

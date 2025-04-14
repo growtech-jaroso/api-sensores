@@ -1,6 +1,6 @@
 package com.proyecto.apisensores.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.proyecto.apisensores.utils.JwtUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -14,11 +14,13 @@ import reactor.core.publisher.Mono;
 @Component
 public class JwtAuthFilter implements WebFilter {
 
-  @Autowired
-  private JwtUtil jwtUtil;
+  private final JwtUtil jwtUtil;
+  private final ReactiveUserDetailsService userDetailsService;
 
-  @Autowired
-  private ReactiveUserDetailsService userDetailsService;
+  public JwtAuthFilter(JwtUtil jwtUtil, ReactiveUserDetailsService userDetailsService) {
+    this.jwtUtil = jwtUtil;
+    this.userDetailsService = userDetailsService;
+  }
 
 
   @Override

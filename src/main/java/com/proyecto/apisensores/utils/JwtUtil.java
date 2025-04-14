@@ -1,4 +1,4 @@
-package com.proyecto.apisensores.security;
+package com.proyecto.apisensores.utils;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -6,7 +6,6 @@ import io.jsonwebtoken.security.SignatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -23,7 +22,7 @@ public class JwtUtil {
   @Value("${app.security.jwt.expiration}")
   private Long jwtDurationSeconds;
 
-  public String generateToken(User user) {
+  public String generateToken(Object user) {
 
     return Jwts.builder()
       .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()), Jwts.SIG.HS256)

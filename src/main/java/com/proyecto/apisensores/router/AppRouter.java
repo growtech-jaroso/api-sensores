@@ -1,5 +1,6 @@
 package com.proyecto.apisensores.router;
 
+import com.proyecto.apisensores.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -14,6 +15,7 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 
 @Configuration
@@ -34,13 +36,12 @@ public class AppRouter implements WebFluxConfigurer {
   /**
    * Configuración de seguridad
    * Añadimos la seguridad a las rutas que empiecen por /api/**
-   * Permitimos acceso a las rutas de productos sin autenticación --> Cambiar cuando generemos tokens
    * Permitimos acceso a las rutas de autenticación/registro sin autenticación
    * @param http
    * @return
    */
   @Bean
-  SecurityWebFilterChain webHttpSecurity(ServerHttpSecurity http, JwtAuthenticationFilter jwtFilter) {
+  SecurityWebFilterChain webHttpSecurity(ServerHttpSecurity http, JwtAuthFilter jwtFilter) {
     http
       .securityMatcher(new PathPatternParserServerWebExchangeMatcher("/api/**"))
       .authorizeExchange(exchanges -> exchanges

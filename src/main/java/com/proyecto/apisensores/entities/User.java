@@ -1,9 +1,7 @@
 package com.proyecto.apisensores.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.mongodb.core.index.Indexed;
-import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,15 +13,16 @@ import java.util.List;
 @Document(collection = "users")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class User extends Model implements UserDetails {
 
-  @Indexed(unique = true)  // Para optimizar las búsquedas por username
+  @Indexed(unique = true)
   private String username;
 
   private String password;
 
-  @Indexed(unique = true)  // Para que no haya emails repetidos
+  @Indexed(unique = true)
   private String email;
 
 
@@ -51,6 +50,4 @@ public class User extends Model implements UserDetails {
   public boolean isEnabled() {
     return UserDetails.super.isEnabled();
   }
-
-
 }
