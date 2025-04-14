@@ -1,4 +1,4 @@
-package com.proyecto.apisensores.services.user_details;
+package com.proyecto.apisensores.services.user;
 
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,4 +1,8 @@
 package com.proyecto.apisensores.repositories;
 
-public interface UserRepository {
+import com.proyecto.apisensores.entities.Sensor;
+import com.proyecto.apisensores.entities.User;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+
+public interface UserRepository extends ReactiveMongoRepository<User, String> {
 }

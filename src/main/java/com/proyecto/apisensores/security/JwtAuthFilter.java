@@ -12,7 +12,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 @Component
-public class JwtAuthenticationFilter implements WebFilter {
+public class JwtAuthFilter implements WebFilter {
 
   @Autowired
   private JwtUtil jwtUtil;
