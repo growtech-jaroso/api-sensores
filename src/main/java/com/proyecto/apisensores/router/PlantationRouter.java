@@ -1,6 +1,5 @@
 package com.proyecto.apisensores.router;
 
-import com.proyecto.apisensores.entities.Plantation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunctions;
