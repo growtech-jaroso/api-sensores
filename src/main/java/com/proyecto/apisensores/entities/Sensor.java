@@ -2,6 +2,7 @@ package com.proyecto.apisensores.entities;
 
 import com.proyecto.apisensores.enums.SensorType;
 import com.proyecto.apisensores.enums.SensorUnit;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Sensor {
   private SensorType type;
 

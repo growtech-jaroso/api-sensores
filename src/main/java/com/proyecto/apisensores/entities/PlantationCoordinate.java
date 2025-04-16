@@ -1,5 +1,6 @@
 package com.proyecto.apisensores.entities;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class PlantationCoordinate {
   private Double latitude;
   private Double longitude;

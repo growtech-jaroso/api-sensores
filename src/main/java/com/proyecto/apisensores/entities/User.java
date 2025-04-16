@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class User extends Model implements UserDetails {
 
   @Indexed(unique = true)
