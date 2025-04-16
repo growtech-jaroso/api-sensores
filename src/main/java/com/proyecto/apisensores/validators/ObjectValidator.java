@@ -45,12 +45,18 @@ public class ObjectValidator {
     }
   }
 
+  /**
+   * Gets the JSON property name for a field in the target object.
+   * @param target the target object
+   * @param fieldName the field name of the target object
+   * @return the JSON property name or the field name if not exist JSON property
+   */
   private String getJsonPropertyName(Object target, String fieldName) {
-    if (target == null) return null;
+    if (target == null) return fieldName;
     try {
       Field field = target.getClass().getDeclaredField(fieldName);
       JsonProperty annotation = field.getAnnotation(JsonProperty.class);
-      return annotation != null ? annotation.value() : null;
+      return annotation != null ? annotation.value() : fieldName;
     } catch (NoSuchFieldException e) {
       return fieldName;
     }
