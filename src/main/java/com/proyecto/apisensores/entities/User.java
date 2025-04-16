@@ -1,5 +1,6 @@
 package com.proyecto.apisensores.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proyecto.apisensores.dtos.UserRegisterDto;
 import com.proyecto.apisensores.enums.UserRole;
 import lombok.*;

@@ -24,6 +24,11 @@ public class UserServiceImpl implements  UserService {
   }
 
   @Override
+  public Mono<User> findByUsernameOrEmail(String username, String email) {
+    return this.userRepository.findByUsernameOrEmail(username, email);
+  }
+
+  @Override
   public Mono<User> findByUsername(String username) {
     return this.userRepository.findByUsername(username);
   }
@@ -36,6 +41,16 @@ public class UserServiceImpl implements  UserService {
     user.setPassword(passwordEncoder.encode(userRegisterDTO.password()));
 
     return userRepository.save(user);
+  }
+
+  @Override
+  public Mono<Boolean> existsByEmail(String email) {
+    return this.userRepository.existsByEmail(email);
+  }
+
+  @Override
+  public Mono<Boolean> existsByUsername(String username) {
+    return this.userRepository.existsByUsername(username);
   }
 
   public Boolean passwordMatches(String rawPassword, String encodedPassword) {
