@@ -1,5 +1,6 @@
 package com.proyecto.apisensores.validators;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proyecto.apisensores.exceptions.ValidationException;
 import com.proyecto.apisensores.responses.error.FieldError;
 import jakarta.validation.ConstraintViolation;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import jakarta.validation.Validator;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Set;
 
@@ -32,11 +34,25 @@ public class ObjectValidator {
     if (!errors.isEmpty()) {
       // Map the errors to a list of FieldError
       List<FieldError> fieldErrors = errors.stream()
-        .map(error -> new FieldError(error.getPropertyPath().toString(), error.getMessage()))
+        .map(error -> new FieldError(
+          this.getJsonPropertyName(object, error.getPropertyPath().toString()),
+          error.getMessage())
+        )
         .toList();
 
       // Throw a ValidationException with the list of FieldErrors
       throw new ValidationException(fieldErrors);
+    }
+  }
+
+  private String getJsonPropertyName(Object target, String fieldName) {
+    if (target == null) return null;
+    try {
+      Field field = target.getClass().getDeclaredField(fieldName);
+      JsonProperty annotation = field.getAnnotation(JsonProperty.class);
+      return annotation != null ? annotation.value() : null;
+    } catch (NoSuchFieldException e) {
+      return fieldName;
     }
   }
 }

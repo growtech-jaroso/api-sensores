@@ -31,7 +31,6 @@ public class AuthHandler {
   public Mono<ServerResponse> login(ServerRequest request) {
     return request.bodyToMono(UserLoginDto.class).doOnNext(objectValidator::validate)
       .flatMap(dto -> {
-        System.out.println("Login request: " + dto);
           // Find user by email
           return this.userService.findByEmail(dto.email())
             // Verify if the password matches with the database password
@@ -57,7 +56,7 @@ public class AuthHandler {
   }
 
   public Mono<ServerResponse> register(ServerRequest request) {
-    return request.bodyToMono(UserRegisterDto.class)
+    return request.bodyToMono(UserRegisterDto.class).doOnNext(objectValidator::validate)
       .flatMap(dto ->
         // Verify if user already exists
         this.userService.findByEmail(dto.email())

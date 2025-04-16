@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,14 +30,13 @@ public class User extends Model implements UserDetails {
   @Indexed(unique = true)
   private String email;
 
-  private List<UserRole> roles;
+  private List<UserRole> roles = List.of(UserRole.USER);
 
   public User(UserRegisterDto dto) {
     super();
     this.username = dto.username();
     this.password = dto.password();
     this.email = dto.email();
-    this.roles = List.of(UserRole.USER);
   }
 
   @Override

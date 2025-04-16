@@ -1,11 +1,12 @@
 package com.proyecto.apisensores.dtos;
 
-import com.proyecto.apisensores.annotations.FieldMatch;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.proyecto.apisensores.annotations.PasswordMatches;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-@FieldMatch(first = "password", second = "confirmPassword", message = "Passwords do not match")
+@PasswordMatches()
 public record UserRegisterDto(
   @NotBlank(message = "Username is required")
   @Size(min = 3, message = "Username must be at least 3 characters")
@@ -17,6 +18,6 @@ public record UserRegisterDto(
   @Size(min = 8, message = "Password must be at least 8 characters")
   String password,
   @NotBlank(message = "Password confirmation is required")
-  @Size(min = 8, message = "Password confirmation must be at least 8 characters")
+  @JsonProperty("confirm_password")
   String confirmPassword
 ) { }
