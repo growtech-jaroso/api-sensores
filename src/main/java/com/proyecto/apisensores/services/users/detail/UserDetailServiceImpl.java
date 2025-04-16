@@ -1,5 +1,6 @@
-package com.proyecto.apisensores.services.user;
+package com.proyecto.apisensores.services.users.detail;
 
+import com.proyecto.apisensores.services.users.UserService;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,9 @@ public class UserDetailServiceImpl implements ReactiveUserDetailsService {
     this.userService = userService;
   }
 
-
   @Override
   public Mono<UserDetails> findByUsername(String username) {
     return this.userService.findByUsername(username)
-      .map(user -> (UserDetails) user);  //Castear mi User a UserDetails (User implementa UserDetails)
+      .map(user -> (UserDetails) user);  // Cast user to UserDetails
   }
 }

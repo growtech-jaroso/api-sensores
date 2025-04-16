@@ -26,23 +26,24 @@ public class JwtAuthFilter implements WebFilter {
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 
-    //Obtener cabeceras del exchange
+    // Get auth header from exchange
     String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
-    // Si no hay cabecera de autorización, sigue el flujo normal
+    // If not auth header, continue with the chain
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
       return chain.filter(exchange);
     }
 
-    // Se obtiene el token
+    // Get token from auth header
     String token = authHeader.substring(7);
 
+    // If token is not valid,
     // Si el token no es válido, sigue el flujo normal y devuelve un error no autorizado
     if (!jwtUtil.isValidToken(token)) {
       return chain.filter(exchange);
     }
 
-    // Obtener el usuario desde el token
+    // Get username from token
     return Mono.justOrEmpty(jwtUtil.getUsernameFromToken(token))
       .flatMap(userDetailsService::findByUsername)
       .flatMap(userDetails -> {

@@ -1,6 +1,6 @@
 package com.proyecto.apisensores.router;
 
-import com.proyecto.apisensores.handlers.PlantationHandler;
+import com.proyecto.apisensores.handlers.AuthHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -8,18 +8,18 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 @Configuration
-public class PlantationRouter {
+public class AuthRouter {
+  private final AuthHandler handler;
 
-  private final PlantationHandler handler;
-
-  public PlantationRouter(PlantationHandler handler) {
+  public AuthRouter(AuthHandler handler) {
     this.handler = handler;
   }
 
   @Bean
-  public RouterFunction<ServerResponse> plantationRoutes() {
+  public RouterFunction<ServerResponse> authRoutes() {
     return RouterFunctions.route()
-      .GET("", handler::getAllPlantationsByUser) // Route: GET /api/plantations
+      .POST("login", handler::login) // Route: POST /api/auth/login
+      .POST("register", handler::register) // Route: POST /api/auth/register
       .build();
   }
 }

@@ -22,30 +22,33 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 @EnableWebFluxSecurity
 public class AppRouter implements WebFluxConfigurer {
   @Bean
-  public RouterFunction<ServerResponse> appRoutes(PlantationRouter plantationRouter) {
+  public RouterFunction<ServerResponse> appRoutes(
+    PlantationRouter plantationRouter,
+    AuthRouter authRouter
+  ) {
     return RouterFunctions.route()
       // Base API prefix
       .path("/api", builder -> builder
         .nest(accept(MediaType.APPLICATION_JSON), nestedBuilder ->
-          nestedBuilder.path("/products", plantationRouter::plantationRoutes) // Routes for products
+          nestedBuilder
+            .path("/plantations", plantationRouter::plantationRoutes) // Routes for plantations
+            .path("/auth", authRouter::authRoutes) // Routes for auth
         )
       )
       .build();
   }
 
   /**
-   * Configuración de seguridad
-   * Añadimos la seguridad a las rutas que empiecen por /api/**
-   * Permitimos acceso a las rutas de autenticación/registro sin autenticación
-   * @param http
-   * @return
+   * Configure security
+   * We add security to routes that start with /api/auth/**
+   * We allow access to the public routes without authentication
    */
   @Bean
   SecurityWebFilterChain webHttpSecurity(ServerHttpSecurity http, JwtAuthFilter jwtFilter) {
     http
       .securityMatcher(new PathPatternParserServerWebExchangeMatcher("/api/**"))
       .authorizeExchange(exchanges -> exchanges
-        .pathMatchers("/api/auth/**").permitAll()  // Rutas públicas para autenticación/registro
+        .pathMatchers("/api/auth/**").permitAll()  // Public routes
         .anyExchange().authenticated()
       )
       .addFilterBefore(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION)
@@ -55,13 +58,12 @@ public class AppRouter implements WebFluxConfigurer {
   }
 
   /**
-   * Configuración Cors, viene de implementar el interfaz WebFluxConfigurer y sobreescribir el método addCorsMappings
-   * @param registry
+   * Configure Cors, is coming from WebFluxConfigurer interface and overriding the addCorsMappings method
    */
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/api/**")
-      .allowedOrigins("http://javierprofe.com")   //Aquí ponemos el dominio desde el que aceptamos peticiones
+      .allowedOrigins("https://javierprofe.com") // Add domains from which requests are accepted
       .allowedMethods("GET", "POST", "PUT", "DELETE")
       .allowCredentials(true).maxAge(3600);
 

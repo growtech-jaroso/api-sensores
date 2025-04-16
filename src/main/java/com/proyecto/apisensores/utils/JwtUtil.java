@@ -1,5 +1,6 @@
 package com.proyecto.apisensores.utils;
 
+import com.proyecto.apisensores.entities.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -22,7 +23,7 @@ public class JwtUtil {
   @Value("${app.security.jwt.expiration}")
   private Long jwtDurationSeconds;
 
-  public String generateToken(Object user) {
+  public String generateToken(User user) {
 
     return Jwts.builder()
       .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()), Jwts.SIG.HS256)
@@ -38,8 +39,7 @@ public class JwtUtil {
   }
 
   public boolean isValidToken(String token) {
-    if (!StringUtils.hasLength(token))
-      return false; //No hay token
+    if (!StringUtils.hasLength(token)) return false; // There is no token
 
     try {
       JwtParser validator = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(jwtSecret.getBytes())).build();
