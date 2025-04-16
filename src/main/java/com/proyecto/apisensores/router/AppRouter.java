@@ -48,12 +48,13 @@ public class AppRouter implements WebFluxConfigurer {
     http
       .securityMatcher(new PathPatternParserServerWebExchangeMatcher("/api/**"))
       .authorizeExchange(exchanges -> exchanges
-        .pathMatchers("/api/auth/**").permitAll()  // Public routes
+        .pathMatchers("/api/auth/**").permitAll()// Public routes
         .anyExchange().authenticated()
       )
       .addFilterBefore(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION)
       .csrf(ServerHttpSecurity.CsrfSpec::disable)
-      .httpBasic(withDefaults());
+      .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+      .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable);
     return http.build();
   }
 
@@ -66,7 +67,5 @@ public class AppRouter implements WebFluxConfigurer {
       .allowedOrigins("https://javierprofe.com") // Add domains from which requests are accepted
       .allowedMethods("GET", "POST", "PUT", "DELETE")
       .allowCredentials(true).maxAge(3600);
-
-    // Add more mappings...
   }
 }

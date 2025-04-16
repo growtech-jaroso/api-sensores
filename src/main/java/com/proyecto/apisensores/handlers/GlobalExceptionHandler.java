@@ -52,10 +52,9 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(RuntimeException.class)
-  public Mono<ResponseEntity<ErrorResponse>> handleException(Exception e){
+  public Mono<ResponseEntity<ErrorResponse>> handleRuntimeException(Exception e){
     logger.error("RuntimeException: {}", e.getMessage());
-    var errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
+    ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
     return Response.builder(HttpStatus.INTERNAL_SERVER_ERROR, errorResponse);
   }
-
 }

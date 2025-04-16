@@ -16,6 +16,6 @@ public class PlantationHandler {
   }
 
   public Mono<ServerResponse> getAllPlantationsByUser(ServerRequest request) {
-    return this.plantationService.getAllPlantationsByUser(request);
+    return null;
   }
 }
