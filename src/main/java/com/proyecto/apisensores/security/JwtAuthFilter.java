@@ -1,6 +1,7 @@
 package com.proyecto.apisensores.security;
 
 import com.proyecto.apisensores.utils.JwtUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -13,7 +14,6 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class JwtAuthFilter implements WebFilter {
-
   private final JwtUtil jwtUtil;
   private final ReactiveUserDetailsService userDetailsService;
 
@@ -37,20 +37,19 @@ public class JwtAuthFilter implements WebFilter {
     // Get token from auth header
     String token = authHeader.substring(7);
 
-    // If token is not valid,
-    // Si el token no es válido, sigue el flujo normal y devuelve un error no autorizado
+    // If token is not valid, continue with the chain
     if (!jwtUtil.isValidToken(token)) {
       return chain.filter(exchange);
     }
 
-    // Get username from token
+    // Get email from token
     return Mono.justOrEmpty(jwtUtil.getUsernameFromToken(token))
       .flatMap(userDetailsService::findByUsername)
       .flatMap(userDetails -> {
         UsernamePasswordAuthenticationToken authToken =
           new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-        // Propagar la autenticación sin alterar la request original
+        // Set authentication in the security context passing the auth token
         return chain.filter(exchange)
           .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authToken));
       });

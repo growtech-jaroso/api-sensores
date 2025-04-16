@@ -46,16 +46,34 @@ public class JwtUtil {
       validator.parseSignedClaims(token);
       return true;
     } catch (SignatureException e) {
-      log.info("Error en la firma del token", e);
+      log.info("Error en la firma del token");
     } catch (MalformedJwtException | UnsupportedJwtException e) {
-      log.info("Token incorrecto", e);
+      log.info("Token incorrecto");
     } catch (ExpiredJwtException e) {
-      log.info("Token expirado", e);
+      log.info("Token expirado");
+    } catch (Exception e) {
+      log.info("Error en el token");
     }
     return false;
 
   }
 
+  /**
+   * Get the email from the token
+   * @param token token to get the email from
+   * @return email from the token
+   */
+  public String getEmailFromToken(String token) {
+    JwtParser parser = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(jwtSecret.getBytes())).build();
+    Jws<Claims> claims = parser.parseSignedClaims(token);
+    return claims.getPayload().get("email").toString();
+  }
+
+  /**
+   * Get the username from the token
+   * @param token token to get the username from
+   * @return username from the token
+   */
   public String getUsernameFromToken(String token) {
     JwtParser parser = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(jwtSecret.getBytes())).build();
     Jws<Claims> claims = parser.parseSignedClaims(token);

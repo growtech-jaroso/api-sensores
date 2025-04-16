@@ -1,7 +1,7 @@
 package com.proyecto.apisensores.handlers;
 
 import com.proyecto.apisensores.exceptions.CustomException;
-import com.proyecto.apisensores.exceptions.CustomValidationException;
+import com.proyecto.apisensores.exceptions.ValidationException;
 import com.proyecto.apisensores.responses.Response;
 import com.proyecto.apisensores.responses.error.ErrorResponse;
 import com.proyecto.apisensores.responses.error.ValidationErrorResponse;
@@ -28,8 +28,8 @@ public class GlobalExceptionHandler {
     return Response.builder(e.getStatus(), errorResponse);
   }
 
-  @ExceptionHandler(CustomValidationException.class)
-  public Mono<ResponseEntity<ErrorResponse>> handleValidationExceptions(CustomValidationException ex) {
+  @ExceptionHandler(ValidationException.class)
+  public Mono<ResponseEntity<ErrorResponse>> handleValidationExceptions(ValidationException ex) {
     ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse(
       HttpStatus.BAD_REQUEST,
       ex.getMessage(),

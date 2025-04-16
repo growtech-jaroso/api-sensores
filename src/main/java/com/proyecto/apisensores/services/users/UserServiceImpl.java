@@ -20,9 +20,10 @@ public class UserServiceImpl implements  UserService {
   }
 
   public Mono<User> findByEmail(String email) {
-    return null;
+    return this.userRepository.findByEmail(email);
   }
 
+  @Override
   public Mono<User> findByUsername(String username) {
     return this.userRepository.findByUsername(username);
   }

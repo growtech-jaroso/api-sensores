@@ -1,6 +1,6 @@
 package com.proyecto.apisensores.entities;
 
-import com.proyecto.apisensores.enums.Role;
+import com.proyecto.apisensores.enums.UserRole;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Document(collection = "users")
 @AllArgsConstructor
@@ -29,7 +28,7 @@ public class User extends Model implements UserDetails {
   @Indexed(unique = true)
   private String email;
 
-  private List<Role> roles;
+  private List<UserRole> roles;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

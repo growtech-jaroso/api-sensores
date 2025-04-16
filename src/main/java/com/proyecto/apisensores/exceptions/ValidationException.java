@@ -7,12 +7,12 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 @Getter
-public class CustomValidationException extends RuntimeException {
+public class ValidationException extends RuntimeException {
   private final HttpStatus status = HttpStatus.BAD_REQUEST;
   private final List<FieldError> errors;
 
-  public CustomValidationException(String message, List<FieldError> errors) {
-    super(message);
+  public ValidationException(List<FieldError> errors) {
+    super("Something went wrong");
     this.errors = errors;
   }
 }

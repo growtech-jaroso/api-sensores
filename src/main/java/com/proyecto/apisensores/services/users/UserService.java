@@ -9,8 +9,8 @@ import reactor.core.publisher.Mono;
 
 @Service
 public interface UserService {
-  Mono<User> findByUsername(String username);
   Mono<User> findByEmail(String email);
+  Mono<User> findByUsername(String username);
   Boolean passwordMatches(String rawPassword, String encodedPassword);
   Mono<User> save(UserRegisterDto userRegisterDTO);
 }

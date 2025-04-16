@@ -6,6 +6,8 @@ app:
     jwt:
       secret: ${JWT_SECRET}
       expiration: ${JWT_EXP_TIME}
+    cors:
+      allowed-origins: ${ALLOWED_ORIGINS}
 
 spring:
   application:
