@@ -1,5 +1,6 @@
 package com.proyecto.apisensores.entities;
 
+import com.proyecto.apisensores.dtos.UserRegisterDto;
 import com.proyecto.apisensores.enums.UserRole;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -29,6 +30,14 @@ public class User extends Model implements UserDetails {
   private String email;
 
   private List<UserRole> roles;
+
+  public User(UserRegisterDto dto) {
+    super();
+    this.username = dto.username();
+    this.password = dto.password();
+    this.email = dto.email();
+    this.roles = List.of(UserRole.USER);
+  }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
