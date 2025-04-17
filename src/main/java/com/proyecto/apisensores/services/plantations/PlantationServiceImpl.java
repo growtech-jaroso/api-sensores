@@ -20,7 +20,7 @@ public class PlantationServiceImpl implements PlantationService {
   @Override
   public Flux<Plantation> getAllPlantationsByUserPaginated(User user, PageRequest pageRequest) {
     return user.canViewAnything()
-      ? this.plantationRepository.findAll()// pageRequest)
+      ? this.plantationRepository.findAllBy(pageRequest)
       : this.plantationRepository.findAllByUsersContaining(user.getId(), pageRequest);
   }
 
