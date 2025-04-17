@@ -29,16 +29,10 @@ public class JwtAuthFilter implements WebFilter {
     // Get auth header from exchange
     String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
-    // If not auth header, continue with the chain
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-      return chain.filter(exchange);
-    }
+    String token = jwtUtil.getTokenFromHeader(authHeader);
 
-    // Get token from auth header
-    String token = authHeader.split(" ")[1];
-
-    // If token is not valid, continue with the chain
-    if (!jwtUtil.isValidToken(token)) {
+    // If token is not or not valid, continue with the chain
+    if (token == null || !jwtUtil.isValidToken(token)) {
       return chain.filter(exchange);
     }
 

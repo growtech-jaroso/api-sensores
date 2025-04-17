@@ -67,14 +67,15 @@ public class JwtUtil {
   }
 
   /**
-   * Get the email from the token
-   * @param token token to get the email from
-   * @return email from the token
+   * Get the token from the header
+   * @param authHeader authorization header
+   * @return the token from the header
    */
-  public String getEmailFromToken(String token) {
-    JwtParser parser = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(jwtSecret.getBytes())).build();
-    Jws<Claims> claims = parser.parseSignedClaims(token);
-    return claims.getPayload().get("email").toString();
+  public String getTokenFromHeader(String authHeader) {
+    if (StringUtils.hasLength(authHeader) && authHeader.startsWith("Bearer ")) {
+      return authHeader.split(" ")[1];
+    }
+    return null;
   }
 
   /**
