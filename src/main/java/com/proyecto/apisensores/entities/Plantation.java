@@ -14,24 +14,29 @@ import java.util.List;
 @ToString
 @Builder
 public class Plantation extends Model  {
-
   @Indexed(unique = true)
-  private String name; // Hace que el campo "name" sea único
+  private String name; // Name field is indexed and unique
+
   private String country;
+
   private String province;
+
   private String city;
+
   private String type;
 
-  public Plantation(String name, String country, String province, String city, String type) {
+  private String ownerId; // ID of the user who owns the plantation
+
+  private List<String> users; // List of users IDs associated with the plantation
+
+  public Plantation(String name, String country, String province, String city, String type, String ownerId) {
     super();
     this.name = name;
     this.country = country;
     this.province = province;
     this.city = city;
     this.type = type;
+    this.ownerId = ownerId;
+    this.users = List.of(ownerId);
   }
-
-  // Relación con usuarios (Lista de IDs de usuarios asociados)
-  private List<String> users;
-
 }
