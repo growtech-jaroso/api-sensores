@@ -1,7 +1,5 @@
-package com.proyecto.apisensores.handlers;
+package com.proyecto.apisensores.exceptions;
 
-import com.proyecto.apisensores.exceptions.CustomException;
-import com.proyecto.apisensores.exceptions.ValidationException;
 import com.proyecto.apisensores.responses.Response;
 import com.proyecto.apisensores.responses.error.ErrorResponse;
 import com.proyecto.apisensores.responses.error.ValidationErrorResponse;

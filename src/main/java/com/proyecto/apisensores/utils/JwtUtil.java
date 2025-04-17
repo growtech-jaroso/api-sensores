@@ -23,8 +23,12 @@ public class JwtUtil {
   @Value("${app.security.jwt.expiration}")
   private Long jwtDurationSeconds;
 
+  /**
+   * Generate a JWT token
+   * @param user user to generate the token for
+   * @return the generated token
+   */
   public String generateToken(User user) {
-
     return Jwts.builder()
       .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()), Jwts.SIG.HS256)
       .header()
@@ -35,9 +39,13 @@ public class JwtUtil {
       .claim("username", user.getUsername())
       .claim("email", user.getEmail())
       .compact();
-
   }
 
+  /**
+   * Check if the token is valid
+   * @param token token to check
+   * @return true if the token is valid, false otherwise
+   */
   public boolean isValidToken(String token) {
     if (!StringUtils.hasLength(token)) return false; // There is no token
 
@@ -46,13 +54,13 @@ public class JwtUtil {
       validator.parseSignedClaims(token);
       return true;
     } catch (SignatureException e) {
-      log.info("Error en la firma del token");
+      log.warn("Error in token signature");
     } catch (MalformedJwtException | UnsupportedJwtException e) {
-      log.info("Token incorrecto");
+      log.warn("Incorrect token");
     } catch (ExpiredJwtException e) {
-      log.info("Token expirado");
+      log.warn("Expired token");
     } catch (Exception e) {
-      log.info("Error en el token");
+      log.error("Unexpected token error");
     }
     return false;
 
