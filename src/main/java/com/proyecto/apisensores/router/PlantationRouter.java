@@ -20,6 +20,7 @@ public class PlantationRouter {
   public RouterFunction<ServerResponse> plantationRoutes() {
     return RouterFunctions.route()
       .GET("", handler::getAllPlantationsByUser) // Route: GET /api/plantations
+      .POST("" , handler::createPlantation) // Route: POST /api/plantations
       .build();
   }
 }

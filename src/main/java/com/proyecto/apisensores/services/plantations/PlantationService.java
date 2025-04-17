@@ -1,5 +1,6 @@
 package com.proyecto.apisensores.services.plantations;
 
+import com.proyecto.apisensores.dtos.PlantationDto;
 import com.proyecto.apisensores.entities.Plantation;
 import com.proyecto.apisensores.entities.User;
 import org.springframework.data.domain.PageRequest;
@@ -11,4 +12,5 @@ import reactor.core.publisher.Mono;
 public interface PlantationService {
   Flux<Plantation> getAllPlantationsByUserPaginated(User user, PageRequest pageRequest);
   Mono<Long> getTotalPlantationsByUser(User user);
+  Mono<Plantation> createPlantation(PlantationDto dto, User user);
 }

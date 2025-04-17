@@ -24,6 +24,11 @@ public class PlantationHandler {
     this.plantationService = plantationService;
   }
 
+  public Mono<ServerResponse> createPlantation(ServerRequest request) {
+    // Implementation for creating a plantation
+    return null;
+  }
+
   public Mono<ServerResponse> getAllPlantationsByUser(ServerRequest request) {
     // Create a page request from the request parameters
     PageRequest pageRequest = ParamsUtil.getPageRequest(request);

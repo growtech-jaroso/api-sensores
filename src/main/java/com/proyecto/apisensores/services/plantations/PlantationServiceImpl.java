@@ -1,5 +1,6 @@
 package com.proyecto.apisensores.services.plantations;
 
+import com.proyecto.apisensores.dtos.PlantationDto;
 import com.proyecto.apisensores.entities.Plantation;
 import com.proyecto.apisensores.entities.User;
 import com.proyecto.apisensores.repositories.PlantationRepository;
@@ -19,7 +20,7 @@ public class PlantationServiceImpl implements PlantationService {
   @Override
   public Flux<Plantation> getAllPlantationsByUserPaginated(User user, PageRequest pageRequest) {
     return user.canViewAnything()
-      ? this.plantationRepository.findAll(pageRequest)
+      ? this.plantationRepository.findAll()// pageRequest)
       : this.plantationRepository.findAllByUsersContaining(user.getId(), pageRequest);
   }
 
@@ -28,4 +29,11 @@ public class PlantationServiceImpl implements PlantationService {
       ? this.plantationRepository.count()
       : this.plantationRepository.countAllByUsersContaining(user.getId());
   }
+
+  @Override
+  public Mono<Plantation> createPlantation(PlantationDto dto, User user) {
+    return null;
+  }
+
+
 }

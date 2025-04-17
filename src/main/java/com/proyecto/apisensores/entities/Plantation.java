@@ -1,5 +1,6 @@
 package com.proyecto.apisensores.entities;
 
+import com.proyecto.apisensores.dtos.PlantationDto;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -29,14 +30,16 @@ public class Plantation extends Model  {
 
   private List<String> users; // List of users IDs associated with the plantation
 
-  public Plantation(String name, String country, String province, String city, String type, String ownerId) {
+  private List<PlantationCoordinate> coordinates; // List of coordinates associated with the plantation
+
+  public Plantation(PlantationDto dto, User user) {
     super();
     this.name = name;
     this.country = country;
     this.province = province;
     this.city = city;
     this.type = type;
-    this.ownerId = ownerId;
-    this.users = List.of(ownerId);
+    this.ownerId = user.getId();
+    this.users = List.of(user.getId());
   }
 }
