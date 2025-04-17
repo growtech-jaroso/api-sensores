@@ -33,11 +33,15 @@ public class PlantationHandler {
 
     PageRequest pageRequest = PageRequest.of(pageNumber, limitNumber);
 
-    // Retrieve the user ID of the authenticated user
-    String userId = request.headers().header("user").getFirst();
+//    // Retrieve the user ID of the authenticated user
+//    String userId = request.headers().header("user").getFirst();
+
+    String userId = "Ejemplo";
 
     // Retrieve the products from the database
     Flux<Plantation> products = this.plantationService.getAllPlantationsByUserIdPaginated(userId, pageRequest);
+
+    System.out.println("Page: " + pageNumber);
 
     // Creat
     return products.collectList()

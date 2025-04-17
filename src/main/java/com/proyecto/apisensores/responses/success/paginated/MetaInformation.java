@@ -22,9 +22,14 @@ public class MetaInformation {
   private final Integer currentPage;
 
   public MetaInformation(PageRequest pageRequest, Long totalItems, Integer limit, Integer pageSize) {
-    this.itemsPerPage = limit;
     // Calculate the total pages
-    this.totalPages = Math.ceilDiv(totalItems, pageRequest.getPageSize());
+    long totalPages = Math.ceilDiv(totalItems, pageRequest.getPageSize());
+
+    // If the total pages is less than 1, set it to 1
+    if (totalPages < 1) totalPages = 1L;
+
+    this.itemsPerPage = limit;
+    this.totalPages = totalPages;
     this.totalItems = totalItems;
     this.itemCount = pageSize;
     // Calculate the current page adding 1 because pagination is zero-based
