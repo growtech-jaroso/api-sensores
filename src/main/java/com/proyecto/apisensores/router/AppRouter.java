@@ -1,9 +1,12 @@
 package com.proyecto.apisensores.router;
 
+import com.proyecto.apisensores.security.CustomAccessDeniedHandler;
+import com.proyecto.apisensores.security.CustomAuthenticationEntryPoint;
 import com.proyecto.apisensores.security.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
@@ -46,17 +49,28 @@ public class AppRouter implements WebFluxConfigurer {
    * @return SecurityWebFilterChain
    */
   @Bean
-  SecurityWebFilterChain webHttpSecurity(ServerHttpSecurity http, JwtAuthFilter jwtFilter) {
+  SecurityWebFilterChain webHttpSecurity(
+    ServerHttpSecurity http,
+    JwtAuthFilter jwtFilter,
+    CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
+    CustomAccessDeniedHandler customAccessDeniedHandler
+  ) {
     http
       .securityMatcher(new PathPatternParserServerWebExchangeMatcher("/api/**"))
       .authorizeExchange(exchanges -> exchanges
         .pathMatchers("/api/auth/**").permitAll()// Public routes
         .anyExchange().authenticated()
       )
+      .exceptionHandling(exceptionHandlingSpec -> {
+        exceptionHandlingSpec
+          .authenticationEntryPoint(customAuthenticationEntryPoint)
+          .accessDeniedHandler(customAccessDeniedHandler);
+      })
       .addFilterBefore(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION)
       .csrf(ServerHttpSecurity.CsrfSpec::disable)
       .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
       .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable);
+
     return http.build();
   }
 

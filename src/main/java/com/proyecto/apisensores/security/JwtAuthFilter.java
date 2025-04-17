@@ -35,7 +35,7 @@ public class JwtAuthFilter implements WebFilter {
     }
 
     // Get token from auth header
-    String token = authHeader.substring(7);
+    String token = authHeader.split(" ")[1];
 
     // If token is not valid, continue with the chain
     if (!jwtUtil.isValidToken(token)) {

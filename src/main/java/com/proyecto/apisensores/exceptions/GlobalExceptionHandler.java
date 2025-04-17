@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.reactive.resource.NoResourceFoundException;
@@ -35,6 +36,13 @@ public class GlobalExceptionHandler {
     );
 
     return Response.builder(HttpStatus.BAD_REQUEST, validationErrorResponse);
+  }
+
+  @ExceptionHandler(AuthenticationException.class)
+  public Mono<ResponseEntity<ErrorResponse>> handleAuthenticationException(AuthenticationException e) {
+    logger.error("AuthenticationException: {}", e.getMessage());
+    ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED, "Unauthorized");
+    return Response.builder(HttpStatus.UNAUTHORIZED, errorResponse);
   }
 
   @ExceptionHandler(NoResourceFoundException.class)

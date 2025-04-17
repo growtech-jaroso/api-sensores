@@ -1,6 +1,8 @@
 package com.proyecto.apisensores.handlers;
 
+import com.proyecto.apisensores.responses.Response;
 import com.proyecto.apisensores.services.plantations.PlantationService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -16,6 +18,6 @@ public class PlantationHandler {
   }
 
   public Mono<ServerResponse> getAllPlantationsByUser(ServerRequest request) {
-    return null;
+    return Response.builder(HttpStatus.MULTI_STATUS).build();
   }
 }
