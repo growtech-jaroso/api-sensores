@@ -19,6 +19,7 @@ public class UserServiceImpl implements  UserService {
     this.userRepository = userRepository;
   }
 
+  @Override
   public Mono<User> findByEmail(String email) {
     return this.userRepository.findByEmail(email);
   }
@@ -28,7 +29,8 @@ public class UserServiceImpl implements  UserService {
     return this.userRepository.findByUsername(username);
   }
 
-  public Mono<User> save(UserRegisterDto userRegisterDTO) {
+  @Override
+  public Mono<User> create(UserRegisterDto userRegisterDTO) {
     User user = new User();
     user.setEmail(userRegisterDTO.email());
     user.setUsername(userRegisterDTO.username());
@@ -38,6 +40,7 @@ public class UserServiceImpl implements  UserService {
     return userRepository.save(user);
   }
 
+  @Override
   public Boolean passwordMatches(String rawPassword, String encodedPassword) {
     return passwordEncoder.matches(rawPassword, encodedPassword);
   }
