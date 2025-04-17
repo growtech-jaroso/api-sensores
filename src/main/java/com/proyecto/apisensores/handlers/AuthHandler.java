@@ -3,8 +3,6 @@ package com.proyecto.apisensores.handlers;
 import com.proyecto.apisensores.dtos.AuthInfo;
 import com.proyecto.apisensores.dtos.UserLoginDto;
 import com.proyecto.apisensores.dtos.UserRegisterDto;
-import com.proyecto.apisensores.entities.User;
-import com.proyecto.apisensores.responses.Response;
 import com.proyecto.apisensores.responses.error.ErrorResponse;
 import com.proyecto.apisensores.responses.success.DataResponse;
 import com.proyecto.apisensores.services.users.UserService;
