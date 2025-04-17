@@ -16,10 +16,9 @@ public class PaginatedResponse<T> extends DataResponse<List<T>> {
     HttpStatus status,
     Long totalItems,
     PageRequest pageRequest,
-    Integer limit,
     List<T> data
   ) {
     super(status, data);
-    this.meta = new MetaInformation(pageRequest, totalItems, limit, data.size());
+    this.meta = new MetaInformation(pageRequest, totalItems, pageRequest.getPageSize(), data.size());
   }
 }

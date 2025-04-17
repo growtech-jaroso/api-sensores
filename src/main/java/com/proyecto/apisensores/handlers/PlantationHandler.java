@@ -1,9 +1,11 @@
 package com.proyecto.apisensores.handlers;
 
 import com.proyecto.apisensores.entities.Plantation;
+import com.proyecto.apisensores.entities.User;
 import com.proyecto.apisensores.responses.Response;
 import com.proyecto.apisensores.responses.success.paginated.PaginatedResponse;
 import com.proyecto.apisensores.services.plantations.PlantationService;
+import com.proyecto.apisensores.utils.AuthUtil;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -23,37 +25,31 @@ public class PlantationHandler {
   }
 
   public Mono<ServerResponse> getAllPlantationsByUser(ServerRequest request) {
-    // Retrieve the page and limit parameters from the request
-    String page = request.queryParam("page").orElse("1");
-    String limit = request.queryParam("limit").orElse("10");
+    // Create a page request from the request parameters
+    PageRequest pageRequest = ParamsUtil.getPageRequest(request);
 
-    // Convert the page and limit to integers
-    Integer pageNumber = ParamsUtil.checkPage(page);
-    Integer limitNumber = ParamsUtil.checkLimit(limit);
+    // Retrieve the user from the request
+    Mono<User> authUser = AuthUtil.getAuthUser();
 
-    PageRequest pageRequest = PageRequest.of(pageNumber, limitNumber);
+    // Get plantations by user the authenticated user
+    return authUser.
+      flatMap(user -> {
+        // Get all plantations by user
+        Flux<Plantation> userPlantations = this.plantationService.getAllPlantationsByUserPaginated(user, pageRequest);
+        // Get the total number of plantations by user
+        Mono<Long> totalUserPlantations = this.plantationService.getTotalPlantationsByUser(user);
 
-//    // Retrieve the user ID of the authenticated user
-//    String userId = request.headers().header("user").getFirst();
-
-    String userId = "Ejemplo";
-
-    // Retrieve the products from the database
-    Flux<Plantation> products = this.plantationService.getAllPlantationsByUserIdPaginated(userId, pageRequest);
-
-    System.out.println("Page: " + pageNumber);
-
-    // Creat
-    return products.collectList()
-      .zipWith(this.plantationService.getTotalPlantationsByUserId(userId))
-      .flatMap( tuple -> Response.builder(HttpStatus.OK)
-        .bodyValue(new PaginatedResponse<>(
-          HttpStatus.OK,
-          tuple.getT2(),
-          pageRequest,
-          limitNumber,
-          tuple.getT1()
-        ))
-      );
+        // Create a paginated response
+        return userPlantations.collectList()
+          .zipWith(totalUserPlantations)
+          .flatMap(tuple -> Response.builder(HttpStatus.OK)
+            .bodyValue(new PaginatedResponse<>(
+              HttpStatus.OK,
+              tuple.getT2(),
+              pageRequest,
+              tuple.getT1()
+            ))
+          );
+      });
   }
 }

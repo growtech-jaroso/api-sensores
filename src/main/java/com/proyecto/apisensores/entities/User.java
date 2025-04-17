@@ -66,4 +66,20 @@ public class User extends Model implements UserDetails {
   public boolean isEnabled() {
     return UserDetails.super.isEnabled();
   }
+
+  /**
+   * Check if the user can view anything
+   * @return true if the user can view anything, false otherwise
+   */
+  public Boolean canViewAnything() {
+    return this.roles.contains(UserRole.SUPPORT) || this.roles.contains(UserRole.ADMIN);
+  }
+
+  /**
+   * Check if the user is an admin
+   * @return true if the user is an admin, false otherwise
+   */
+  public Boolean isAdmin() {
+    return this.roles.contains(UserRole.ADMIN);
+  }
 }
