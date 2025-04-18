@@ -12,5 +12,5 @@ import reactor.core.publisher.Mono;
 public interface PlantationService {
   Flux<Plantation> getAllPlantationsByUserPaginated(User user, PageRequest pageRequest);
   Mono<Long> getTotalPlantationsByUser(User user);
-  Mono<Plantation> createPlantation(PlantationDto dto, User user);
+  Mono<Plantation> createPlantation(PlantationDto plantationDto);
 }

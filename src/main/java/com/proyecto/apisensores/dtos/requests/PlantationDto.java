@@ -1,5 +1,6 @@
 package com.proyecto.apisensores.dtos.requests;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ public record PlantationDto(
   String description,
   @NotNull(message = "Type is required")
   String type,
+  @JsonProperty("user_email")
   @NotBlank(message = "User email is required")
   @Email(message = "Email must be valid")
   String userEmail

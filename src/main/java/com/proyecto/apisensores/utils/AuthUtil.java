@@ -1,10 +1,15 @@
 package com.proyecto.apisensores.utils;
 
 import com.proyecto.apisensores.entities.User;
+import com.proyecto.apisensores.enums.UserRole;
+import com.proyecto.apisensores.exceptions.CustomException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import reactor.core.publisher.Mono;
+
+import java.util.Arrays;
 
 public class AuthUtil {
   /**
@@ -15,6 +20,15 @@ public class AuthUtil {
     return ReactiveSecurityContextHolder.getContext()
       .map(SecurityContext::getAuthentication)
       .cast(UsernamePasswordAuthenticationToken.class)
-      .map(auth -> (User) auth.getPrincipal());
+      .map(auth -> (User) auth.getPrincipal())
+      // If not user throw an unauthorized exception, this should never happen
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.UNAUTHORIZED, "Unauthorized")));
+  }
+
+  public static Mono<Void> checkIfUserHaveRoles(UserRole... roles) {
+    return getAuthUser()
+      .filter(user -> Arrays.stream(roles).anyMatch(role -> user.getRoles().contains(role)))
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.FORBIDDEN, "Forbidden")))
+      .then();
   }
 }

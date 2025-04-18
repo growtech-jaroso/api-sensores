@@ -29,6 +29,7 @@ public class User extends Model implements UserDetails {
   @Indexed(unique = true)
   private String email;
 
+  @Indexed
   private List<UserRole> roles = List.of(UserRole.USER);
 
   public User(UserRegisterDto dto) {
@@ -71,13 +72,5 @@ public class User extends Model implements UserDetails {
    */
   public Boolean canViewAnything() {
     return this.roles.contains(UserRole.SUPPORT) || this.roles.contains(UserRole.ADMIN);
-  }
-
-  /**
-   * Check if the user is an admin
-   * @return true if the user is an admin, false otherwise
-   */
-  public Boolean isAdmin() {
-    return this.roles.contains(UserRole.ADMIN);
   }
 }

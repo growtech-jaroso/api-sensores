@@ -37,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
       .filter(user -> this.userService.passwordMatches(userLoginDTO.password(), user.getPassword()))
       .map(this::generateAuthInfo)
       // If the user is not found or the password does not match, return an error
-      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.UNAUTHORIZED, "Invalid username or password")));
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.UNAUTHORIZED, "Invalid email or password")));
   }
 
   /**

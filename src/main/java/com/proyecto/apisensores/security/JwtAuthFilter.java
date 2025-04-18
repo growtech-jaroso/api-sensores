@@ -1,7 +1,6 @@
 package com.proyecto.apisensores.security;
 
 import com.proyecto.apisensores.utils.JwtUtil;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -42,7 +41,6 @@ public class JwtAuthFilter implements WebFilter {
       .flatMap(userDetails -> {
         UsernamePasswordAuthenticationToken authToken =
           new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
         // Set authentication in the security context passing the auth token
         return chain.filter(exchange)
           .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authToken));

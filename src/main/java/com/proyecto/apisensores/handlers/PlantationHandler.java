@@ -1,11 +1,15 @@
 package com.proyecto.apisensores.handlers;
 
+import com.proyecto.apisensores.dtos.requests.PlantationDto;
 import com.proyecto.apisensores.entities.Plantation;
 import com.proyecto.apisensores.entities.User;
+import com.proyecto.apisensores.enums.UserRole;
 import com.proyecto.apisensores.responses.Response;
+import com.proyecto.apisensores.responses.success.DataResponse;
 import com.proyecto.apisensores.responses.success.paginated.PaginatedResponse;
 import com.proyecto.apisensores.services.plantations.PlantationService;
 import com.proyecto.apisensores.utils.AuthUtil;
+import com.proyecto.apisensores.validators.ObjectValidator;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -19,14 +23,27 @@ import com.proyecto.apisensores.utils.ParamsUtil;
 public class PlantationHandler {
 
   private final PlantationService plantationService;
+  private final ObjectValidator objectValidator;
 
-  public PlantationHandler(PlantationService plantationService) {
+  public PlantationHandler(PlantationService plantationService, ObjectValidator objectValidator) {
     this.plantationService = plantationService;
+    this.objectValidator = objectValidator;
   }
 
   public Mono<ServerResponse> createPlantation(ServerRequest request) {
-    // Implementation for creating a plantation
-    return null;
+    // Check if user is authorized to create a plantation
+    Mono<PlantationDto> plantationDto = AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+      // Validate the request body
+      .then(request.bodyToMono(PlantationDto.class).doOnNext(objectValidator::validate));
+
+
+    // Create a new plantation and return in response
+    return plantationDto
+      .flatMap(this.plantationService::createPlantation)
+      .flatMap(plantation -> Response
+        .builder(HttpStatus.CREATED)
+        .bodyValue(new DataResponse<>(HttpStatus.CREATED, plantation))
+      );
   }
 
   public Mono<ServerResponse> getAllPlantationsByUser(ServerRequest request) {

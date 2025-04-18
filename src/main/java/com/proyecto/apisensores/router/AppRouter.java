@@ -6,8 +6,6 @@ import com.proyecto.apisensores.security.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -18,8 +16,6 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
-
-import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -58,7 +54,7 @@ public class AppRouter implements WebFluxConfigurer {
     http
       .securityMatcher(new PathPatternParserServerWebExchangeMatcher("/api/**"))
       .authorizeExchange(exchanges -> exchanges
-        .pathMatchers("/api/auth/**").permitAll()// Public routes
+        .pathMatchers("/api/auth/**").permitAll() // Public routes
         .anyExchange().authenticated()
       )
       .exceptionHandling(exceptionHandlingSpec -> {
