@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class PlantationCoordinate {
+public class Coordinate {
   private Double latitude;
   private Double longitude;
 }
