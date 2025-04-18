@@ -1,8 +1,8 @@
 package com.proyecto.apisensores.services.auth;
 
 import com.proyecto.apisensores.dtos.AuthInfo;
-import com.proyecto.apisensores.dtos.UserLoginDto;
-import com.proyecto.apisensores.dtos.UserRegisterDto;
+import com.proyecto.apisensores.dtos.requests.UserLoginDto;
+import com.proyecto.apisensores.dtos.requests.UserRegisterDto;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 

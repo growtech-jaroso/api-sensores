@@ -1,8 +1,8 @@
 package com.proyecto.apisensores.services.auth;
 
 import com.proyecto.apisensores.dtos.AuthInfo;
-import com.proyecto.apisensores.dtos.UserLoginDto;
-import com.proyecto.apisensores.dtos.UserRegisterDto;
+import com.proyecto.apisensores.dtos.requests.UserLoginDto;
+import com.proyecto.apisensores.dtos.requests.UserRegisterDto;
 import com.proyecto.apisensores.entities.User;
 import com.proyecto.apisensores.exceptions.CustomException;
 import com.proyecto.apisensores.services.users.UserService;

@@ -1,6 +1,6 @@
 package com.proyecto.apisensores.services.plantations;
 
-import com.proyecto.apisensores.dtos.PlantationDto;
+import com.proyecto.apisensores.dtos.requests.PlantationDto;
 import com.proyecto.apisensores.entities.Plantation;
 import com.proyecto.apisensores.entities.User;
 import org.springframework.data.domain.PageRequest;

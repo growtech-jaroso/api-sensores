@@ -1,4 +1,4 @@
-package com.proyecto.apisensores.dtos;
+package com.proyecto.apisensores.dtos.requests;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

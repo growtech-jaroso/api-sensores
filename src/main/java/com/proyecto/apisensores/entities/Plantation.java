@@ -1,6 +1,6 @@
 package com.proyecto.apisensores.entities;
 
-import com.proyecto.apisensores.dtos.PlantationDto;
+import com.proyecto.apisensores.dtos.requests.PlantationDto;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 

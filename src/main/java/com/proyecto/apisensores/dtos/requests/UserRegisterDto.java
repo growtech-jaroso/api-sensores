@@ -1,4 +1,4 @@
-package com.proyecto.apisensores.dtos;
+package com.proyecto.apisensores.dtos.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proyecto.apisensores.annotations.PasswordMatches;

@@ -1,8 +1,8 @@
 package com.proyecto.apisensores.handlers;
 
 import com.proyecto.apisensores.dtos.AuthInfo;
-import com.proyecto.apisensores.dtos.UserLoginDto;
-import com.proyecto.apisensores.dtos.UserRegisterDto;
+import com.proyecto.apisensores.dtos.requests.UserLoginDto;
+import com.proyecto.apisensores.dtos.requests.UserRegisterDto;
 import com.proyecto.apisensores.responses.success.DataResponse;
 import com.proyecto.apisensores.services.auth.AuthService;
 import com.proyecto.apisensores.validators.ObjectValidator;

@@ -1,6 +1,6 @@
 package com.proyecto.apisensores.services.users;
 
-import com.proyecto.apisensores.dtos.UserRegisterDto;
+import com.proyecto.apisensores.dtos.requests.UserRegisterDto;
 import com.proyecto.apisensores.entities.User;
 import com.proyecto.apisensores.repositories.UserRepository;
 import com.proyecto.apisensores.utils.JwtUtil;

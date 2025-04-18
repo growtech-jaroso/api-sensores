@@ -1,7 +1,7 @@
 package com.proyecto.apisensores.validators;
 
 import com.proyecto.apisensores.annotations.PasswordMatches;
-import com.proyecto.apisensores.dtos.UserRegisterDto;
+import com.proyecto.apisensores.dtos.requests.UserRegisterDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
