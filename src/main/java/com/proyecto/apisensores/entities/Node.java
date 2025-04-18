@@ -22,7 +22,7 @@ public class Node extends Model {
   @Indexed
   private String plantationId;
 
-  List<NodeCoordinate> coordinates;
+  List<Coordinate> coordinates;
 
   public Node(String name, String plantationId) {
     super();

@@ -30,15 +30,15 @@ public class Plantation extends Model  {
 
   private List<String> users; // List of users IDs associated with the plantation
 
-  private List<PlantationCoordinate> coordinates; // List of coordinates associated with the plantation
+  private List<Coordinate> coordinates; // List of coordinates associated with the plantation
 
-  public Plantation(PlantationDto dto, User user) {
+  public Plantation(PlantationDto plantationDto, User user) {
     super();
-    this.name = name;
-    this.country = country;
-    this.province = province;
-    this.city = city;
-    this.type = type;
+    this.name = plantationDto.name();
+    this.country = plantationDto.country();
+    this.province = plantationDto.province();
+    this.city = plantationDto.city();
+    this.type = plantationDto.type();
     this.ownerId = user.getId();
     this.users = List.of(user.getId());
   }
