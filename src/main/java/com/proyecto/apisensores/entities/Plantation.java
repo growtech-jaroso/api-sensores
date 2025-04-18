@@ -1,5 +1,6 @@
 package com.proyecto.apisensores.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proyecto.apisensores.dtos.requests.PlantationDto;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -26,8 +27,10 @@ public class Plantation extends Model  {
 
   private String type;
 
+  @JsonProperty("owner_id")
   private String ownerId; // ID of the user who owns the plantation
 
+  @Indexed
   private List<String> users; // List of users IDs associated with the plantation
 
   private List<Coordinate> coordinates; // List of coordinates associated with the plantation

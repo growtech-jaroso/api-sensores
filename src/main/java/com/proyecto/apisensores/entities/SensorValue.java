@@ -19,16 +19,16 @@ public class SensorValue extends Model {
   private Double value;
 
   @Indexed
-  private LocalDateTime date;
+  private LocalDateTime timestamp;
 
-  @Field("node_id")
+  @Field("sensor_id")
   @Indexed
-  private String nodeId;
+  private String sensorId;
 
-  public SensorValue(Double value, LocalDateTime date, String nodeId) {
+  public SensorValue(Double value, LocalDateTime timestamp, String sensorId) {
     super();
     this.value = value;
-    this.date = date;
-    this.nodeId = nodeId;
+    this.timestamp = timestamp;
+    this.sensorId = sensorId;
   }
 }
