@@ -11,5 +11,6 @@ import reactor.core.publisher.Mono;
 public interface PlantationRepository extends ReactiveMongoRepository<Plantation, String> {
   Flux<Plantation> findAllBy(PageRequest pageRequest);
   Flux<Plantation> findAllByUsersContaining(String userId, PageRequest pageRequest);
+  Mono<Boolean> existsPlantationByName(String name);
   Mono<Long> countAllByUsersContaining(String userId);
 }

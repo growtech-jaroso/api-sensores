@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Service
 public class PlantationServiceImpl implements PlantationService {
   private final PlantationRepository plantationRepository;
@@ -39,13 +41,21 @@ public class PlantationServiceImpl implements PlantationService {
   @Override
   public Mono<Plantation> createPlantation(PlantationDto plantationDto) {
     // Retrieve the user by email
-    Mono<User> user = this.userRepository.findByEmailAndRolesIsContaining(plantationDto.userEmail(), UserRole.USER)
+    Mono<User> user = this.userRepository.findByEmailAndRolesNotContains(plantationDto.userEmail(), List.of(UserRole.ADMIN, UserRole.SUPPORT))
       // If user not exists, throw  bad request exception
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "User email not exists")));
 
-    // Create a new plantation and save it
-    return user
-      .map(u -> new Plantation(plantationDto, u))
-      .flatMap(this.plantationRepository::save);
+    // Create a new plantation object
+    Mono<Plantation> plantation = user.map(u -> new Plantation(plantationDto, u));
+
+    // Check if the plantation name already exists
+    return this.plantationRepository.existsPlantationByName(plantationDto.name())
+      .flatMap(exists -> {
+        // If exists, throw bad request exception
+        if (exists) return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Plantation name already exists"));
+        // If not exists, save the plantation
+        return plantation.flatMap(this.plantationRepository::save);
+      });
+
   }
 }
