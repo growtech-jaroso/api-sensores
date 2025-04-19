@@ -10,8 +10,8 @@ import com.proyecto.apisensores.repositories.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 import java.util.List;
 
@@ -26,13 +26,19 @@ public class PlantationServiceImpl implements PlantationService {
   }
 
   @Override
-  public Flux<Plantation> getAllPlantationsByUserPaginated(User user, PageRequest pageRequest) {
+  public Mono<Tuple2<List<Plantation>, Long>> getAllPlantationsByUserPaginated(User user, PageRequest pageRequest) {
     return user.canViewAnything()
-      ? this.plantationRepository.findAllBy(pageRequest)
-      : this.plantationRepository.findAllByUsersContaining(user.getId(), pageRequest);
+      ? this.plantationRepository
+        .findAllBy(pageRequest)
+        .collectList()
+        .zipWith(this.getTotalPlantationsByUser(user))
+      : this.plantationRepository
+        .findAllByUsersContaining(user.getId(), pageRequest)
+        .collectList()
+        .zipWith(this.getTotalPlantationsByUser(user));
   }
 
-  public Mono<Long> getTotalPlantationsByUser(User user) {
+  private Mono<Long> getTotalPlantationsByUser(User user) {
     return user.canViewAnything()
       ? this.plantationRepository.count()
       : this.plantationRepository.countAllByUsersContaining(user.getId());

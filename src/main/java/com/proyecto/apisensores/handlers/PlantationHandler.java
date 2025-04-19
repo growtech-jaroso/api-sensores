@@ -57,21 +57,16 @@ public class PlantationHandler {
     return authUser.
       flatMap(user -> {
         // Get all plantations by user
-        Flux<Plantation> userPlantations = this.plantationService.getAllPlantationsByUserPaginated(user, pageRequest);
-        // Get the total number of plantations by user
-        Mono<Long> totalUserPlantations = this.plantationService.getTotalPlantationsByUser(user);
-
-        // Create a paginated response
-        return userPlantations.collectList()
-          .zipWith(totalUserPlantations)
+        return this.plantationService
+          .getAllPlantationsByUserPaginated(user, pageRequest)
+          // Create a paginated response
           .flatMap(tuple -> Response.builder(HttpStatus.OK)
             .bodyValue(new PaginatedResponse<>(
               HttpStatus.OK,
               tuple.getT2(),
               pageRequest,
               tuple.getT1()
-            ))
-          );
+            )));
       });
   }
 }

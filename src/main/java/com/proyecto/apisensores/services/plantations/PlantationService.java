@@ -5,12 +5,13 @@ import com.proyecto.apisensores.entities.Plantation;
 import com.proyecto.apisensores.entities.User;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
+
+import java.util.List;
 
 @Service
 public interface PlantationService {
-  Flux<Plantation> getAllPlantationsByUserPaginated(User user, PageRequest pageRequest);
-  Mono<Long> getTotalPlantationsByUser(User user);
+  Mono<Tuple2<List<Plantation>, Long>> getAllPlantationsByUserPaginated(User user, PageRequest pageRequest);
   Mono<Plantation> createPlantation(PlantationDto plantationDto);
 }
