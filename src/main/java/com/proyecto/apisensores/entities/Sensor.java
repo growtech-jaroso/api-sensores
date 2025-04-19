@@ -2,16 +2,17 @@ package com.proyecto.apisensores.entities;
 
 import com.proyecto.apisensores.enums.SensorType;
 import com.proyecto.apisensores.enums.SensorUnit;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Document("sensors")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Builder
@@ -20,18 +21,21 @@ public class Sensor {
 
   private SensorUnit unit;
 
-  @Field("node_id")
+  @Field("plantation_id")
   @Indexed
-  private String nodeId;
+  private String plantationId;
 
   @Field("threshold_alert")
   private Double thresholdAlert;
 
-  public Sensor(SensorType type, SensorUnit unit, String nodeId, Double thresholdAlert) {
+  private List<Coordinate> coordinates;
+
+  public Sensor(SensorType type, SensorUnit unit, String plantationId, Double thresholdAlert) {
     super();
     this.type = type;
     this.unit = unit;
-    this.nodeId = nodeId;
+    this.plantationId = plantationId;
     this.thresholdAlert = thresholdAlert;
+    this.coordinates = new ArrayList<>();
   }
 }
