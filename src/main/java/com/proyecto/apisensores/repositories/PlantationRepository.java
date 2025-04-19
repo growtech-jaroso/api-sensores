@@ -13,4 +13,5 @@ public interface PlantationRepository extends ReactiveMongoRepository<Plantation
   Flux<Plantation> findAllByUsersContaining(String userId, PageRequest pageRequest);
   Mono<Boolean> existsPlantationByName(String name);
   Mono<Long> countAllByUsersContaining(String userId);
+  Mono<Plantation> findById(String plantationId);
 }
