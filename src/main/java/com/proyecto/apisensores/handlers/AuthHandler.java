@@ -25,7 +25,6 @@ public class AuthHandler {
   }
 
   public Mono<ServerResponse> login(ServerRequest request) {
-    System.out.println("Login request received");
     return request.bodyToMono(UserLoginDto.class)
       .doOnNext(objectValidator::validate)
       .flatMap(this.authService::loginUser)

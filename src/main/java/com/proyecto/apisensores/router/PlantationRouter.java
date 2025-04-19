@@ -11,16 +11,19 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 public class PlantationRouter {
 
   private final PlantationHandler handler;
+  private final SensorRouter sensorRouter;
 
-  public PlantationRouter(PlantationHandler handler) {
+  public PlantationRouter(PlantationHandler handler, SensorRouter sensorRouter) {
     this.handler = handler;
+    this.sensorRouter = sensorRouter;
   }
 
   @Bean
   public RouterFunction<ServerResponse> plantationRoutes() {
     return RouterFunctions.route()
-      .GET("", handler::getAllPlantationsByUser) // Route: GET /api/plantations
-      .POST("" , handler::createPlantation) // Route: POST /api/plantations
+      .path("/{plantation_id}/sensors", this.sensorRouter::sensorRoutes) // Sensors routes
+      .GET("", this.handler::getAllPlantationsByUser) // Route: GET /api/plantations
+      .POST("" , this.handler::createPlantation) // Route: POST /api/plantations
       .build();
   }
 }

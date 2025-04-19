@@ -25,7 +25,7 @@ public class AppRouter implements WebFluxConfigurer {
   private String[] allowedOrigins;
 
   @Bean
-  public RouterFunction<ServerResponse> appRoutes(
+  public RouterFunction<ServerResponse> routes(
     PlantationRouter plantationRouter,
     AuthRouter authRouter
   ) {
