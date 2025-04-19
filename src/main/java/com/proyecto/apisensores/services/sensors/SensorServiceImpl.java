@@ -9,8 +9,10 @@ import com.proyecto.apisensores.repositories.SensorRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
+
+import java.util.List;
 
 @Service
 public class SensorServiceImpl implements SensorService {
@@ -24,26 +26,27 @@ public class SensorServiceImpl implements SensorService {
   }
 
   @Override
-  public Flux<Sensor> getSensorsByPlantationPaginated(User user, String plantationId, PageRequest pageRequest) {
+  public Mono<Tuple2<List<Sensor>, Long>> getSensorsByPlantationPaginated(User user, String plantationId, PageRequest pageRequest) {
     // Check if plantation exists
     Mono<Plantation> plantation = this.plantationRepository.findById(plantationId)
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation not found")));
 
     return plantation
-      .flatMapMany(pl -> {
+      .flatMap(pl -> {
         // Check if the user is associated with the plantation
         if (!pl.getUsers().contains(user.getId()) && user.canViewAnything()) {
-          return Flux.error(new CustomException(HttpStatus.FORBIDDEN, "User not associated with the plantation"));
+          return Mono.error(new CustomException(HttpStatus.FORBIDDEN, "User not associated with the plantation"));
         }
 
         // Get the sensors by plantation id
         return this.sensorRepository
-          .getAllByPlantationId(plantationId, pageRequest);
+          .getAllByPlantationId(plantationId, pageRequest)
+                .collectList()
+                .zipWith(this.getTotalSensorsByPlantation(plantationId));
       });
   }
 
-  @Override
-  public Mono<Long> getTotalSensorsByPlantation(String plantationId) {
+  private Mono<Long> getTotalSensorsByPlantation(String plantationId) {
     return this.sensorRepository.countAllByPlantationId(plantationId);
   }
 }

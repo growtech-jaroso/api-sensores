@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -38,21 +37,17 @@ public class SensorHandler {
     return authUser.
       flatMap(user -> {
         // Get all sensors by plantation id
-        Flux<Sensor> sensors = this.sensorService.getSensorsByPlantationPaginated(user, plantationId, pageRequest);
-        // Get the total number of sensors by plantation id
-        Mono<Long> totalSensors = this.sensorService.getTotalSensorsByPlantation(plantationId);
-
         // Create a paginated response
-        return sensors.collectList()
-          .zipWith(totalSensors)
-          .flatMap(tuple -> Response.builder(HttpStatus.OK)
-            .bodyValue(new PaginatedResponse<>(
-              HttpStatus.OK,
-              tuple.getT2(),
-              pageRequest,
-              tuple.getT1()
-            ))
-          );
+        return this.sensorService
+            .getSensorsByPlantationPaginated(user, plantationId, pageRequest)
+            .flatMap(tuple -> Response.builder(HttpStatus.OK)
+                .bodyValue(new PaginatedResponse<>(
+                  HttpStatus.OK,
+                  tuple.getT2(),
+                  pageRequest,
+                  tuple.getT1()
+                ))
+              );
       });
   }
 }
