@@ -1,6 +1,5 @@
 package com.proyecto.apisensores.handlers;
 
-import com.proyecto.apisensores.entities.Sensor;
 import com.proyecto.apisensores.entities.User;
 import com.proyecto.apisensores.responses.Response;
 import com.proyecto.apisensores.responses.success.paginated.PaginatedResponse;

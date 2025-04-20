@@ -27,15 +27,16 @@ public class PlantationServiceImpl implements PlantationService {
 
   @Override
   public Mono<Tuple2<List<Plantation>, Long>> getAllPlantationsByUserPaginated(User user, PageRequest pageRequest) {
+    // Check if the user is associated with the plantation, doing with zip is more efficient because will be asynchronous
     return user.canViewAnything()
-      ? this.plantationRepository
-        .findAllBy(pageRequest)
-        .collectList()
-        .zipWith(this.getTotalPlantationsByUser(user))
-      : this.plantationRepository
-        .findAllByUsersContaining(user.getId(), pageRequest)
-        .collectList()
-        .zipWith(this.getTotalPlantationsByUser(user));
+      ? Mono.zip(
+        this.plantationRepository.findAllBy(pageRequest).collectList(),
+        this.plantationRepository.count()
+      )
+      : Mono.zip(
+        this.plantationRepository.findAllByUsersContaining(user.getId(), pageRequest).collectList(),
+        this.getTotalPlantationsByUser(user)
+      );
   }
 
   private Mono<Long> getTotalPlantationsByUser(User user) {

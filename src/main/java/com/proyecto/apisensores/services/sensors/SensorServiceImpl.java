@@ -35,18 +35,14 @@ public class SensorServiceImpl implements SensorService {
       .flatMap(pl -> {
         // Check if the user is associated with the plantation
         if (!pl.getUsers().contains(user.getId()) && user.canViewAnything()) {
-          return Mono.error(new CustomException(HttpStatus.FORBIDDEN, "User not associated with the plantation"));
+          return Mono.error(new CustomException(HttpStatus.FORBIDDEN, "Forbidden"));
         }
 
         // Get the sensors by plantation id
-        return this.sensorRepository
-          .getAllByPlantationId(plantationId, pageRequest)
-                .collectList()
-                .zipWith(this.getTotalSensorsByPlantation(plantationId));
+        return Mono.zip(
+          this.sensorRepository.getAllByPlantationId(plantationId, pageRequest).collectList(),
+          this.sensorRepository.countAllByPlantationId(plantationId)
+        );
       });
-  }
-
-  private Mono<Long> getTotalSensorsByPlantation(String plantationId) {
-    return this.sensorRepository.countAllByPlantationId(plantationId);
   }
 }
