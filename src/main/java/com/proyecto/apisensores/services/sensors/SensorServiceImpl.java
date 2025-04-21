@@ -34,7 +34,7 @@ public class SensorServiceImpl implements SensorService {
     return plantation
       .flatMap(pl -> {
         // Check if the user is associated with the plantation
-        if (!pl.getUsers().contains(user.getId()) && user.canViewAnything()) {
+        if (!pl.getUsers().contains(user.getId()) && !user.canViewAnything()) {
           return Mono.error(new CustomException(HttpStatus.FORBIDDEN, "Forbidden"));
         }
 
