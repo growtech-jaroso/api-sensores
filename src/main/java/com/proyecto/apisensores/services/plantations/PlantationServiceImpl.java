@@ -63,6 +63,5 @@ public class PlantationServiceImpl implements PlantationService {
         // If not exists, save the plantation
         return plantation.flatMap(this.plantationRepository::save);
       });
-
   }
 }
