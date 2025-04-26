@@ -12,7 +12,6 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = SensorTypeValidator.class)
 public @interface IsSensorType {
   String fieldName() default "sensor_type"; // Field name
-  String message() default "Invalid sensor type"; // Error message
   // Get the field name
   Class<? extends Payload>[] payload() default {};
 }

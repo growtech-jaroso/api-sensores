@@ -7,12 +7,10 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class SensorTypeValidator implements ConstraintValidator<IsSensorType, String> {
 
-  private String message;
   private String propertyName;
 
   @Override
   public void initialize(final IsSensorType constraintAnnotation) {
-    this.message = constraintAnnotation.message();
     this.propertyName = constraintAnnotation.fieldName();
   }
 
@@ -23,7 +21,9 @@ public class SensorTypeValidator implements ConstraintValidator<IsSensorType, St
 
     // If the value is not a valid SensorType, return false and add a violation
     if (SensorType.convertFromString(value) == null) {
-      context.buildConstraintViolationWithTemplate(message)
+      context.buildConstraintViolationWithTemplate(
+        "Invalid sensor type. Valid types are: " + SensorType.getAllSensorTypes()
+        )
         .addPropertyNode(this.propertyName)
         .addConstraintViolation()
         .disableDefaultConstraintViolation();

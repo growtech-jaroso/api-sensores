@@ -49,4 +49,11 @@ public class SensorHandler {
               );
       });
   }
+
+  Mono<ServerResponse> createSensor(ServerRequest request) {
+    // Retrieve the user from the request
+    Mono<User> authUser = AuthUtil.getAuthUser();
+
+    return Response.builder(HttpStatus.CREATED).build();
+  }
 }

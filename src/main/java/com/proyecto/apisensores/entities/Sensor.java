@@ -1,5 +1,6 @@
 package com.proyecto.apisensores.entities;
 
+import com.proyecto.apisensores.dtos.requests.SensorDto;
 import com.proyecto.apisensores.enums.SensorType;
 import com.proyecto.apisensores.enums.SensorUnit;
 import lombok.*;
@@ -25,17 +26,21 @@ public class Sensor {
   @Indexed
   private String plantationId;
 
-  @Field("threshold_alert")
-  private Double thresholdAlert;
+  @Field("threshold_min_alert")
+  private Double thresholdMinAlert;
+
+  @Field("threshold_max_alert")
+  private Double thresholdMaxAlert;
 
   private List<Coordinate> coordinates;
 
-  public Sensor(SensorType type, SensorUnit unit, String plantationId, Double thresholdAlert) {
+  public Sensor(SensorDto sensorDto) {
     super();
-    this.type = type;
-    this.unit = unit;
-    this.plantationId = plantationId;
-    this.thresholdAlert = thresholdAlert;
+    this.unit = SensorUnit.convertFromString(sensorDto.sensorUnit());
+    this.type = SensorType.convertFromString(sensorDto.sensorType());
+    this.plantationId = sensorDto.plantationId();
+    this.thresholdMinAlert = 0.0;
+    this.thresholdMaxAlert = 0.0;
     this.coordinates = new ArrayList<>();
   }
 }

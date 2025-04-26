@@ -18,4 +18,20 @@ public enum SensorType {
           return null;
       }
   }
+
+  public static String getAllSensorTypes() {
+      StringBuilder sensorTypes = new StringBuilder();
+
+      // Iterate through all enum constants and append their names to the StringBuilder
+      for (SensorType type : SensorType.values()) {
+          sensorTypes.append(type.name().toLowerCase()).append(", ");
+      }
+
+      // Remove the last comma and space if there are any sensor types
+      if (!sensorTypes.isEmpty()) {
+          sensorTypes.setLength(sensorTypes.length() - 2);
+      }
+
+      return sensorTypes.toString();
+  }
 }

@@ -13,6 +13,5 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = SensorUnitValidator.class)
 public @interface IsSensorUnit {
   String fieldName() default "sensor_unit"; // Field name
-  String message() default "Invalid sensor unit"; // Error message
   Class<? extends Payload>[] payload() default {};
 }
