@@ -50,13 +50,13 @@ public class SensorServiceImpl implements SensorService {
   @Override
   public Mono<Sensor> createSensor(SensorDto sensorDto, String plantationId) {
     // Check if plantation exists
-    return this.plantationRepository.existsPlantationById(sensorDto.plantationId())
+    return this.plantationRepository.existsPlantationById(plantationId)
       .flatMap(exists -> {
         if (!exists) {
           return Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation not found"));
         }
         // Create a new sensor object
-        Sensor sensor = new Sensor(sensorDto);
+        Sensor sensor = new Sensor(sensorDto, plantationId);
         // Save the sensor
         return this.sensorRepository.save(sensor);
       });

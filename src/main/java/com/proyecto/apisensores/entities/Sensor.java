@@ -34,11 +34,11 @@ public class Sensor {
 
   private List<Coordinate> coordinates;
 
-  public Sensor(SensorDto sensorDto) {
+  public Sensor(SensorDto sensorDto, String plantationId) {
     super();
     this.unit = SensorUnit.convertFromString(sensorDto.sensorUnit());
     this.type = SensorType.convertFromString(sensorDto.sensorType());
-    this.plantationId = sensorDto.plantationId();
+    this.plantationId = plantationId;
     this.thresholdMinAlert = 0.0;
     this.thresholdMaxAlert = 0.0;
     this.coordinates = new ArrayList<>();
