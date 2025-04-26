@@ -19,6 +19,7 @@ public class SensorRouter {
   public RouterFunction<ServerResponse> sensorRoutes() {
     return RouterFunctions.route()
       .GET("", handler::getAllSensorsByPlantation) // Route: POST /api/plantations/{plantation_id}/sensors
+      .POST("", handler::createSensor) // Route: POST /api/plantations/{plantation_id}/sensors
       .build();
   }
 }

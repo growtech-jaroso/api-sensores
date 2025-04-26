@@ -14,8 +14,5 @@ public record SensorDto(
   @JsonProperty("sensor_unit")
   @NotBlank(message = "Sensor unit is required")
   @IsSensorUnit
-  String sensorUnit,
-  @JsonProperty("plantation_id")
-  @NotBlank(message = "Plantation ID is required")
-  String plantationId
+  String sensorUnit
 ) {}

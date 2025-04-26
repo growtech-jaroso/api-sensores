@@ -1,11 +1,15 @@
 package com.proyecto.apisensores.handlers;
 
+import com.proyecto.apisensores.dtos.requests.SensorDto;
 import com.proyecto.apisensores.entities.User;
+import com.proyecto.apisensores.enums.UserRole;
 import com.proyecto.apisensores.responses.Response;
+import com.proyecto.apisensores.responses.success.DataResponse;
 import com.proyecto.apisensores.responses.success.paginated.PaginatedResponse;
 import com.proyecto.apisensores.services.sensors.SensorService;
 import com.proyecto.apisensores.utils.AuthUtil;
 import com.proyecto.apisensores.utils.ParamsUtil;
+import com.proyecto.apisensores.validators.ObjectValidator;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -17,9 +21,11 @@ import reactor.core.publisher.Mono;
 public class SensorHandler {
 
   private final SensorService sensorService;
+  private final ObjectValidator objectValidator;
 
-  public SensorHandler(SensorService sensorService) {
+  public SensorHandler(SensorService sensorService, ObjectValidator objectValidator) {
     this.sensorService = sensorService;
+    this.objectValidator = objectValidator;
   }
 
   public Mono<ServerResponse> getAllSensorsByPlantation(ServerRequest request) {
@@ -50,10 +56,19 @@ public class SensorHandler {
       });
   }
 
-  Mono<ServerResponse> createSensor(ServerRequest request) {
-    // Retrieve the user from the request
-    Mono<User> authUser = AuthUtil.getAuthUser();
+  public Mono<ServerResponse> createSensor(ServerRequest request) {
+    Mono<SensorDto> sensorDto = AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+      // Validate the request body
+      .then(request.bodyToMono(SensorDto.class).doOnNext(objectValidator::validate));
 
-    return Response.builder(HttpStatus.CREATED).build();
+    String plantationId = request.pathVariable("plantation_id");
+
+    // Create a new sensor and return in response
+    return sensorDto
+      .flatMap(sensorInfo -> this.sensorService.createSensor(sensorInfo, plantationId))
+      .flatMap(sensor -> Response
+        .builder(HttpStatus.CREATED)
+        .bodyValue(new DataResponse<>(HttpStatus.CREATED, sensor))
+      );
   }
 }

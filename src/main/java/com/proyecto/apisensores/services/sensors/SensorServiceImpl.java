@@ -1,5 +1,6 @@
 package com.proyecto.apisensores.services.sensors;
 
+import com.proyecto.apisensores.dtos.requests.SensorDto;
 import com.proyecto.apisensores.entities.Plantation;
 import com.proyecto.apisensores.entities.Sensor;
 import com.proyecto.apisensores.entities.User;
@@ -43,6 +44,21 @@ public class SensorServiceImpl implements SensorService {
           this.sensorRepository.getAllByPlantationId(plantationId, pageRequest).collectList(),
           this.sensorRepository.countAllByPlantationId(plantationId)
         );
+      });
+  }
+
+  @Override
+  public Mono<Sensor> createSensor(SensorDto sensorDto, String plantationId) {
+    // Check if plantation exists
+    return this.plantationRepository.existsPlantationById(sensorDto.plantationId())
+      .flatMap(exists -> {
+        if (!exists) {
+          return Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation not found"));
+        }
+        // Create a new sensor object
+        Sensor sensor = new Sensor(sensorDto);
+        // Save the sensor
+        return this.sensorRepository.save(sensor);
       });
   }
 }
