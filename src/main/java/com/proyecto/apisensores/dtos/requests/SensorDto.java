@@ -3,7 +3,6 @@ package com.proyecto.apisensores.dtos.requests;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proyecto.apisensores.annotations.IsSensorType;
 import com.proyecto.apisensores.annotations.IsSensorUnit;
-import com.proyecto.apisensores.enums.SensorUnit;
 import jakarta.validation.constraints.NotBlank;
 
 public record SensorDto(

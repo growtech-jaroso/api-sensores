@@ -6,11 +6,12 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 public class SensorUnitValidator implements ConstraintValidator<IsSensorUnit, String> {
-  private String propertyName;
+
+  private String message;
 
   @Override
   public void initialize(final IsSensorUnit constraintAnnotation) {
-    this.propertyName = constraintAnnotation.fieldName();
+    this.message = constraintAnnotation.message();
   }
 
   @Override
@@ -22,9 +23,8 @@ public class SensorUnitValidator implements ConstraintValidator<IsSensorUnit, St
     // If the value is not a valid SensorType, return false and add a violation
     if (SensorUnit.convertFromString(value) == null) {
       context.buildConstraintViolationWithTemplate(
-        " Valid sensor units are: " + SensorUnit.getAllSensorUnits()
+        message + ", valid sensor units are: " + SensorUnit.getAllSensorUnits()
         )
-        .addPropertyNode(this.propertyName)
         .addConstraintViolation()
         .disableDefaultConstraintViolation();
       return false;

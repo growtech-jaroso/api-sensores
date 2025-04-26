@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = SensorTypeValidator.class)
 public @interface IsSensorType {
-  String fieldName() default "sensor_type"; // Field name
-  // Get the field name
+  String message() default "Invalid sensor type"; // Error message
+  Class<?>[] groups() default {};
   Class<? extends Payload>[] payload() default {};
 }
