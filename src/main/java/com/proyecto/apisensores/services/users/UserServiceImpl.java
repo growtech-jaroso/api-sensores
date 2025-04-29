@@ -2,11 +2,15 @@ package com.proyecto.apisensores.services.users;
 
 import com.proyecto.apisensores.dtos.requests.UserRegisterDto;
 import com.proyecto.apisensores.entities.User;
+import com.proyecto.apisensores.enums.UserRole;
 import com.proyecto.apisensores.repositories.UserRepository;
 import com.proyecto.apisensores.utils.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements  UserService {
@@ -38,6 +42,11 @@ public class UserServiceImpl implements  UserService {
     user.setPassword(passwordEncoder.encode(userRegisterDTO.password()));
 
     return userRepository.save(user);
+  }
+
+  @Override
+  public Flux<String> getAllUserEmails() {
+    return userRepository.findAllByRolesNotContains(List.of(UserRole.ADMIN, UserRole.SUPPORT)).map(EmailProjection::getEmail);
   }
 
   @Override

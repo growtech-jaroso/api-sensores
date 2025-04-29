@@ -27,12 +27,14 @@ public class AppRouter implements WebFluxConfigurer {
   @Bean
   public RouterFunction<ServerResponse> routes(
     PlantationRouter plantationRouter,
-    AuthRouter authRouter
+    AuthRouter authRouter,
+    UserRouter userRouter
   ) {
     return RouterFunctions.route()
       // Base API prefix
       .path("/api", builder -> builder
         .path("/plantations", plantationRouter::plantationRoutes) // Routes for plantations
+        .path("/users", userRouter::userRoutes) // Routes for users information
         .path("/auth", authRouter::authRoutes) // Routes for auth
       )
       .build();
