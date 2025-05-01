@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 jobs:
-  build-nodered:
+  build-sensors-api-image:
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
