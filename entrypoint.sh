@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Lista de variables obligatorias
+# Required environment variables
 REQUIRED_VARS=(
 "MONGO_USERNAME"
 "MONGO_PASSWORD"
@@ -14,7 +14,7 @@ REQUIRED_VARS=(
 "ALLOWED_ORIGINS"
 )
 
-# Verificar que todas las variables obligatorias estén definidas
+# Check if required environment variables are set
 for env_var in "${REQUIRED_VARS[@]}"; do
   if [ -z "${!env_var}" ]; then
     echo "❌ The environment variable $env_var is required but is not set."
@@ -24,5 +24,5 @@ done
 
 echo "✅ All ok, app is ready to run"
 
-# Ejecuta el comando original (Java en este caso)
+# Exec the command passed to the entrypoint
 exec "$@"

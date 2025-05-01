@@ -12,7 +12,7 @@ RUN chmod +x ./gradlew
 RUN ./gradlew build
 
 # Final stage of the spring boot app
-FROM openjdk:21-jdk-slim AS runner
+FROM openjdk:21-jdk-slim AS production
 
 LABEL authors="growtech"
 
