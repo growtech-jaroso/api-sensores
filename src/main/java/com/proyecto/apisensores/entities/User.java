@@ -30,13 +30,14 @@ public class User extends Model implements UserDetails {
   private String email;
 
   @Indexed
-  private final List<UserRole> roles = List.of(UserRole.USER);
+  private List<UserRole> roles;
 
   public User(UserRegisterDto dto) {
     super();
     this.username = dto.username();
     this.password = dto.password();
     this.email = dto.email();
+    this.roles = List.of(UserRole.USER);
   }
 
   @Override
