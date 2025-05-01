@@ -1,15 +1,18 @@
 # Builder stage of the spring boot app
-FROM openjdk:23-jdk-slim AS builder
+FROM openjdk:21-jdk-slim AS builder
 
 WORKDIR /app
 
 COPY . .
 
+# Give permissions to the gradlew script
+RUN chmod +x ./gradlew
+
 # Create the jar file
 RUN ./gradlew build
 
 # Final stage of the spring boot app
-FROM openjdk:23-jdk-slim AS production
+FROM openjdk:21-jdk-slim AS runner
 
 LABEL authors="growtech"
 

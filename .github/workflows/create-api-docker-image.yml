@@ -37,10 +37,10 @@ jobs:
           IMAGE_NAME: ${{ secrets.DOCKER_REGISTRY }}/sensors-api
         run: |
           docker buildx build --push \
-            --target production \
+            --target runner \
             --tag ${{env.IMAGE_NAME}}:${{env.NEW_VERSION}} \
             --platform linux/amd64,linux/arm64 .
           docker buildx build --push \
-            --target production \
+            --target runner \
             --tag ${{env.IMAGE_NAME}}:latest \
             --platform linux/amd64,linux/arm64 .
