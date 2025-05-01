@@ -30,7 +30,7 @@ public class User extends Model implements UserDetails {
   private String email;
 
   @Indexed
-  private List<UserRole> roles = List.of(UserRole.USER);
+  private final List<UserRole> roles = List.of(UserRole.USER);
 
   public User(UserRegisterDto dto) {
     super();
