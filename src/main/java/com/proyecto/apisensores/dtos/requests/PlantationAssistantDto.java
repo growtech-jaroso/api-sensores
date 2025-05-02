@@ -5,9 +5,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public record PlantationAssistantDto(
-  @NotBlank(message = "Assistant email is required")
-  @Email(message = "Assistant email must be valid")
-  @JsonProperty("assistant_email")
-  String assistantEmail
+  @NotBlank(message = "Manager email is required")
+  @Email(message = "Manager email must be valid")
+  @JsonProperty("manager_email")
+  String managerEmail
 ) {
 }

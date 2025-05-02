@@ -34,7 +34,7 @@ public class Plantation extends Model  {
   private String ownerId; // ID of the user who owns the plantation
 
   @Indexed
-  private List<String> users; // List of users IDs associated with the plantation
+  private List<String> managers; // List of users IDs who are managers of the plantation
 
   private List<Coordinate> coordinates; // List of coordinates associated with the plantation
 
@@ -50,6 +50,31 @@ public class Plantation extends Model  {
     this.city = plantationDto.city();
     this.type = plantationDto.type();
     this.ownerId = user.getId();
-    this.users = List.of(user.getId());
+    this.managers = List.of(user.getId());
+  }
+
+  /**
+   * Check if the plantation is managed by a specific user
+   * @param userId String ID of the user to check
+   * @return Boolean true if the user is a manager of the plantation, false otherwise
+   */
+  public Boolean isManagedByUser(String userId) {
+    return this.managers.contains(userId);
+  }
+
+  /**
+   * Add a new assistant to the plantation
+   * @param managerId String ID of the user to be added as an assistant
+   */
+  public void addNewManager(String managerId) {
+    this.managers.add(managerId);
+  }
+
+  /**
+   * Remove an assistant from the plantation
+   * @param managerId String ID of the user to be removed as an assistant
+   */
+  public void removeManager(String managerId) {
+    this.managers.remove(managerId);
   }
 }

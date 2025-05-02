@@ -7,6 +7,7 @@ import com.proyecto.apisensores.entities.User;
 import com.proyecto.apisensores.enums.UserRole;
 import com.proyecto.apisensores.responses.Response;
 import com.proyecto.apisensores.responses.success.DataResponse;
+import com.proyecto.apisensores.responses.success.SuccessResponse;
 import com.proyecto.apisensores.responses.success.paginated.PaginatedResponse;
 import com.proyecto.apisensores.services.plantations.PlantationService;
 import com.proyecto.apisensores.utils.AuthUtil;
@@ -73,11 +74,22 @@ public class PlantationHandler {
   }
 
   public Mono<ServerResponse> addPlantationsAssistants(ServerRequest request) {
+    // Get the plantation id from the request path
+    String plantationId = request.pathVariable("plantation_id");
+
     // Create the plantation assistant dto from the request body
     Mono<PlantationAssistantDto> plantationAssistantDto = request.bodyToMono(PlantationAssistantDto.class)
       .doOnNext(objectValidator::validate);
 
-    // Retrieve the user from the request
-
+    return plantationAssistantDto
+      // Get the authenticated user
+      .flatMap(plantationAssistant -> AuthUtil.getAuthUser()
+        // Add the plantation assistant to the plantation
+        .flatMap(user -> this.plantationService.addPlantationAssistant(user, plantationId, plantationAssistant))
+        // Return the response with the success message
+        .flatMap(message -> Response
+          .builder(HttpStatus.OK)
+          .bodyValue(new SuccessResponse(HttpStatus.OK, message))
+        ));
   }
 }

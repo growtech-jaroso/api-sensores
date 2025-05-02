@@ -24,6 +24,7 @@ public class PlantationRouter {
       .path("/{plantation_id}/sensors", this.sensorRouter::sensorRoutes) // Sensors routes
       .GET("", this.handler::getAllPlantationsByUser) // Route: GET /api/plantations
       .POST("" , this.handler::createPlantation) // Route: POST /api/plantations
+      .POST("/{plantation_id}/assistants", this.handler::addPlantationsAssistants) // Route: POST /api/plantations/{plantation_id}/assistants
       .build();
   }
 }

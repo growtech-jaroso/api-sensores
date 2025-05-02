@@ -29,13 +29,13 @@ public class SensorServiceImpl implements SensorService {
   @Override
   public Mono<Tuple2<List<Sensor>, Long>> getSensorsByPlantationPaginated(User user, String plantationId, PageRequest pageRequest) {
     // Check if plantation exists
-    Mono<Plantation> plantation = this.plantationRepository.findById(plantationId)
+    Mono<Plantation> plantation = this.plantationRepository.findPlantationsById(plantationId)
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation not found")));
 
     return plantation
       .flatMap(pl -> {
         // Check if the user is associated with the plantation
-        if (!pl.getUsers().contains(user.getId()) && !user.canViewAnything()) {
+        if (!pl.getOwnerId().contains(user.getId()) && !user.canViewAnything()) {
           return Mono.error(new CustomException(HttpStatus.FORBIDDEN, "Forbidden"));
         }
 

@@ -91,4 +91,8 @@ public class User extends Model implements UserDetails {
   public Boolean canViewAnything() {
     return this.roles.contains(UserRole.SUPPORT) || this.roles.contains(UserRole.ADMIN);
   }
+
+  public Boolean isAdmin() {
+    return this.roles.contains(UserRole.ADMIN);
+  }
 }

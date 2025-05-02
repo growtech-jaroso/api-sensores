@@ -1,5 +1,6 @@
 package com.proyecto.apisensores.services.plantations;
 
+import com.proyecto.apisensores.dtos.requests.PlantationAssistantDto;
 import com.proyecto.apisensores.dtos.requests.PlantationDto;
 import com.proyecto.apisensores.entities.Plantation;
 import com.proyecto.apisensores.entities.User;
@@ -34,7 +35,7 @@ public class PlantationServiceImpl implements PlantationService {
         this.plantationRepository.count()
       )
       : Mono.zip(
-        this.plantationRepository.findAllByUsersContaining(user.getId(), pageRequest).collectList(),
+        this.plantationRepository.findAllByManagersContaining(user.getId(), pageRequest).collectList(),
         this.getTotalPlantationsByUser(user)
       );
   }
@@ -42,7 +43,7 @@ public class PlantationServiceImpl implements PlantationService {
   private Mono<Long> getTotalPlantationsByUser(User user) {
     return user.canViewAnything()
       ? this.plantationRepository.count()
-      : this.plantationRepository.countAllByUsersContaining(user.getId());
+      : this.plantationRepository.countAllByManagersContaining(user.getId());
   }
 
   @Override
@@ -63,5 +64,31 @@ public class PlantationServiceImpl implements PlantationService {
         // If not exists, save the plantation
         return plantation.flatMap(this.plantationRepository::save);
       });
+  }
+
+  @Override
+  public Mono<String> addPlantationAssistant(User authUser, String plantationId, PlantationAssistantDto plantationAssistantDto) {
+    // Get the plantation by id if not exists, throw bad request exception
+    Mono<Plantation> plantation = this.plantationRepository.findPlantationsById(plantationId)
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Plantation not exists")));
+
+    return plantation.flatMap(pl -> {
+      // Check if the user email exists and is user only, if not exists, throw bad request exception
+      Mono<User> newManagerUser = this.userRepository.findByEmailAndRolesNotContains(plantationAssistantDto.managerEmail(), List.of(UserRole.ADMIN, UserRole.SUPPORT))
+        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "User email not exists")));
+
+      return newManagerUser.flatMap(user -> {
+        // Check if the user is the owner of the plantation or has admin role
+        if (!pl.getOwnerId().equals(authUser.getId()) && !authUser.isAdmin()) {
+          return Mono.error(new CustomException(HttpStatus.FORBIDDEN, "Forbidden"));
+        }
+        // Add the user to the plantation and save the plantation
+        pl.addNewManager(user.getId());
+
+        // Save the plantation with the new manager
+        return this.plantationRepository.save(pl)
+          .flatMap(savedPlantation -> Mono.just("Manager added successfully"));
+      });
+    });
   }
 }
