@@ -15,4 +15,5 @@ public interface PlantationRepository extends ReactiveMongoRepository<Plantation
   Mono<Long> countAllByManagersContainingAndIsDeletedIsFalse(String userId);
   Mono<Plantation> findPlantationsByIdAndIsDeletedIsFalse(String plantationId);
   Mono<Boolean> existsPlantationByIdAndIsDeletedIsFalse(String plantationId);
+  Mono<Long> countAllByIsDeletedIsFalse();
 }

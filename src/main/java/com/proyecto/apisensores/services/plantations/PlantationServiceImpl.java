@@ -32,7 +32,7 @@ public class PlantationServiceImpl implements PlantationService {
     return user.canViewAnything()
       ? Mono.zip(
         this.plantationRepository.findAllByIsDeletedIsFalse(pageRequest).collectList(),
-        this.plantationRepository.count()
+        this.getTotalPlantationsByUser(user)
       )
       : Mono.zip(
         this.plantationRepository.findAllByManagersContainingAndIsDeletedIsFalse(user.getId(), pageRequest).collectList(),
@@ -42,7 +42,7 @@ public class PlantationServiceImpl implements PlantationService {
 
   private Mono<Long> getTotalPlantationsByUser(User user) {
     return user.canViewAnything()
-      ? this.plantationRepository.count()
+      ? this.plantationRepository.countAllByIsDeletedIsFalse()
       : this.plantationRepository.countAllByManagersContainingAndIsDeletedIsFalse(user.getId());
   }
 
