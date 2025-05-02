@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Document(collection = "users")
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Builder
@@ -31,6 +29,25 @@ public class User extends Model implements UserDetails {
 
   @Indexed
   private List<UserRole> roles;
+
+  public User() {
+    super();
+    this.roles = List.of(UserRole.USER);
+  }
+
+  public User(String username, String password, String email, List<UserRole> roles) {
+    this.username = username;
+    this.password = password;
+    this.email = email;
+    this.roles = roles;
+  }
+
+  public User(String username, String password, String email) {
+    this.username = username;
+    this.password = password;
+    this.email = email;
+    this.roles = List.of(UserRole.USER);
+  }
 
   public User(UserRegisterDto dto) {
     super();
