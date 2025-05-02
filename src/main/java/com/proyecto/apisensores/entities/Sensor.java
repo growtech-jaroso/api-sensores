@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class Sensor {
+public class Sensor extends Model {
   private SensorType type;
 
   private SensorUnit unit;

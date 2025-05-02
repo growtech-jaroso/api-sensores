@@ -29,7 +29,7 @@ public class SensorServiceImpl implements SensorService {
   @Override
   public Mono<Tuple2<List<Sensor>, Long>> getSensorsByPlantationPaginated(User user, String plantationId, PageRequest pageRequest) {
     // Check if plantation exists
-    Mono<Plantation> plantation = this.plantationRepository.findPlantationsById(plantationId)
+    Mono<Plantation> plantation = this.plantationRepository.findPlantationsByIdAndIsDeletedIsFalse(plantationId)
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation not found")));
 
     return plantation
@@ -41,8 +41,8 @@ public class SensorServiceImpl implements SensorService {
 
         // Get the sensors by plantation id
         return Mono.zip(
-          this.sensorRepository.getAllByPlantationId(plantationId, pageRequest).collectList(),
-          this.sensorRepository.countAllByPlantationId(plantationId)
+          this.sensorRepository.getAllByPlantationIdAndIsDeletedIsFalse(plantationId, pageRequest).collectList(),
+          this.sensorRepository.countAllByPlantationIdAndIsDeletedIsFalse(plantationId)
         );
       });
   }
@@ -50,7 +50,7 @@ public class SensorServiceImpl implements SensorService {
   @Override
   public Mono<Sensor> createSensor(SensorDto sensorDto, String plantationId) {
     // Check if plantation exists
-    return this.plantationRepository.existsPlantationById(plantationId)
+    return this.plantationRepository.existsPlantationByIdAndIsDeletedIsFalse(plantationId)
       .flatMap(exists -> {
         if (!exists) {
           return Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation not found"));

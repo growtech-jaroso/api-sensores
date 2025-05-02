@@ -7,6 +7,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface SensorRepository extends ReactiveMongoRepository<Sensor, String> {
-  Flux<Sensor> getAllByPlantationId(String plantationId, PageRequest pageRequest);
-  Mono<Long> countAllByPlantationId(String plantationId);
+  Flux<Sensor> getAllByPlantationIdAndIsDeletedIsFalse(String plantationId, PageRequest pageRequest);
+  Mono<Long> countAllByPlantationIdAndIsDeletedIsFalse(String plantationId);
 }

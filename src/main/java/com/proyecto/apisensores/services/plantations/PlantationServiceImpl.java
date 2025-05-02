@@ -31,11 +31,11 @@ public class PlantationServiceImpl implements PlantationService {
     // Check if the user is associated with the plantation, doing with zip is more efficient because will be asynchronous
     return user.canViewAnything()
       ? Mono.zip(
-        this.plantationRepository.findAllBy(pageRequest).collectList(),
+        this.plantationRepository.findAllByIsDeletedIsFalse(pageRequest).collectList(),
         this.plantationRepository.count()
       )
       : Mono.zip(
-        this.plantationRepository.findAllByManagersContaining(user.getId(), pageRequest).collectList(),
+        this.plantationRepository.findAllByManagersContainingAndIsDeletedIsFalse(user.getId(), pageRequest).collectList(),
         this.getTotalPlantationsByUser(user)
       );
   }
@@ -43,7 +43,7 @@ public class PlantationServiceImpl implements PlantationService {
   private Mono<Long> getTotalPlantationsByUser(User user) {
     return user.canViewAnything()
       ? this.plantationRepository.count()
-      : this.plantationRepository.countAllByManagersContaining(user.getId());
+      : this.plantationRepository.countAllByManagersContainingAndIsDeletedIsFalse(user.getId());
   }
 
   @Override
@@ -57,7 +57,7 @@ public class PlantationServiceImpl implements PlantationService {
     Mono<Plantation> plantation = user.map(u -> new Plantation(plantationDto, u));
 
     // Check if the plantation name already exists
-    return this.plantationRepository.existsPlantationByName(plantationDto.name())
+    return this.plantationRepository.existsPlantationByNameAndIsDeletedIsFalse(plantationDto.name())
       .flatMap(exists -> {
         // If exists, throw bad request exception
         if (exists) return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Plantation name already exists"));
@@ -69,7 +69,7 @@ public class PlantationServiceImpl implements PlantationService {
   @Override
   public Mono<String> addPlantationAssistant(User authUser, String plantationId, PlantationAssistantDto plantationAssistantDto) {
     // Get the plantation by id if not exists, throw bad request exception
-    Mono<Plantation> plantation = this.plantationRepository.findPlantationsById(plantationId)
+    Mono<Plantation> plantation = this.plantationRepository.findPlantationsByIdAndIsDeletedIsFalse(plantationId)
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Plantation not exists")));
 
     return plantation.flatMap(pl -> {

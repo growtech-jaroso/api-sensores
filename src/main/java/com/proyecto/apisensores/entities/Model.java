@@ -1,5 +1,6 @@
 package com.proyecto.apisensores.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,9 +22,10 @@ public abstract class Model {
   @JsonProperty("created_at")
   protected LocalDateTime createdAt;
 
-  @Field("deleted_at")
-  @JsonProperty("deleted_at")
-  protected LocalDateTime deletedAt;
+  @Field("is_deleted")
+  @JsonProperty("is_deleted")
+  @JsonIgnore
+  protected Boolean isDeleted;
 
   @Field("updated_at")
   @LastModifiedDate
@@ -33,6 +35,6 @@ public abstract class Model {
   public Model() {
     this.createdAt = LocalDateTime.now();
     this.updatedAt = LocalDateTime.now();
-    this.deletedAt = null;
+    this.isDeleted = false;
   }
 }
