@@ -6,6 +6,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import  lombok.*;
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import java.util.List;
 
 @Document("plantations")
@@ -27,6 +29,7 @@ public class Plantation extends Model  {
 
   private String type;
 
+  @Field(name = "owner_id")
   @JsonProperty("owner_id")
   private String ownerId; // ID of the user who owns the plantation
 
@@ -34,6 +37,10 @@ public class Plantation extends Model  {
   private List<String> users; // List of users IDs associated with the plantation
 
   private List<Coordinate> coordinates; // List of coordinates associated with the plantation
+
+  @Field(name = "map_url")
+  @JsonProperty("map_url")
+  private String mapUrl; // URL of the map associated with the plantation
 
   public Plantation(PlantationDto plantationDto, User user) {
     super();
