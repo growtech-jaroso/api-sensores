@@ -21,6 +21,10 @@ public abstract class Model {
   @JsonProperty("created_at")
   protected LocalDateTime createdAt;
 
+  @Field("deleted_at")
+  @JsonProperty("deleted_at")
+  protected LocalDateTime deletedAt;
+
   @Field("updated_at")
   @LastModifiedDate
   @JsonProperty("updated_at")
@@ -29,5 +33,6 @@ public abstract class Model {
   public Model() {
     this.createdAt = LocalDateTime.now();
     this.updatedAt = LocalDateTime.now();
+    this.deletedAt = null;
   }
 }
