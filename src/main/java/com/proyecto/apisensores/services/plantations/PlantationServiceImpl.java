@@ -91,4 +91,30 @@ public class PlantationServiceImpl implements PlantationService {
       });
     });
   }
+
+  @Override
+  public Mono<String> deletePlantationManager(User authUser, String plantationId, PlantationManagerDto plantationManagerDto) {
+    // Get the plantation by id if not exists, throw bad request exception
+    Mono<Plantation> plantation = this.plantationRepository.findPlantationsByIdAndIsDeletedIsFalse(plantationId)
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Plantation not exists")));
+
+    return plantation.flatMap(pl -> {
+      // Check if the user email exists and is user only, if not exists, throw bad request exception
+      Mono<User> newManagerUser = this.userRepository.findByEmailAndRolesNotContains(plantationManagerDto.managerEmail(), List.of(UserRole.ADMIN, UserRole.SUPPORT))
+        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "User email not exists")));
+
+      return newManagerUser.flatMap(user -> {
+        // Check if the user is the owner of the plantation or has admin role
+        if (!pl.getOwnerId().equals(authUser.getId()) && !authUser.isAdmin()) {
+          return Mono.error(new CustomException(HttpStatus.FORBIDDEN, "Forbidden"));
+        }
+        // Remove the manager from the plantation
+        pl.removeManager(user.getId());
+
+        // Save the plantation with the new manager
+        return this.plantationRepository.save(pl)
+          .flatMap(savedPlantation -> Mono.just("Manager deleted successfully"));
+      });
+    });
+  }
 }

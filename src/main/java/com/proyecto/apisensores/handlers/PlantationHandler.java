@@ -70,7 +70,7 @@ public class PlantationHandler {
       });
   }
 
-  public Mono<ServerResponse> addPlantationsManagers(ServerRequest request) {
+  public Mono<ServerResponse> addPlantationManager(ServerRequest request) {
     // Get the plantation id from the request path
     String plantationId = request.pathVariable("plantation_id");
 
@@ -83,6 +83,26 @@ public class PlantationHandler {
       .flatMap(plantationManager -> AuthUtil.getAuthUser()
         // Add the plantation assistant to the plantation
         .flatMap(user -> this.plantationService.addPlantationManager(user, plantationId, plantationManager))
+        // Return the response with the success message
+        .flatMap(message -> Response
+          .builder(HttpStatus.OK)
+          .bodyValue(new SuccessResponse(HttpStatus.OK, message))
+        ));
+  }
+
+  public Mono<ServerResponse> deletePlantationManager(ServerRequest request) {
+    // Get the plantation id from the request path
+    String plantationId = request.pathVariable("plantation_id");
+
+    // Create the plantation assistant dto from the request body
+    Mono<PlantationManagerDto> plantationManagerDto = request.bodyToMono(PlantationManagerDto.class)
+      .doOnNext(objectValidator::validate);
+
+    return plantationManagerDto
+      // Get the authenticated user
+      .flatMap(plantationManager -> AuthUtil.getAuthUser()
+        // Add the plantation assistant to the plantation
+        .flatMap(user -> this.plantationService.deletePlantationManager(user, plantationId, plantationManager))
         // Return the response with the success message
         .flatMap(message -> Response
           .builder(HttpStatus.OK)
