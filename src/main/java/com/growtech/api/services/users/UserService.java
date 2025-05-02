@@ -1,10 +1,16 @@
 package com.growtech.api.services.users;
 
+import com.growtech.api.dtos.UserInfo;
 import com.growtech.api.dtos.requests.UserRegisterDto;
+import com.growtech.api.entities.Plantation;
 import com.growtech.api.entities.User;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
+
+import java.util.List;
 
 @Service
 public interface UserService {
@@ -12,5 +18,6 @@ public interface UserService {
   Mono<User> findByUsername(String username);
   Boolean passwordMatches(String rawPassword, String encodedPassword);
   Mono<User> create(UserRegisterDto userRegisterDTO);
+  Mono<Tuple2<List<UserInfo>, Long>> getAllUsersPaginated(PageRequest pageRequest);
   Flux<String> getAllUserEmails();
 }

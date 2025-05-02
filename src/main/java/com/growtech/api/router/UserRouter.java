@@ -18,6 +18,7 @@ public class UserRouter {
   @Bean
   public RouterFunction<ServerResponse> userRoutes() {
     return RouterFunctions.route()
+      .GET("", handler::getAllUsers) // Route: GET /api/users
       .GET("/emails", handler::getAllUserEmails) // Route: GET /api/users/emails
       .build();
   }

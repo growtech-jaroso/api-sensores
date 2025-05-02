@@ -1,14 +1,17 @@
 package com.growtech.api.services.users;
 
+import com.growtech.api.dtos.UserInfo;
 import com.growtech.api.dtos.requests.UserRegisterDto;
 import com.growtech.api.entities.User;
 import com.growtech.api.enums.UserRole;
 import com.growtech.api.repositories.UserRepository;
 import com.growtech.api.utils.JwtUtil;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 import java.util.List;
 
@@ -42,6 +45,21 @@ public class UserServiceImpl implements  UserService {
     user.setPassword(passwordEncoder.encode(userRegisterDTO.password()));
 
     return userRepository.save(user);
+  }
+
+  @Override
+  public Mono<Tuple2<List<UserInfo>, Long>> getAllUsersPaginated(PageRequest pageRequest) {
+    return Mono.zip(
+      // Fetch all users with pagination
+      this.userRepository.findAllBy(pageRequest)
+        .collectList()
+        // Map the users to UserInfo DTOs
+        .map(users -> users.stream()
+          .map(User::getUserInfoDto)
+          .toList()
+        ),
+      this.userRepository.count()
+    );
   }
 
   @Override

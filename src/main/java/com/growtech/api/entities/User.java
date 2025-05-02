@@ -1,5 +1,6 @@
 package com.growtech.api.entities;
 
+import com.growtech.api.dtos.UserInfo;
 import com.growtech.api.dtos.requests.UserRegisterDto;
 import com.growtech.api.enums.UserRole;
 import lombok.*;
@@ -94,5 +95,18 @@ public class User extends Model implements UserDetails {
 
   public Boolean isAdmin() {
     return this.roles.contains(UserRole.ADMIN);
+  }
+
+  /**
+   * Get the user info DTO from the user
+   * @return the user info DTO
+   */
+  public UserInfo getUserInfoDto() {
+    return new UserInfo(
+      this.getId(),
+      this.username,
+      this.email,
+      this.roles
+    );
   }
 }

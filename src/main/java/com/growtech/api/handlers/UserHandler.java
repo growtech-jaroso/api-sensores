@@ -2,8 +2,11 @@ package com.growtech.api.handlers;
 
 import com.growtech.api.enums.UserRole;
 import com.growtech.api.responses.success.DataResponse;
+import com.growtech.api.responses.success.paginated.PaginatedResponse;
 import com.growtech.api.services.users.UserService;
 import com.growtech.api.utils.AuthUtil;
+import com.growtech.api.utils.ParamsUtil;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -24,5 +27,22 @@ public class UserHandler {
     return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
       .then(Mono.defer(() -> userService.getAllUserEmails().collectList()))
       .flatMap(emails -> ServerResponse.ok().bodyValue(new DataResponse<>(HttpStatus.OK, emails)));
+  }
+
+  public Mono<ServerResponse> getAllUsers(ServerRequest request) {
+    // Create a PageRequest object with default values
+    PageRequest pageRequest = ParamsUtil.getPageRequest(request);
+
+    // Check if the user has the ADMIN role and return the users paginated
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+      .then(userService.getAllUsersPaginated(pageRequest))
+      .flatMap(tuple2 -> ServerResponse
+        .ok()
+        .bodyValue(new PaginatedResponse<>(
+          HttpStatus.OK,
+          tuple2.getT2(),
+          pageRequest,
+          tuple2.getT1()
+        )));
   }
 }
