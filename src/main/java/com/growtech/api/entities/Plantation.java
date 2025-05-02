@@ -68,4 +68,14 @@ public class Plantation extends Model  {
   public void removeManager(String managerId) {
     this.managers.remove(managerId);
   }
+
+  /**
+   * Soft delete the plantation by setting the isDeleted field to true
+   * and clearing the ownerId and managers fields.
+   */
+  public void softDelete() {
+    this.isDeleted = true;
+    this.ownerId = "";
+    this.managers.clear();
+  }
 }

@@ -144,7 +144,7 @@ public class PlantationServiceImpl implements PlantationService {
         .flatMap(sensors -> this.sensorRepository.saveAll(sensors).collectList())
         // Soft delete the plantation
         .flatMap(sensors -> {
-          pl.setIsDeleted(true);
+          pl.softDelete();
           return this.plantationRepository.save(pl);
         })
         .flatMap(deletedPlantation -> Mono.just("Plantation and his sensors deleted successfully"))
