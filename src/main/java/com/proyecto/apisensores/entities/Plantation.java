@@ -54,15 +54,6 @@ public class Plantation extends Model  {
   }
 
   /**
-   * Check if the plantation is managed by a specific user
-   * @param userId String ID of the user to check
-   * @return Boolean true if the user is a manager of the plantation, false otherwise
-   */
-  public Boolean isManagedByUser(String userId) {
-    return this.managers.contains(userId);
-  }
-
-  /**
    * Add a new assistant to the plantation
    * @param managerId String ID of the user to be added as an assistant
    */
