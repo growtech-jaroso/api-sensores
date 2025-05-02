@@ -11,7 +11,7 @@ app:
 
 spring:
   application:
-    name: api-sensores
+    name: growtech-api
 
   data:
     mongodb:

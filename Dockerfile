@@ -21,7 +21,7 @@ ARG APP_PORT=8080
 WORKDIR /app
 
 # Copy the built jar file from the builder stage
-COPY --from=builder /app/build/libs/api-sensores-0.0.1-SNAPSHOT.jar ./api-sensores.jar
+COPY --from=builder /app/build/libs/growtech-api-0.0.1-SNAPSHOT.jar ./api-sensores.jar
 
 # Copy the entrypoint script and give it execution rights
 COPY entrypoint.sh /entrypoint.sh
