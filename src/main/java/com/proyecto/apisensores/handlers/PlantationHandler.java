@@ -1,5 +1,6 @@
 package com.proyecto.apisensores.handlers;
 
+import com.proyecto.apisensores.dtos.requests.PlantationAssistantDto;
 import com.proyecto.apisensores.dtos.requests.PlantationDto;
 import com.proyecto.apisensores.entities.Plantation;
 import com.proyecto.apisensores.entities.User;
@@ -17,6 +18,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import com.proyecto.apisensores.utils.ParamsUtil;
+
+import java.util.List;
 
 @Component
 public class PlantationHandler {
@@ -67,5 +70,14 @@ public class PlantationHandler {
               tuple.getT1()
             )));
       });
+  }
+
+  public Mono<ServerResponse> addPlantationsAssistants(ServerRequest request) {
+    // Create the plantation assistant dto from the request body
+    Mono<PlantationAssistantDto> plantationAssistantDto = request.bodyToMono(PlantationAssistantDto.class)
+      .doOnNext(objectValidator::validate);
+
+    // Retrieve the user from the request
+
   }
 }
