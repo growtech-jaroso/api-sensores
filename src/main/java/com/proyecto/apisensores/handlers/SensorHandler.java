@@ -61,6 +61,7 @@ public class SensorHandler {
       // Validate the request body
       .then(request.bodyToMono(SensorDto.class).doOnNext(objectValidator::validate));
 
+    // Get the plantation id from the request
     String plantationId = request.pathVariable("plantation_id");
 
     // Create a new sensor and return in response
