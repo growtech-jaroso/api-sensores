@@ -1,6 +1,6 @@
 package com.proyecto.apisensores.services.plantations;
 
-import com.proyecto.apisensores.dtos.requests.PlantationAssistantDto;
+import com.proyecto.apisensores.dtos.requests.PlantationManagerDto;
 import com.proyecto.apisensores.dtos.requests.PlantationDto;
 import com.proyecto.apisensores.entities.Plantation;
 import com.proyecto.apisensores.entities.User;
@@ -67,14 +67,14 @@ public class PlantationServiceImpl implements PlantationService {
   }
 
   @Override
-  public Mono<String> addPlantationAssistant(User authUser, String plantationId, PlantationAssistantDto plantationAssistantDto) {
+  public Mono<String> addPlantationManager(User authUser, String plantationId, PlantationManagerDto plantationManagerDto) {
     // Get the plantation by id if not exists, throw bad request exception
     Mono<Plantation> plantation = this.plantationRepository.findPlantationsByIdAndIsDeletedIsFalse(plantationId)
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Plantation not exists")));
 
     return plantation.flatMap(pl -> {
       // Check if the user email exists and is user only, if not exists, throw bad request exception
-      Mono<User> newManagerUser = this.userRepository.findByEmailAndRolesNotContains(plantationAssistantDto.managerEmail(), List.of(UserRole.ADMIN, UserRole.SUPPORT))
+      Mono<User> newManagerUser = this.userRepository.findByEmailAndRolesNotContains(plantationManagerDto.managerEmail(), List.of(UserRole.ADMIN, UserRole.SUPPORT))
         .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "User email not exists")));
 
       return newManagerUser.flatMap(user -> {

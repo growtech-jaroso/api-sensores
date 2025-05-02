@@ -1,8 +1,7 @@
 package com.proyecto.apisensores.handlers;
 
-import com.proyecto.apisensores.dtos.requests.PlantationAssistantDto;
+import com.proyecto.apisensores.dtos.requests.PlantationManagerDto;
 import com.proyecto.apisensores.dtos.requests.PlantationDto;
-import com.proyecto.apisensores.entities.Plantation;
 import com.proyecto.apisensores.entities.User;
 import com.proyecto.apisensores.enums.UserRole;
 import com.proyecto.apisensores.responses.Response;
@@ -19,8 +18,6 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import com.proyecto.apisensores.utils.ParamsUtil;
-
-import java.util.List;
 
 @Component
 public class PlantationHandler {
@@ -73,19 +70,19 @@ public class PlantationHandler {
       });
   }
 
-  public Mono<ServerResponse> addPlantationsAssistants(ServerRequest request) {
+  public Mono<ServerResponse> addPlantationsManagers(ServerRequest request) {
     // Get the plantation id from the request path
     String plantationId = request.pathVariable("plantation_id");
 
     // Create the plantation assistant dto from the request body
-    Mono<PlantationAssistantDto> plantationAssistantDto = request.bodyToMono(PlantationAssistantDto.class)
+    Mono<PlantationManagerDto> plantationManagerDto = request.bodyToMono(PlantationManagerDto.class)
       .doOnNext(objectValidator::validate);
 
-    return plantationAssistantDto
+    return plantationManagerDto
       // Get the authenticated user
-      .flatMap(plantationAssistant -> AuthUtil.getAuthUser()
+      .flatMap(plantationManager -> AuthUtil.getAuthUser()
         // Add the plantation assistant to the plantation
-        .flatMap(user -> this.plantationService.addPlantationAssistant(user, plantationId, plantationAssistant))
+        .flatMap(user -> this.plantationService.addPlantationManager(user, plantationId, plantationManager))
         // Return the response with the success message
         .flatMap(message -> Response
           .builder(HttpStatus.OK)
