@@ -74,7 +74,7 @@ public class SensorServiceImpl implements SensorService {
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Sensor not found")))
       // Set the sensor as deleted
       .flatMap(sensor -> {
-        sensor.setIsDeleted(true);
+        sensor.softDelete();
         return this.sensorRepository.save(sensor);
       })
       .then(Mono.just("Sensor deleted successfully"));

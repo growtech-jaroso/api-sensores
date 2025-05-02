@@ -43,4 +43,8 @@ public class Sensor extends Model {
     this.thresholdMaxAlert = 0.0;
     this.coordinates = new ArrayList<>();
   }
+
+  public void softDelete() {
+    this.isDeleted = true;
+  }
 }

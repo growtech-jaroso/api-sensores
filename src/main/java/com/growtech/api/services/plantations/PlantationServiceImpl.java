@@ -3,6 +3,7 @@ package com.growtech.api.services.plantations;
 import com.growtech.api.dtos.requests.PlantationManagerDto;
 import com.growtech.api.dtos.requests.PlantationDto;
 import com.growtech.api.entities.Plantation;
+import com.growtech.api.entities.Sensor;
 import com.growtech.api.entities.User;
 import com.growtech.api.enums.UserRole;
 import com.growtech.api.exceptions.CustomException;
@@ -137,7 +138,7 @@ public class PlantationServiceImpl implements PlantationService {
         // Set all sensors as deleted
         .collectList().map(sensors -> sensors
           .stream()
-          .peek(sensor -> sensor.setIsDeleted(true))
+          .peek(Sensor::softDelete)
           .toList()
         )
         // Soft delete all sensors of the plantation
