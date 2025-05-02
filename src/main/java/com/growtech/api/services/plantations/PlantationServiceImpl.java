@@ -54,7 +54,7 @@ public class PlantationServiceImpl implements PlantationService {
     // Retrieve the user by email
     Mono<User> user = this.userRepository.findByEmailAndRolesNotContains(plantationDto.userEmail(), List.of(UserRole.ADMIN, UserRole.SUPPORT))
       // If user not exists, throw  bad request exception
-      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "User email not exists")));
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "User email not found")));
 
     // Create a new plantation object
     Mono<Plantation> plantation = user.map(u -> new Plantation(plantationDto, u));
@@ -73,12 +73,12 @@ public class PlantationServiceImpl implements PlantationService {
   public Mono<String> addPlantationManager(User authUser, String plantationId, PlantationManagerDto plantationManagerDto) {
     // Get the plantation by id if not exists, throw bad request exception
     Mono<Plantation> plantation = this.plantationRepository.findPlantationsByIdAndIsDeletedIsFalse(plantationId)
-      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Plantation not exists")));
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation not found")));
 
     return plantation.flatMap(pl -> {
       // Check if the user email exists and is user only, if not exists, throw bad request exception
       Mono<User> newManagerUser = this.userRepository.findByEmailAndRolesNotContains(plantationManagerDto.managerEmail(), List.of(UserRole.ADMIN, UserRole.SUPPORT))
-        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "User email not exists")));
+        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "User email not found")));
 
       return newManagerUser.flatMap(user -> {
         // Check if the user is the owner of the plantation or has admin role
@@ -99,12 +99,12 @@ public class PlantationServiceImpl implements PlantationService {
   public Mono<String> deletePlantationManager(User authUser, String plantationId, PlantationManagerDto plantationManagerDto) {
     // Get the plantation by id if not exists, throw bad request exception
     Mono<Plantation> plantation = this.plantationRepository.findPlantationsByIdAndIsDeletedIsFalse(plantationId)
-      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Plantation not exists")));
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation not found")));
 
     return plantation.flatMap(pl -> {
       // Check if the user email exists and is user only, if not exists, throw bad request exception
       Mono<User> newManagerUser = this.userRepository.findByEmailAndRolesNotContains(plantationManagerDto.managerEmail(), List.of(UserRole.ADMIN, UserRole.SUPPORT))
-        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "User email not exists")));
+        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "User email not found")));
 
       return newManagerUser.flatMap(user -> {
         if (user.getId().equals(pl.getOwnerId())) {
@@ -129,7 +129,7 @@ public class PlantationServiceImpl implements PlantationService {
   public Mono<String> deletePlantation(String plantationId) {
     // Get the plantation by id if not exists, throw bad request exception
     Mono<Plantation> plantation = this.plantationRepository.findPlantationsByIdAndIsDeletedIsFalse(plantationId)
-      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Plantation not exists")));
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation not found")));
 
     return plantation.flatMap(pl ->
       // Get all sensors by plantation id
