@@ -7,6 +7,7 @@ import com.growtech.api.entities.User;
 import com.growtech.api.enums.UserRole;
 import com.growtech.api.exceptions.CustomException;
 import com.growtech.api.repositories.PlantationRepository;
+import com.growtech.api.repositories.SensorRepository;
 import com.growtech.api.repositories.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -20,10 +21,12 @@ import java.util.List;
 public class PlantationServiceImpl implements PlantationService {
   private final PlantationRepository plantationRepository;
   private final UserRepository userRepository;
+  private final SensorRepository sensorRepository;
 
-  public PlantationServiceImpl(PlantationRepository plantationRepository, UserRepository userRepository) {
+  public PlantationServiceImpl(PlantationRepository plantationRepository, UserRepository userRepository, SensorRepository sensorRepository) {
     this.plantationRepository = plantationRepository;
     this.userRepository = userRepository;
+    this.sensorRepository = sensorRepository;
   }
 
   @Override
@@ -120,5 +123,31 @@ public class PlantationServiceImpl implements PlantationService {
           .flatMap(savedPlantation -> Mono.just("Manager deleted successfully"));
       });
     });
+  }
+
+  @Override
+  public Mono<String> deletePlantation(String plantationId) {
+    // Get the plantation by id if not exists, throw bad request exception
+    Mono<Plantation> plantation = this.plantationRepository.findPlantationsByIdAndIsDeletedIsFalse(plantationId)
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Plantation not exists")));
+
+    return plantation.flatMap(pl ->
+      // Get all sensors by plantation id
+      this.sensorRepository.getAllByPlantationIdAndIsDeletedIsFalse(plantationId)
+        // Set all sensors as deleted
+        .collectList().map(sensors -> sensors
+          .stream()
+          .peek(sensor -> sensor.setIsDeleted(true))
+          .toList()
+        )
+        // Soft delete all sensors of the plantation
+        .flatMap(sensors -> this.sensorRepository.saveAll(sensors).collectList())
+        // Soft delete the plantation
+        .flatMap(sensors -> {
+          pl.setIsDeleted(true);
+          return this.plantationRepository.save(pl);
+        })
+        .flatMap(deletedPlantation -> Mono.just("Plantation and his sensors deleted successfully"))
+    );
   }
 }

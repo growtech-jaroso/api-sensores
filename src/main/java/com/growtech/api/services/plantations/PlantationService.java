@@ -17,4 +17,5 @@ public interface PlantationService {
   Mono<Plantation> createPlantation(PlantationDto plantationDto);
   Mono<String> addPlantationManager(User user, String plantationId, PlantationManagerDto plantationManagerDto);
   Mono<String> deletePlantationManager(User user, String plantationId, PlantationManagerDto plantationManagerDto);
+  Mono<String> deletePlantation(String plantationId);
 }

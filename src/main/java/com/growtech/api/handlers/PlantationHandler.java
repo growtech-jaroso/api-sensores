@@ -109,4 +109,17 @@ public class PlantationHandler {
           .bodyValue(new SuccessResponse(HttpStatus.OK, message))
         ));
   }
+
+  public Mono<ServerResponse> deletePlantation(ServerRequest request) {
+    // Get the plantation id from the request path
+    String plantationId = request.pathVariable("plantation_id");
+
+    // Delete the plantation and return the response
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+      .then(this.plantationService.deletePlantation(plantationId))
+      .flatMap(message -> Response
+        .builder(HttpStatus.OK)
+        .bodyValue(new SuccessResponse(HttpStatus.OK, message))
+      );
+  }
 }
