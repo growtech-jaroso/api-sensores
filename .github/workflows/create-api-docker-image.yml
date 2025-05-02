@@ -16,9 +16,10 @@ jobs:
         with:
           major_pattern: "major:"
           minor_pattern: "feat:"
-          bump_each_commit: true
-          bump_each_commit_patch_pattern: "fix:"
+          user_format_type: 'csv'
+          bump_each_commit: false
           version_format: "${major}.${minor}.${patch}"
+          search_commit_body: true
         id: version
 
       - name: Install buildx
