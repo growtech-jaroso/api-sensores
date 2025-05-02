@@ -104,6 +104,10 @@ public class PlantationServiceImpl implements PlantationService {
         .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "User email not exists")));
 
       return newManagerUser.flatMap(user -> {
+        if (user.getId().equals(pl.getOwnerId())) {
+          return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Plantation owner cannot be removed from managers"));
+        }
+
         // Check if the user is the owner of the plantation or has admin role
         if (!pl.getOwnerId().equals(authUser.getId()) && !authUser.isAdmin()) {
           return Mono.error(new CustomException(HttpStatus.FORBIDDEN, "Forbidden"));
