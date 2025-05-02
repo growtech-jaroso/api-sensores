@@ -20,4 +20,5 @@ public interface UserService {
   Mono<User> create(UserRegisterDto userRegisterDTO);
   Mono<Tuple2<List<UserInfo>, Long>> getAllUsersPaginated(PageRequest pageRequest);
   Flux<String> getAllUserEmails();
+  Mono<String> deleteUser(User authUser, String userId);
 }

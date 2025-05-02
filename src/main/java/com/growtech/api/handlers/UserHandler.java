@@ -2,6 +2,7 @@ package com.growtech.api.handlers;
 
 import com.growtech.api.enums.UserRole;
 import com.growtech.api.responses.success.DataResponse;
+import com.growtech.api.responses.success.SuccessResponse;
 import com.growtech.api.responses.success.paginated.PaginatedResponse;
 import com.growtech.api.services.users.UserService;
 import com.growtech.api.utils.AuthUtil;
@@ -44,5 +45,18 @@ public class UserHandler {
           pageRequest,
           tuple2.getT1()
         )));
+  }
+
+  public Mono<ServerResponse> deleteUser(ServerRequest request) {
+    // Extract the user ID from the request path variable
+    String userId = request.pathVariable("user_id");
+
+    // Check if the user has the ADMIN role and delete the user
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+      .then(AuthUtil.getAuthUser())
+      .flatMap(user -> userService.deleteUser(user, userId))
+      .flatMap(message -> ServerResponse
+        .ok()
+        .bodyValue(new SuccessResponse(HttpStatus.OK, message)));
   }
 }

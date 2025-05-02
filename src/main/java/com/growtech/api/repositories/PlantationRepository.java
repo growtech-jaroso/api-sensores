@@ -10,10 +10,12 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface PlantationRepository extends ReactiveMongoRepository<Plantation, String> {
   Flux<Plantation> findAllByIsDeletedIsFalse(PageRequest pageRequest);
+  Flux<Plantation> findAllByManagersContainingAndIsDeletedIsFalse(String userId);
   Flux<Plantation> findAllByManagersContainingAndIsDeletedIsFalse(String userId, PageRequest pageRequest);
   Mono<Boolean> existsPlantationByNameAndIsDeletedIsFalse(String name);
   Mono<Long> countAllByManagersContainingAndIsDeletedIsFalse(String userId);
   Mono<Plantation> findPlantationsByIdAndIsDeletedIsFalse(String plantationId);
   Mono<Boolean> existsPlantationByIdAndIsDeletedIsFalse(String plantationId);
   Mono<Long> countAllByIsDeletedIsFalse();
+  Mono<Boolean> existsPlantationByOwnerIdAndIsDeletedIsFalse(String ownerId);
 }
