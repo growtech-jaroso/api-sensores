@@ -20,6 +20,7 @@ public class SensorRouter {
     return RouterFunctions.route()
       .GET("", handler::getAllSensorsByPlantation) // Route: POST /api/plantations/{plantation_id}/sensors
       .POST("", handler::createSensor) // Route: POST /api/plantations/{plantation_id}/sensors
+      .DELETE("/{sensor_id}", handler::deleteSensor) // Route: DELETE /api/plantations/{plantation_id}/sensors/{sensor_id}
       .build();
   }
 }

@@ -61,4 +61,22 @@ public class SensorServiceImpl implements SensorService {
         return this.sensorRepository.save(sensor);
       });
   }
+
+  @Override
+  public Mono<String> deleteSensor(String sensorId, String plantationId) {
+    // Check if plantation exists, if not exists throw not found exception
+    Mono<Plantation> plantation = this.plantationRepository.findPlantationsByIdAndIsDeletedIsFalse(plantationId)
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation not found")));
+
+    return plantation
+      // Find the sensor by id and if not found throw not found exception
+      .flatMap(pl -> this.sensorRepository.findByIdAndIsDeletedIsFalse(sensorId))
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Sensor not found")))
+      // Set the sensor as deleted
+      .flatMap(sensor -> {
+        sensor.setIsDeleted(true);
+        return this.sensorRepository.save(sensor);
+      })
+      .then(Mono.just("Sensor deleted successfully"));
+  }
 }

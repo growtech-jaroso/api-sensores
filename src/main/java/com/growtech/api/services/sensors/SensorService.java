@@ -14,4 +14,5 @@ import java.util.List;
 public interface SensorService {
   Mono<Tuple2<List<Sensor>, Long>> getSensorsByPlantationPaginated(User user, String plantationId, PageRequest pageRequest);
   Mono<Sensor> createSensor(SensorDto sensorDto, String plantationId);
+  Mono<String> deleteSensor(String sensorId, String plantationId);
 }

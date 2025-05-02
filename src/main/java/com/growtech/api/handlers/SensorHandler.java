@@ -5,6 +5,7 @@ import com.growtech.api.entities.User;
 import com.growtech.api.enums.UserRole;
 import com.growtech.api.responses.Response;
 import com.growtech.api.responses.success.DataResponse;
+import com.growtech.api.responses.success.SuccessResponse;
 import com.growtech.api.responses.success.paginated.PaginatedResponse;
 import com.growtech.api.services.sensors.SensorService;
 import com.growtech.api.utils.AuthUtil;
@@ -71,5 +72,20 @@ public class SensorHandler {
         .builder(HttpStatus.CREATED)
         .bodyValue(new DataResponse<>(HttpStatus.CREATED, sensor))
       );
+  }
+
+  public Mono<ServerResponse> deleteSensor(ServerRequest request) {
+    // Get the plantation id from the request
+    String plantationId = request.pathVariable("plantation_id");
+    // Get the sensor id from the request
+    String sensorId = request.pathVariable("sensor_id");
+
+    // Check if user is admin to delete the sensor
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+      .then(this.sensorService.deleteSensor(sensorId, plantationId)
+        .flatMap(message -> Response
+          .builder(HttpStatus.OK)
+          .bodyValue(new SuccessResponse(HttpStatus.OK, message))
+        ));
   }
 }
