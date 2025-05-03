@@ -3,6 +3,7 @@ package com.growtech.api.handlers;
 import com.growtech.api.dtos.requests.SensorDto;
 import com.growtech.api.entities.User;
 import com.growtech.api.enums.UserRole;
+import com.growtech.api.exceptions.EmptyBody;
 import com.growtech.api.responses.Response;
 import com.growtech.api.responses.success.DataResponse;
 import com.growtech.api.responses.success.SuccessResponse;
@@ -60,7 +61,11 @@ public class SensorHandler {
   public Mono<ServerResponse> createSensor(ServerRequest request) {
     Mono<SensorDto> sensorDto = AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
       // Validate the request body
-      .then(request.bodyToMono(SensorDto.class).doOnNext(objectValidator::validate));
+      .then(
+        request.bodyToMono(SensorDto.class)
+          .doOnNext(objectValidator::validate)
+          .switchIfEmpty(Mono.error(new EmptyBody()))
+      );
 
     // Get the plantation id from the request
     String plantationId = request.pathVariable("plantation_id");

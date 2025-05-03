@@ -3,6 +3,8 @@ package com.growtech.api.handlers;
 import com.growtech.api.dtos.AuthInfo;
 import com.growtech.api.dtos.requests.UserLoginDto;
 import com.growtech.api.dtos.requests.UserRegisterDto;
+import com.growtech.api.exceptions.CustomException;
+import com.growtech.api.exceptions.EmptyBody;
 import com.growtech.api.responses.success.DataResponse;
 import com.growtech.api.services.auth.AuthService;
 import com.growtech.api.validators.ObjectValidator;
@@ -27,6 +29,7 @@ public class AuthHandler {
   public Mono<ServerResponse> login(ServerRequest request) {
     return request.bodyToMono(UserLoginDto.class)
       .doOnNext(objectValidator::validate)
+      .switchIfEmpty(Mono.error(new EmptyBody()))
       .flatMap(this.authService::loginUser)
       .flatMap(authInfo -> {
         // Create a DataResponse object with the status and userLoginDto
@@ -39,7 +42,9 @@ public class AuthHandler {
   }
 
   public Mono<ServerResponse> register(ServerRequest request) {
-    return request.bodyToMono(UserRegisterDto.class).doOnNext(objectValidator::validate)
+    return request.bodyToMono(UserRegisterDto.class)
+      .doOnNext(objectValidator::validate)
+      .switchIfEmpty(Mono.error(new EmptyBody()))
       .flatMap(this.authService::registerUser)
       .flatMap(authInfo -> {
         // Create a DataResponse object with the status and authInfo

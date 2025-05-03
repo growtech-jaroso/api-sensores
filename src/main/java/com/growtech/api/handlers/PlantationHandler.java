@@ -4,6 +4,7 @@ import com.growtech.api.dtos.requests.PlantationManagerDto;
 import com.growtech.api.dtos.requests.PlantationDto;
 import com.growtech.api.entities.User;
 import com.growtech.api.enums.UserRole;
+import com.growtech.api.exceptions.EmptyBody;
 import com.growtech.api.responses.Response;
 import com.growtech.api.responses.success.DataResponse;
 import com.growtech.api.responses.success.SuccessResponse;
@@ -34,7 +35,11 @@ public class PlantationHandler {
     // Check if user is authorized to create a plantation
     Mono<PlantationDto> plantationDto = AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
       // Validate the request body
-      .then(request.bodyToMono(PlantationDto.class).doOnNext(objectValidator::validate));
+      .then(
+        request.bodyToMono(PlantationDto.class)
+          .doOnNext(objectValidator::validate)
+          .switchIfEmpty(Mono.error(new EmptyBody()))
+      );
 
 
     // Create a new plantation and return in response
@@ -76,7 +81,8 @@ public class PlantationHandler {
 
     // Create the plantation assistant dto from the request body
     Mono<PlantationManagerDto> plantationManagerDto = request.bodyToMono(PlantationManagerDto.class)
-      .doOnNext(objectValidator::validate);
+      .doOnNext(objectValidator::validate)
+      .switchIfEmpty(Mono.error(new EmptyBody()));
 
     return plantationManagerDto
       // Get the authenticated user
@@ -96,7 +102,8 @@ public class PlantationHandler {
 
     // Create the plantation assistant dto from the request body
     Mono<PlantationManagerDto> plantationManagerDto = request.bodyToMono(PlantationManagerDto.class)
-      .doOnNext(objectValidator::validate);
+      .doOnNext(objectValidator::validate)
+      .switchIfEmpty(Mono.error(new EmptyBody()));
 
     return plantationManagerDto
       // Get the authenticated user
