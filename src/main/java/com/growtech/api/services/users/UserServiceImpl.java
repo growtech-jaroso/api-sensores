@@ -102,6 +102,13 @@ public class UserServiceImpl implements  UserService {
     });
   }
 
+  @Override
+  public Mono<UserInfo> getUserById(String userId) {
+    return this.userRepository.findUserById(userId)
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "User not found")))
+      .map(User::getUserInfoDto);
+  }
+
   /**
    * Delete a user from all plantations where they are a manager.
    * @param user The user to be deleted from plantations.

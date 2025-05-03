@@ -59,4 +59,16 @@ public class UserHandler {
         .ok()
         .bodyValue(new SuccessResponse(HttpStatus.OK, message)));
   }
+
+  public Mono<ServerResponse> getUserById(ServerRequest request) {
+    // Extract the user ID from the request path variable
+    String userId = request.pathVariable("user_id");
+
+    // Check if the user has the ADMIN role and return the user by ID
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+      .then(userService
+        .getUserById(userId))
+      .flatMap(userInfo -> ServerResponse.ok()
+        .bodyValue(new DataResponse<>(HttpStatus.OK, userInfo)));
+  }
 }

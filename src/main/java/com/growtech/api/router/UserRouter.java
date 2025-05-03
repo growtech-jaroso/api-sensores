@@ -19,6 +19,7 @@ public class UserRouter {
   public RouterFunction<ServerResponse> userRoutes() {
     return RouterFunctions.route()
       .GET("", handler::getAllUsers) // Route: GET /api/users
+      .GET("/{user_id}", handler::getUserById) // Route: GET /api/users/{user_id}
       .DELETE("/{user_id}", handler::deleteUser) // Route: DELETE /api/users/{user_id}
       .GET("/emails", handler::getAllUserEmails) // Route: GET /api/users/emails
       .build();
