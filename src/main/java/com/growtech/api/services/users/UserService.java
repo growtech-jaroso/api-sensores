@@ -1,6 +1,7 @@
 package com.growtech.api.services.users;
 
 import com.growtech.api.dtos.UserInfo;
+import com.growtech.api.dtos.requests.ChangePasswordDto;
 import com.growtech.api.dtos.requests.UserRegisterDto;
 import com.growtech.api.entities.Plantation;
 import com.growtech.api.entities.User;
@@ -22,4 +23,5 @@ public interface UserService {
   Flux<String> getAllUserEmails();
   Mono<String> deleteUser(User authUser, String userId);
   Mono<UserInfo> getUserById(String userId);
+  Mono<String> changePassword(User user, ChangePasswordDto changePasswordDto);
 }

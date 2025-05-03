@@ -20,6 +20,7 @@ public class UserRouter {
     return RouterFunctions.route()
       .GET("", handler::getAllUsers) // Route: GET /api/users
       .GET("/{user_id}", handler::getUserById) // Route: GET /api/users/{user_id}
+      .PUT("/change_password", handler::changePassword) // Route: PUT /api/users/change_password
       .DELETE("/{user_id}", handler::deleteUser) // Route: DELETE /api/users/{user_id}
       .GET("/emails", handler::getAllUserEmails) // Route: GET /api/users/emails
       .build();

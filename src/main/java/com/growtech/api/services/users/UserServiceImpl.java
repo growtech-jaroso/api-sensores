@@ -1,6 +1,7 @@
 package com.growtech.api.services.users;
 
 import com.growtech.api.dtos.UserInfo;
+import com.growtech.api.dtos.requests.ChangePasswordDto;
 import com.growtech.api.dtos.requests.UserRegisterDto;
 import com.growtech.api.entities.Plantation;
 import com.growtech.api.entities.User;
@@ -107,6 +108,22 @@ public class UserServiceImpl implements  UserService {
     return this.userRepository.findUserById(userId)
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "User not found")))
       .map(User::getUserInfoDto);
+  }
+
+  @Override
+  public Mono<String> changePassword(User user, ChangePasswordDto changePasswordDto) {
+    // Check if the old password is correct
+    if (!this.passwordMatches(changePasswordDto.oldPassword(), user.getPassword())) {
+      return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Old password is incorrect"));
+    }
+
+    // Encrypt the new password
+    String encryptedPassword = passwordEncoder.encode(changePasswordDto.newPassword());
+    user.setPassword(encryptedPassword);
+
+    // Save the user and return a success message
+    return userRepository.save(user)
+      .map(u -> "Password changed successfully");
   }
 
   /**
