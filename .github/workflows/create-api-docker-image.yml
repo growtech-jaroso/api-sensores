@@ -13,16 +13,23 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v2
 
-      - name: Get latest tag (if not running from a tag)
-        id: tag
+      - name: Get version and RC number
+        id: versioning
         run: |
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            TAG="${GITHUB_REF#refs/tags/}"
+          # Get latest tag (e.g. v1.0.0)
+          BASE_TAG=$(git fetch --tags && git describe --tags `git rev-list --tags --max-count=1`)
+
+          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+            # Count existing Prerelease tags for that base tag
+            PRERELEASE_COUNT=$(git tag --list "${BASE_TAG}-prerelease.*" | wc -l)
+            PRERELEASE_TAG="${BASE_TAG}-prerelease.$((RC_COUNT + 1))"
           else
-            TAG=$(git fetch --tags && git describe --tags `git rev-list --tags --max-count=1`)
+            # We're building from a proper version tag (e.g. v1.0.0)
+            PRERELEASE_TAG="${GITHUB_REF#refs/tags/}"
           fi
-          echo "Using tag: $TAG"
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+          echo "Using tag: $PRERELEASE_TAG"
+          echo "tag=$PRERELEASE_TAG" >> $GITHUB_OUTPUT
 
       - name: Install buildx
         uses: docker/setup-buildx-action@v2
@@ -37,7 +44,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build sensors api docker image and push to the registry
         env:
-          IMAGE_VERSION: ${{steps.tag.outputs.tag}}
+          IMAGE_VERSION: ${{steps.versioning.outputs.tag}}
           IMAGE_NAME: ${{ secrets.DOCKER_REGISTRY }}/sensors-api
         run: |
           docker buildx build --push \
