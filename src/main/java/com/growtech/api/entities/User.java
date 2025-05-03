@@ -1,7 +1,7 @@
 package com.growtech.api.entities;
 
 import com.growtech.api.dtos.UserInfo;
-import com.growtech.api.dtos.requests.UserRegisterDto;
+import com.growtech.api.dtos.requests.passwords.UserRegisterDto;
 import com.growtech.api.enums.UserRole;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.Indexed;

@@ -1,9 +1,8 @@
 package com.growtech.api.services.users;
 
 import com.growtech.api.dtos.UserInfo;
-import com.growtech.api.dtos.requests.ChangePasswordDto;
-import com.growtech.api.dtos.requests.UserRegisterDto;
-import com.growtech.api.entities.Plantation;
+import com.growtech.api.dtos.requests.passwords.ChangePasswordDto;
+import com.growtech.api.dtos.requests.passwords.UserRegisterDto;
 import com.growtech.api.entities.User;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;

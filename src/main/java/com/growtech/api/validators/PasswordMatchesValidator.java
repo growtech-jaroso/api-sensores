@@ -1,26 +1,28 @@
 package com.growtech.api.validators;
 
 import com.growtech.api.annotations.PasswordMatches;
-import com.growtech.api.dtos.requests.UserRegisterDto;
+import com.growtech.api.dtos.requests.passwords.PasswordsInterface;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, UserRegisterDto> {
+public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, PasswordsInterface> {
   private String message;
+  private String confirmPasswordField;
   @Override
   public void initialize(final PasswordMatches constraintAnnotation) {
-    message = constraintAnnotation.message();
+    this.message = constraintAnnotation.message();
+    this.confirmPasswordField = constraintAnnotation.confirmPassword();
   }
 
   @Override
-  public boolean isValid(final UserRegisterDto dto, final ConstraintValidatorContext context) {
+  public boolean isValid(final PasswordsInterface dto, final ConstraintValidatorContext context) {
     // Check if the dto is null and return false
     if (dto == null) return false;
 
     // If the password is null or empty, return false and add a violation
-    if (dto.password() == null || !dto.password().equals(dto.confirmPassword())) {
-      context.buildConstraintViolationWithTemplate(message)
-        .addPropertyNode("confirm_password")
+    if (dto.getPassword() == null || !dto.getPassword().equals(dto.getConfirmPassword())) {
+      context.buildConstraintViolationWithTemplate(this.message)
+        .addPropertyNode(this.confirmPasswordField)
         .addConstraintViolation()
         .disableDefaultConstraintViolation();
       return false;

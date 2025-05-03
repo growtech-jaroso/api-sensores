@@ -2,7 +2,7 @@ package com.growtech.api.services.auth;
 
 import com.growtech.api.dtos.AuthInfo;
 import com.growtech.api.dtos.requests.UserLoginDto;
-import com.growtech.api.dtos.requests.UserRegisterDto;
+import com.growtech.api.dtos.requests.passwords.UserRegisterDto;
 import com.growtech.api.entities.User;
 import com.growtech.api.exceptions.CustomException;
 import com.growtech.api.services.users.UserService;

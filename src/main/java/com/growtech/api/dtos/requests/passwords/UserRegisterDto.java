@@ -1,4 +1,4 @@
-package com.growtech.api.dtos.requests;
+package com.growtech.api.dtos.requests.passwords;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.growtech.api.annotations.PasswordMatches;
@@ -20,4 +20,14 @@ public record UserRegisterDto(
   @NotBlank(message = "Password confirmation is required")
   @JsonProperty("confirm_password")
   String confirmPassword
-) { }
+) implements PasswordsInterface {
+  @Override
+  public String getPassword() {
+    return password();
+  }
+
+  @Override
+  public String getConfirmPassword() {
+    return confirmPassword();
+  }
+}

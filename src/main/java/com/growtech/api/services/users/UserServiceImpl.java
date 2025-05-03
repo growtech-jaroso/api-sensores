@@ -1,15 +1,13 @@
 package com.growtech.api.services.users;
 
 import com.growtech.api.dtos.UserInfo;
-import com.growtech.api.dtos.requests.ChangePasswordDto;
-import com.growtech.api.dtos.requests.UserRegisterDto;
-import com.growtech.api.entities.Plantation;
+import com.growtech.api.dtos.requests.passwords.ChangePasswordDto;
+import com.growtech.api.dtos.requests.passwords.UserRegisterDto;
 import com.growtech.api.entities.User;
 import com.growtech.api.enums.UserRole;
 import com.growtech.api.exceptions.CustomException;
 import com.growtech.api.repositories.PlantationRepository;
 import com.growtech.api.repositories.UserRepository;
-import com.growtech.api.utils.JwtUtil;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;

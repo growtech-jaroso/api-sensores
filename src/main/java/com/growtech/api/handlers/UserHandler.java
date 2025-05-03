@@ -1,6 +1,6 @@
 package com.growtech.api.handlers;
 
-import com.growtech.api.dtos.requests.ChangePasswordDto;
+import com.growtech.api.dtos.requests.passwords.ChangePasswordDto;
 import com.growtech.api.enums.UserRole;
 import com.growtech.api.exceptions.EmptyBody;
 import com.growtech.api.responses.success.DataResponse;
