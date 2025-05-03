@@ -45,4 +45,12 @@ public class UserHandler {
           tuple2.getT1()
         )));
   }
+
+  public Mono<ServerResponse> getUserById(ServerRequest request) {
+    String userId = request.pathVariable("user_id");
+    // Check if the user has the ADMIN role and return the user by ID
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+      .then(userService.getUserById(userId))
+      .flatMap(userInfo -> ServerResponse.ok().bodyValue(new DataResponse<>(HttpStatus.OK, userInfo)));
+  }
 }
