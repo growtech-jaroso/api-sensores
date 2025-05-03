@@ -22,7 +22,7 @@ jobs:
           if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
             # Count existing Prerelease tags for that base tag
             PRERELEASE_COUNT=$(git tag --list "${BASE_TAG}-prerelease.*" | wc -l)
-            PRERELEASE_TAG="${BASE_TAG}-prerelease.$((RC_COUNT + 1))"
+            PRERELEASE_TAG="${BASE_TAG}-prerelease.$((PRERELEASE_COUNT + 1))"
           else
             # We're building from a proper version tag (e.g. v1.0.0)
             PRERELEASE_TAG="${GITHUB_REF#refs/tags/}"
