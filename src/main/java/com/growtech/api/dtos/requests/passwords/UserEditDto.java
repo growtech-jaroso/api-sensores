@@ -1,11 +1,9 @@
 package com.growtech.api.dtos.requests.passwords;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.growtech.api.annotations.IsUserRole;
 import com.growtech.api.annotations.PasswordMatches;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 @PasswordMatches
 public record UserEditDto(
@@ -16,8 +14,9 @@ public record UserEditDto(
   @Email(message = "Email is invalid")
   String email,
   @NotNull(message = "Password is required")
-  @Size(min = 8, message = "Password must be at least 8 characters")
+  @Pattern(regexp = "^$|.{8,}\n", message = "Password must be empty or at least 8 characters")
   String password,
+  @JsonProperty("confirm_password")
   @NotNull(message = "Confirm password is required")
   String confirmPassword,
   @NotBlank(message = "Role is required")

@@ -132,15 +132,15 @@ public class UserServiceImpl implements  UserService {
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "User not found")))
       // Update the user with the new information
       .map(user -> {
-        user.setUsername(userEditDto.username());
-        user.setEmail(userEditDto.email());
-        user.setRole(UserRole.convertFromString(userEditDto.role()));
-        // Check if the password is not empty and update the user password
+        // If the password is not empty, update the password
         if (!userEditDto.password().isEmpty()) {
           // Encrypt the new password
           String encryptedPassword = passwordEncoder.encode(userEditDto.password());
           user.setPassword(encryptedPassword);
         }
+
+        // Update the user with the new information
+        user.edit(userEditDto);
         return user;
       })
       .flatMap(this.userRepository::save)

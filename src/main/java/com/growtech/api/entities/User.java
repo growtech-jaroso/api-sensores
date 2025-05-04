@@ -1,5 +1,6 @@
 package com.growtech.api.entities;
 
+import com.growtech.api.dtos.requests.passwords.UserEditDto;
 import com.growtech.api.dtos.responses.AuthInfo;
 import com.growtech.api.dtos.responses.UserInfo;
 import com.growtech.api.dtos.requests.passwords.UserRegisterDto;
@@ -11,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -110,5 +112,16 @@ public class User extends Model implements UserDetails {
 
   public AuthInfo getAuthInfo(String token) {
     return new AuthInfo(token, this.username, this.email, this.role);
+  }
+
+  /**
+   * Edit the user with the new information
+   * @param userEditDto UserEditDto containing the new information
+   */
+  public void edit(UserEditDto userEditDto) {
+    this.username = userEditDto.username();
+    this.email = userEditDto.email();
+    this.role = UserRole.convertFromString(userEditDto.role());
+    this.updatedAt = LocalDateTime.now();
   }
 }
