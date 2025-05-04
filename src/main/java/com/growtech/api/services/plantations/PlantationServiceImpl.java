@@ -61,10 +61,11 @@ public class PlantationServiceImpl implements PlantationService {
     Mono<Plantation> plantation = user.map(u -> new Plantation(plantationDto, u));
 
     // Check if the plantation name already exists
-    return this.plantationRepository.existsPlantationByNameAndIsDeletedIsFalse(plantationDto.name())
+    return plantation.flatMap(pl -> plantationRepository
+        .existsPlantationByNameAndOwnerIdAndIsDeletedIsFalse(plantationDto.name(), pl.getOwnerId()))
       .flatMap(exists -> {
         // If exists, throw bad request exception
-        if (exists) return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Plantation name already exists"));
+        if (exists) return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Plantation name already exists for this owner"));
         // If not exists, save the plantation
         return plantation.flatMap(this.plantationRepository::save);
       });
