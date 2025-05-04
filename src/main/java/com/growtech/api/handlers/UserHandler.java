@@ -1,7 +1,9 @@
 package com.growtech.api.handlers;
 
 import com.growtech.api.dtos.requests.passwords.ChangePasswordDto;
+import com.growtech.api.dtos.requests.passwords.UserEditDto;
 import com.growtech.api.enums.UserRole;
+import com.growtech.api.exceptions.CustomException;
 import com.growtech.api.exceptions.EmptyBody;
 import com.growtech.api.responses.Response;
 import com.growtech.api.responses.success.DataResponse;
@@ -98,6 +100,22 @@ public class UserHandler {
     // Get the user id from the request path
     String userId = request.pathVariable("user_id");
 
-    return Response.builder(HttpStatus.OK).bodyValue(new DataResponse<>(HttpStatus.OK, userId));
+    // Get the edited user info from the request body
+    Mono<UserEditDto> userEditDto = request.bodyToMono(UserEditDto.class)
+      .doOnNext(objectValidator::validate)
+      .switchIfEmpty(Mono.error(new EmptyBody()));
+
+    // Check if the user has the ADMIN role
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+      // Check if the auth user is the same as the user to be edited
+      .then(AuthUtil.getAuthUser()
+        .filter(u -> !u.getId().equals(userId))
+        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.FORBIDDEN, "You cannot edit yourself")))
+      )
+      // Edit the user
+      .then(userEditDto.flatMap(userDto -> this.userService.editUser(userId, userDto)))
+      .flatMap(message -> ServerResponse.ok()
+        .bodyValue(new SuccessResponse(HttpStatus.OK, message))
+      );
   }
 }
