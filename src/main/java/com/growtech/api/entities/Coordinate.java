@@ -1,5 +1,6 @@
 package com.growtech.api.entities;
 
+import com.growtech.api.dtos.requests.CoordinateDto;
 import lombok.*;
 
 @NoArgsConstructor
@@ -8,6 +9,11 @@ import lombok.*;
 @Setter
 @Builder
 public class Coordinate {
-  private Double latitude;
-  private Double longitude;
+  private String latitude;
+  private String longitude;
+
+  public Coordinate(CoordinateDto coordinateDto) {
+    this.latitude = coordinateDto.latitude();
+    this.longitude = coordinateDto.longitude();
+  }
 }

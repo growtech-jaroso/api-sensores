@@ -10,19 +10,22 @@ public record PlantationDto(
   @NotBlank(message = "Name is required")
   @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
   String name,
-  @NotNull(message = "Country is required")
+  @NotBlank(message = "Country is required")
   String country,
-  @NotNull(message = "Province is required")
+  @NotBlank(message = "Province is required")
   String province,
-  @NotNull(message = "City is required")
+  @NotBlank(message = "City is required")
   String city,
-  @NotNull(message = "Description is required")
+  @NotBlank(message = "Description is required")
   String description,
-  @NotNull(message = "Type is required")
+  @NotBlank(message = "Type is required")
   String type,
   @JsonProperty("user_email")
   @NotBlank(message = "User email is required")
   @Email(message = "Email must be valid")
-  String userEmail
+  String userEmail,
+  @JsonProperty("central_coordinates")
+  @NotNull(message = "Central coordinates are required")
+  CoordinateDto centralCoordinates // Central coordinate of the plantation
 ) {
 }

@@ -36,7 +36,13 @@ public class Plantation extends Model  {
   @Indexed
   private List<String> managers; // List of users IDs who are managers of the plantation
 
-  private List<Coordinate> coordinates; // List of coordinates associated with the plantation
+  @Field(name = "central_coordinates")
+  @JsonProperty("central_coordinates")
+  private Coordinate centralCoordinates; // Central coordinate of the plantation
+
+  @Field(name = "perimeter_coordinates")
+  @JsonProperty("perimeter_coordinates")
+  private List<Coordinate> perimeterCoordinates; // Perimeter coordinates of the plantation
 
   @Field(name = "map_url")
   @JsonProperty("map_url")
@@ -51,6 +57,7 @@ public class Plantation extends Model  {
     this.type = plantationDto.type();
     this.ownerId = user.getId();
     this.managers = List.of(user.getId());
+    this.centralCoordinates = new Coordinate(plantationDto.centralCoordinates());
   }
 
   /**
