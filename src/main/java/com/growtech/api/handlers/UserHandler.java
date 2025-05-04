@@ -114,8 +114,8 @@ public class UserHandler {
       )
       // Edit the user
       .then(userEditDto.flatMap(userDto -> this.userService.editUser(userId, userDto)))
-      .flatMap(message -> ServerResponse.ok()
-        .bodyValue(new SuccessResponse(HttpStatus.OK, message))
+      .flatMap(userInfo -> ServerResponse.ok()
+        .bodyValue(new DataResponse<>(HttpStatus.OK, userInfo))
       );
   }
 }

@@ -14,7 +14,7 @@ public record UserEditDto(
   @Email(message = "Email is invalid")
   String email,
   @NotNull(message = "Password is required")
-  @Pattern(regexp = "^$|.{8,}\n", message = "Password must be empty or at least 8 characters")
+  @Pattern(regexp = "^$|.{8,}", message = "Password must be empty or at least 8 characters")
   String password,
   @JsonProperty("confirm_password")
   @NotNull(message = "Confirm password is required")

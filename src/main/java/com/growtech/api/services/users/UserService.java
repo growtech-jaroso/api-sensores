@@ -24,5 +24,5 @@ public interface UserService {
   Mono<String> deleteUser(User authUser, String userId);
   Mono<UserInfo> getUserById(String userId);
   Mono<String> changePassword(User user, ChangePasswordDto changePasswordDto);
-  Mono<String> editUser(String userId, UserEditDto userEditDto);
+  Mono<UserInfo> editUser(String userId, UserEditDto userEditDto);
 }

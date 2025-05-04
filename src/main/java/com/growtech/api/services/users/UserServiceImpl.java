@@ -126,25 +126,28 @@ public class UserServiceImpl implements  UserService {
   }
 
   @Override
-  public Mono<String> editUser(String userId, UserEditDto userEditDto) {
+  public Mono<UserInfo> editUser(String userId, UserEditDto userEditDto) {
     // Check if the user id exists
     return this.userRepository.findById(userId)
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "User not found")))
-      // Update the user with the new information
-      .map(user -> {
-        // If the password is not empty, update the password
-        if (!userEditDto.password().isEmpty()) {
-          // Encrypt the new password
-          String encryptedPassword = passwordEncoder.encode(userEditDto.password());
-          user.setPassword(encryptedPassword);
-        }
+      // Check if the email is already taken by another user
+      .flatMap(user -> this.userRepository.findUserByIdIsNotAndEmail(userId, userEditDto.email())
+          .flatMap(u -> Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Email already exists")))
+          // Check if the username is already taken by another user
+          .then(this.userRepository.findUserByIdIsNotAndUsername(userId, userEditDto.username()))
+          .flatMap(u -> Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Username already exists")))
+          .then(Mono.just(user))
+          .map(u -> {
+            // If the password is not empty, update the password
+            if (!userEditDto.password().isEmpty()) u.setPassword(this.passwordEncoder.encode(userEditDto.password()));
 
-        // Update the user with the new information
-        user.edit(userEditDto);
-        return user;
-      })
+            // Edit the user with the new information
+            user.edit(userEditDto);
+            return u;
+          })
+      )
       .flatMap(this.userRepository::save)
-      .map(u -> "User edited successfully");
+      .map(User::getUserInfoDto);
   }
 
   /**
