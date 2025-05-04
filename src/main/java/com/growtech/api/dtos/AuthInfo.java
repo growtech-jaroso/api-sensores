@@ -8,5 +8,5 @@ public record AuthInfo(
   String token,
   String username,
   String email,
-  List<UserRole> roles
+  UserRole role
 ) { }

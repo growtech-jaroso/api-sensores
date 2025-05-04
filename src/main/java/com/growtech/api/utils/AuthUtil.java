@@ -27,7 +27,7 @@ public class AuthUtil {
 
   public static Mono<Void> checkIfUserHaveRoles(UserRole... roles) {
     return getAuthUser()
-      .filter(user -> Arrays.stream(roles).anyMatch(role -> user.getRoles().contains(role)))
+      .filter(user -> Arrays.stream(roles).anyMatch(role -> user.getRole().equals(role)))
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.FORBIDDEN, "Forbidden")))
       .then();
   }

@@ -1,5 +1,6 @@
 package com.growtech.api.entities;
 
+import com.growtech.api.dtos.AuthInfo;
 import com.growtech.api.dtos.UserInfo;
 import com.growtech.api.dtos.requests.passwords.UserRegisterDto;
 import com.growtech.api.enums.UserRole;
@@ -29,25 +30,25 @@ public class User extends Model implements UserDetails {
   private String email;
 
   @Indexed
-  private List<UserRole> roles;
+  private UserRole role;
 
   public User() {
     super();
-    this.roles = List.of(UserRole.USER);
+    this.role = UserRole.USER;
   }
 
-  public User(String username, String password, String email, List<UserRole> roles) {
+  public User(String username, String password, String email, UserRole role) {
     this.username = username;
     this.password = password;
     this.email = email;
-    this.roles = roles;
+    this.role = role;
   }
 
   public User(String username, String password, String email) {
     this.username = username;
     this.password = password;
     this.email = email;
-    this.roles = List.of(UserRole.USER);
+    this.role = UserRole.USER;
   }
 
   public User(UserRegisterDto dto) {
@@ -55,14 +56,12 @@ public class User extends Model implements UserDetails {
     this.username = dto.username();
     this.password = dto.password();
     this.email = dto.email();
-    this.roles = List.of(UserRole.USER);
+    this.role = UserRole.USER;
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return this.roles.stream()
-      .map(role -> new SimpleGrantedAuthority(role.name()))
-      .collect(Collectors.toList());
+    return List.of(new SimpleGrantedAuthority(this.role.name()));
   }
 
   @Override
@@ -90,11 +89,11 @@ public class User extends Model implements UserDetails {
    * @return true if the user can view anything, false otherwise
    */
   public Boolean canViewAnything() {
-    return this.roles.contains(UserRole.SUPPORT) || this.roles.contains(UserRole.ADMIN);
+    return this.role.equals(UserRole.SUPPORT) || this.role.equals(UserRole.ADMIN);
   }
 
   public Boolean isAdmin() {
-    return this.roles.contains(UserRole.ADMIN);
+    return this.role.equals(UserRole.ADMIN);
   }
 
   /**
@@ -106,7 +105,11 @@ public class User extends Model implements UserDetails {
       this.getId(),
       this.username,
       this.email,
-      this.roles
+      this.role
     );
+  }
+
+  public AuthInfo getAuthInfo(String token) {
+    return new AuthInfo(token, this.username, this.email, this.role);
   }
 }

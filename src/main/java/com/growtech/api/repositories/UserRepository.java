@@ -12,9 +12,9 @@ import java.util.List;
 
 public interface UserRepository extends ReactiveMongoRepository<User, String> {
   Mono<User> findByEmail(String email);
-  Mono<User> findByEmailAndRolesNotContains(String email, List<UserRole> roles);
+  Mono<User> findByEmailAndRoleNotIn(String email, List<UserRole> roles);
   Mono<User> findByUsername(String username);
   Flux<User> findAllBy(PageRequest pageRequest);
-  Flux<EmailProjection> findAllByRolesNotContains(List<UserRole> roles);
+  Flux<EmailProjection> findAllByRoleNotIn(List<UserRole> roles);
   Mono<User> findUserById(String id);
 }

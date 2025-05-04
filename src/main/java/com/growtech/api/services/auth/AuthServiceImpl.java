@@ -69,6 +69,6 @@ public class AuthServiceImpl implements AuthService {
    */
   private AuthInfo generateAuthInfo(User user) {
     String token = jwtUtil.generateToken(user);
-    return new AuthInfo(token, user.getUsername(), user.getEmail(), user.getRoles());
+    return user.getAuthInfo(token);
   }
 }

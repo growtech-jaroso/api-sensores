@@ -69,7 +69,7 @@ public class UserServiceImpl implements  UserService {
 
   @Override
   public Flux<String> getAllUserEmails() {
-    return userRepository.findAllByRolesNotContains(List.of(UserRole.ADMIN, UserRole.SUPPORT)).map(EmailProjection::getEmail);
+    return userRepository.findAllByRoleNotIn(List.of(UserRole.ADMIN, UserRole.SUPPORT)).map(EmailProjection::getEmail);
   }
 
   @Override

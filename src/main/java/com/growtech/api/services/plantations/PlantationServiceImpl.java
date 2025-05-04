@@ -53,7 +53,7 @@ public class PlantationServiceImpl implements PlantationService {
   @Override
   public Mono<Plantation> createPlantation(PlantationDto plantationDto) {
     // Retrieve the user by email
-    Mono<User> user = this.userRepository.findByEmailAndRolesNotContains(plantationDto.userEmail(), List.of(UserRole.ADMIN, UserRole.SUPPORT))
+    Mono<User> user = this.userRepository.findByEmailAndRoleNotIn(plantationDto.userEmail(), List.of(UserRole.ADMIN, UserRole.SUPPORT))
       // If user not exists, throw  bad request exception
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "User email not found")));
 
@@ -79,7 +79,7 @@ public class PlantationServiceImpl implements PlantationService {
 
     return plantation.flatMap(pl -> {
       // Check if the user email exists and is user only, if not exists, throw bad request exception
-      Mono<User> newManagerUser = this.userRepository.findByEmailAndRolesNotContains(plantationManagerDto.managerEmail(), List.of(UserRole.ADMIN, UserRole.SUPPORT))
+      Mono<User> newManagerUser = this.userRepository.findByEmailAndRoleNotIn(plantationManagerDto.managerEmail(), List.of(UserRole.ADMIN, UserRole.SUPPORT))
         .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "User email not found")));
 
       return newManagerUser.flatMap(user -> {
@@ -105,7 +105,7 @@ public class PlantationServiceImpl implements PlantationService {
 
     return plantation.flatMap(pl -> {
       // Check if the user email exists and is user only, if not exists, throw bad request exception
-      Mono<User> newManagerUser = this.userRepository.findByEmailAndRolesNotContains(plantationManagerDto.managerEmail(), List.of(UserRole.ADMIN, UserRole.SUPPORT))
+      Mono<User> newManagerUser = this.userRepository.findByEmailAndRoleNotIn(plantationManagerDto.managerEmail(), List.of(UserRole.ADMIN, UserRole.SUPPORT))
         .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "User email not found")));
 
       return newManagerUser.flatMap(user -> {

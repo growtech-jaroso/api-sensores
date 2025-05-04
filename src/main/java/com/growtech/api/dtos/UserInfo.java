@@ -8,6 +8,6 @@ public record UserInfo(
   String id,
   String username,
   String email,
-  List<UserRole> roles
+  UserRole role
 ) {
 }
