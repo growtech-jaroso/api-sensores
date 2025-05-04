@@ -6,6 +6,7 @@ import com.growtech.api.security.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -56,6 +57,7 @@ public class AppRouter implements WebFluxConfigurer {
     http
       .securityMatcher(new PathPatternParserServerWebExchangeMatcher("/api/**"))
       .authorizeExchange(exchanges -> exchanges
+        .pathMatchers(HttpMethod.OPTIONS).permitAll() // CORS preflight requests
         .pathMatchers("/api/auth/**").permitAll() // Public routes
         .anyExchange().authenticated()
       )
@@ -79,6 +81,7 @@ public class AppRouter implements WebFluxConfigurer {
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/api/**")
+      .allowedHeaders("*")
       .allowedOrigins(allowedOrigins) // Add domains from which requests are accepted
       .allowedMethods("GET", "POST", "PUT", "DELETE")
       .allowCredentials(true).maxAge(3600);
