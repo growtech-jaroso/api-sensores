@@ -1,6 +1,6 @@
 package com.growtech.api.services.auth;
 
-import com.growtech.api.dtos.AuthInfo;
+import com.growtech.api.dtos.responses.AuthInfo;
 import com.growtech.api.dtos.requests.UserLoginDto;
 import com.growtech.api.dtos.requests.passwords.UserRegisterDto;
 import org.springframework.stereotype.Service;

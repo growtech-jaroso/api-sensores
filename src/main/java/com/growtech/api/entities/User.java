@@ -1,7 +1,7 @@
 package com.growtech.api.entities;
 
-import com.growtech.api.dtos.AuthInfo;
-import com.growtech.api.dtos.UserInfo;
+import com.growtech.api.dtos.responses.AuthInfo;
+import com.growtech.api.dtos.responses.UserInfo;
 import com.growtech.api.dtos.requests.passwords.UserRegisterDto;
 import com.growtech.api.enums.UserRole;
 import lombok.*;
@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Document(collection = "users")
 @Getter

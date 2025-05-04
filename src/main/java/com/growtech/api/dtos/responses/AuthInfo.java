@@ -1,8 +1,6 @@
-package com.growtech.api.dtos;
+package com.growtech.api.dtos.responses;
 
 import com.growtech.api.enums.UserRole;
-
-import java.util.List;
 
 public record AuthInfo(
   String token,

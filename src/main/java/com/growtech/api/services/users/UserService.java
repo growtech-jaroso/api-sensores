@@ -1,6 +1,6 @@
 package com.growtech.api.services.users;
 
-import com.growtech.api.dtos.UserInfo;
+import com.growtech.api.dtos.responses.UserInfo;
 import com.growtech.api.dtos.requests.passwords.ChangePasswordDto;
 import com.growtech.api.dtos.requests.passwords.UserRegisterDto;
 import com.growtech.api.entities.User;

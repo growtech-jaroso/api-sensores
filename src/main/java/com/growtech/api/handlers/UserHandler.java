@@ -3,6 +3,7 @@ package com.growtech.api.handlers;
 import com.growtech.api.dtos.requests.passwords.ChangePasswordDto;
 import com.growtech.api.enums.UserRole;
 import com.growtech.api.exceptions.EmptyBody;
+import com.growtech.api.responses.Response;
 import com.growtech.api.responses.success.DataResponse;
 import com.growtech.api.responses.success.SuccessResponse;
 import com.growtech.api.responses.success.paginated.PaginatedResponse;
@@ -91,5 +92,12 @@ public class UserHandler {
           .flatMap(message -> ServerResponse.ok()
             .bodyValue(new SuccessResponse(HttpStatus.OK, message)))
       );
+  }
+
+  public Mono<ServerResponse> editUser(ServerRequest request) {
+    // Get the user id from the request path
+    String userId = request.pathVariable("user_id");
+
+    return Response.builder(HttpStatus.OK).bodyValue(new DataResponse<>(HttpStatus.OK, userId));
   }
 }
