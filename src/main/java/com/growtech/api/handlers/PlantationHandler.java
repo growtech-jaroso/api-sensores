@@ -1,5 +1,6 @@
 package com.growtech.api.handlers;
 
+import com.growtech.api.dtos.requests.EditPlantationDto;
 import com.growtech.api.dtos.requests.PlantationManagerDto;
 import com.growtech.api.dtos.requests.PlantationDto;
 import com.growtech.api.entities.User;
@@ -82,12 +83,19 @@ public class PlantationHandler {
     String plantationId = request.pathVariable("plantation_id");
 
     // Get the edited plantation info from the request body
-    Mono<PlantationDto> plantationDto = request.bodyToMono(PlantationDto.class)
+    Mono<EditPlantationDto> plantationDto = request.bodyToMono(EditPlantationDto.class)
       .doOnNext(objectValidator::validate)
       .switchIfEmpty(Mono.error(new EmptyBody()));
 
-    return Response.builder(HttpStatus.OK)
-      .bodyValue(new DataResponse<>(HttpStatus.OK, plantationDto));
+    // Retrieve the authenticated user
+    Mono<User> authUser = AuthUtil.getAuthUser();
+
+    return plantationDto.flatMap(plDto -> authUser
+      .flatMap(user -> this.plantationService.editPlantation(user, plantationId, plDto))
+      .flatMap(plantation -> Response
+        .builder(HttpStatus.OK)
+        .bodyValue(new DataResponse<>(HttpStatus.OK, plantation))
+      ));
   }
 
   public Mono<ServerResponse> addPlantationManager(ServerRequest request) {

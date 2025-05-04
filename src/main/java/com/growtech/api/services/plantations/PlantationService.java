@@ -1,5 +1,6 @@
 package com.growtech.api.services.plantations;
 
+import com.growtech.api.dtos.requests.EditPlantationDto;
 import com.growtech.api.dtos.requests.PlantationManagerDto;
 import com.growtech.api.dtos.requests.PlantationDto;
 import com.growtech.api.entities.Plantation;
@@ -18,4 +19,5 @@ public interface PlantationService {
   Mono<String> addPlantationManager(User user, String plantationId, PlantationManagerDto plantationManagerDto);
   Mono<String> deletePlantationManager(User user, String plantationId, PlantationManagerDto plantationManagerDto);
   Mono<String> deletePlantation(String plantationId);
+  Mono<Plantation> editPlantation(User user, String plantationId, EditPlantationDto plantationDto);
 }

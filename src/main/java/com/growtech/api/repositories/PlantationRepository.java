@@ -13,6 +13,7 @@ public interface PlantationRepository extends ReactiveMongoRepository<Plantation
   Flux<Plantation> findAllByManagersContainingAndIsDeletedIsFalse(String userId);
   Flux<Plantation> findAllByManagersContainingAndIsDeletedIsFalse(String userId, PageRequest pageRequest);
   Mono<Boolean> existsPlantationByNameAndOwnerIdAndIsDeletedIsFalse(String name, String ownerId);
+  Mono<Boolean> existsPlantationByIdNotAndNameAndOwnerIdAndIsDeletedIsFalse(String id, String name, String ownerId);
   Mono<Long> countAllByManagersContainingAndIsDeletedIsFalse(String userId);
   Mono<Plantation> findPlantationsByIdAndIsDeletedIsFalse(String plantationId);
   Mono<Boolean> existsPlantationByIdAndIsDeletedIsFalse(String plantationId);

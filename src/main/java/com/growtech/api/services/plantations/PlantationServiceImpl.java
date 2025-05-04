@@ -1,5 +1,6 @@
 package com.growtech.api.services.plantations;
 
+import com.growtech.api.dtos.requests.EditPlantationDto;
 import com.growtech.api.dtos.requests.PlantationManagerDto;
 import com.growtech.api.dtos.requests.PlantationDto;
 import com.growtech.api.entities.Plantation;
@@ -151,5 +152,28 @@ public class PlantationServiceImpl implements PlantationService {
         })
         .flatMap(deletedPlantation -> Mono.just("Plantation and his sensors deleted successfully"))
     );
+  }
+
+  @Override
+  public Mono<Plantation> editPlantation(User user, String plantationId, EditPlantationDto plantationDto) {
+    // Get the plantation by id if not exists, throw bad request exception
+    Mono<Plantation> plantation = this.plantationRepository.findPlantationsByIdAndIsDeletedIsFalse(plantationId)
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation not found")));
+
+    // Check if the user is the owner of the plantation or has admin role
+    return plantation.flatMap(pl -> {
+      if (!pl.getOwnerId().equals(user.getId()) && !user.isAdmin()) {
+        return Mono.error(new CustomException(HttpStatus.FORBIDDEN, "Forbidden"));
+      }
+
+      // Check if the name is already taken by another plantation of the same owner and not the edited plantation
+      return this.plantationRepository
+        .existsPlantationByIdNotAndNameAndOwnerIdAndIsDeletedIsFalse(plantationId, plantationDto.name(), pl.getOwnerId())
+        .flatMap(exists -> {
+          if (exists) return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Plantation name already exists for this owner"));
+          pl.edit(plantationDto);
+          return this.plantationRepository.save(pl);
+        });
+    });
   }
 }

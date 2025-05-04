@@ -1,6 +1,7 @@
 package com.growtech.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.growtech.api.dtos.requests.EditPlantationDto;
 import com.growtech.api.dtos.requests.PlantationDto;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -8,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import  lombok.*;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Document("plantations")
@@ -83,5 +85,15 @@ public class Plantation extends Model  {
     this.isDeleted = true;
     this.ownerId = "";
     this.managers.clear();
+  }
+
+  /**
+   * Edit the plantation with the new information
+   * @param plantationDto PlantationDto containing the new information
+   */
+  public void edit(EditPlantationDto plantationDto) {
+    this.name = plantationDto.name();
+    this.type = plantationDto.type();
+    this.updatedAt = LocalDateTime.now();
   }
 }
