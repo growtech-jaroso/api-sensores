@@ -18,8 +18,7 @@ import java.util.List;
 @ToString
 @Builder
 public class Plantation extends Model  {
-  @Indexed(unique = true)
-  private String name; // Name field is indexed and unique
+  private String name;
 
   private String country;
 
