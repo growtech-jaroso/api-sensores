@@ -77,6 +77,19 @@ public class PlantationHandler {
       });
   }
 
+  public Mono<ServerResponse> editPlantation(ServerRequest request) {
+    // Get the plantation id from the request path
+    String plantationId = request.pathVariable("plantation_id");
+
+    // Get the edited plantation info from the request body
+    Mono<PlantationDto> plantationDto = request.bodyToMono(PlantationDto.class)
+      .doOnNext(objectValidator::validate)
+      .switchIfEmpty(Mono.error(new EmptyBody()));
+
+    return Response.builder(HttpStatus.OK)
+      .bodyValue(new DataResponse<>(HttpStatus.OK, plantationDto));
+  }
+
   public Mono<ServerResponse> addPlantationManager(ServerRequest request) {
     // Get the plantation id from the request path
     String plantationId = request.pathVariable("plantation_id");
