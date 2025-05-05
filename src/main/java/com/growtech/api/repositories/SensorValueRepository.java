@@ -4,22 +4,17 @@ import com.growtech.api.entities.SensorValue;
 import com.growtech.api.enums.SensorType;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface SensorValueRepository extends ReactiveMongoRepository<SensorValue, String> {
-  Flux<SensorValue> findBySensorId(String sensorId);
+  Flux<SensorValue> findAllBySensorIdAndReadingTimestampBetween(String sensorId, LocalDateTime timestampAfter, LocalDateTime timestampBefore);
 
-  Flux<SensorValue> findByValue(Double value);
+  Flux<SensorValue> findAllBySensorIdIn(List<String>sensorIds);
 
-  Flux<SensorValue> findBySensorType(SensorType sensorType);
+  Flux<SensorValue> findAllBySensorIdInAndReadingTimestampBetween(List<String> sensorIds, LocalDateTime timestampAfter, LocalDateTime timestampBefore);
 
-  Flux<SensorValue> findBySensorTypeAndTimestampBetween(SensorType sensorType, LocalDateTime timestampAfter, LocalDateTime timestampBefore);
-
-  Flux<SensorValue> findByTimestampBetween(LocalDateTime timestamp, LocalDateTime timestamp2);
-
-  Flux<SensorValue> findByIdAndTimestampBetween(String id, LocalDateTime timestampAfter, LocalDateTime timestampBefore);
-
-  Flux<SensorValue> findBySensorIdOrderByTimestamp(String sensorId);
 }
 
