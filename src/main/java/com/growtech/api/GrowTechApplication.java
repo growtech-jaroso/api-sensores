@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class GrowTechApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GrowTechApplication.class, args);
+      SpringApplication.run(GrowTechApplication.class, args);
     }
 
 }

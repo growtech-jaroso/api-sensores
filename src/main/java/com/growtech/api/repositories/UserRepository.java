@@ -19,4 +19,5 @@ public interface UserRepository extends ReactiveMongoRepository<User, String> {
   Mono<User> findUserById(String id);
   Mono<User> findUserByIdIsNotAndEmail(String id, String email);
   Mono<User> findUserByIdIsNotAndUsername(String id, String username);
+  Mono<Long> countAllByRole(UserRole role);
 }

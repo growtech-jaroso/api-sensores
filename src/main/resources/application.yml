@@ -1,7 +1,13 @@
 server:
   port: ${APP_PORT:8080}
 
+
 app:
+  users:
+    admin:
+      email: ${ADMIN_EMAIL:admin@growtech.com}
+      username: ${ADMIN_USERNAME:admin}
+      password: ${ADMIN_PASSWORD:admin}
   security:
     jwt:
       secret: ${JWT_SECRET}

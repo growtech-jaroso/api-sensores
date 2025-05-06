@@ -9,6 +9,7 @@ import com.growtech.api.enums.UserRole;
 import com.growtech.api.exceptions.CustomException;
 import com.growtech.api.repositories.PlantationRepository;
 import com.growtech.api.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,13 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements  UserService {
+
+  @Value("${app.users.admin.email}")
+  private String firstAdminEmail;
+  @Value("${app.users.admin.username}")
+  private String firstAdminUsername;
+  @Value("${app.users.admin.password}")
+  private String firstAdminPassword;
 
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
