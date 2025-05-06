@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 @Slf4j
-public class FirstAdminUser {
+public class FirstAdminUserConfig {
   @Value("${app.users.admin.email}")
   private String firstAdminEmail;
   @Value("${app.users.admin.username}")
@@ -24,7 +24,7 @@ public class FirstAdminUser {
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
 
-  public FirstAdminUser(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+  public FirstAdminUserConfig(PasswordEncoder passwordEncoder, UserRepository userRepository) {
     this.passwordEncoder = passwordEncoder;
     this.userRepository = userRepository;
   }
