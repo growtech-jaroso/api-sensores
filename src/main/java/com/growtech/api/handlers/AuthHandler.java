@@ -3,9 +3,11 @@ package com.growtech.api.handlers;
 import com.growtech.api.dtos.responses.AuthInfo;
 import com.growtech.api.dtos.requests.UserLoginDto;
 import com.growtech.api.dtos.requests.passwords.UserRegisterDto;
+import com.growtech.api.enums.UserRole;
 import com.growtech.api.exceptions.EmptyBody;
 import com.growtech.api.responses.success.DataResponse;
 import com.growtech.api.services.auth.AuthService;
+import com.growtech.api.utils.AuthUtil;
 import com.growtech.api.validators.ObjectValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,9 +43,13 @@ public class AuthHandler {
   }
 
   public Mono<ServerResponse> register(ServerRequest request) {
-    return request.bodyToMono(UserRegisterDto.class)
+    Mono<UserRegisterDto> userRegisterDto = request.bodyToMono(UserRegisterDto.class)
       .doOnNext(objectValidator::validate)
-      .switchIfEmpty(Mono.error(new EmptyBody()))
+      .switchIfEmpty(Mono.error(new EmptyBody()));
+    // Check if user is admin to register a new user
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+      .then(userRegisterDto)
+      // Create a new user
       .flatMap(this.authService::registerUser)
       .flatMap(authInfo -> {
         // Create a DataResponse object with the status and authInfo
