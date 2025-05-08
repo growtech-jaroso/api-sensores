@@ -57,7 +57,7 @@ public class User extends Model implements UserDetails {
     this.username = dto.username();
     this.password = dto.password();
     this.email = dto.email();
-    this.role = UserRole.USER;
+    this.role = UserRole.convertFromString(dto.role());
   }
 
   @Override

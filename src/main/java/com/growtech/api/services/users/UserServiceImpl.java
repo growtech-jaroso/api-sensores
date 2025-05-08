@@ -52,9 +52,7 @@ public class UserServiceImpl implements  UserService {
 
   @Override
   public Mono<User> create(UserRegisterDto userRegisterDTO) {
-    User user = new User();
-    user.setEmail(userRegisterDTO.email());
-    user.setUsername(userRegisterDTO.username());
+    User user = new User(userRegisterDTO);
     // Encrypt the password before saving it
     user.setPassword(passwordEncoder.encode(userRegisterDTO.password()));
 

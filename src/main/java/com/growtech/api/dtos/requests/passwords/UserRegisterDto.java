@@ -1,6 +1,7 @@
 package com.growtech.api.dtos.requests.passwords;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.growtech.api.annotations.IsUserRole;
 import com.growtech.api.annotations.PasswordMatches;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -19,7 +20,9 @@ public record UserRegisterDto(
   String password,
   @NotBlank(message = "Password confirmation is required")
   @JsonProperty("confirm_password")
-  String confirmPassword
+  String confirmPassword,
+  @IsUserRole
+  String role
 ) implements PasswordsInterface {
   @Override
   public String getPassword() {
