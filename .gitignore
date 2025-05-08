@@ -37,7 +37,7 @@ out/
 .vscode/
 
 mongo
-logs
+*.log
 .env
 
 .DS_Store

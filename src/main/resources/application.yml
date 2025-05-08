@@ -34,7 +34,7 @@ spring:
 
 logging:
   file:
-    name: "logs/application.log"
+    name: "var/logs/application.log"
   level:
     root: INFO
     org.springframework.web: DEBUG
