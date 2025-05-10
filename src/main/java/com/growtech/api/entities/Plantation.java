@@ -34,6 +34,10 @@ public class Plantation extends Model  {
   @JsonProperty("owner_id")
   private String ownerId; // ID of the user who owns the plantation
 
+  @Field(name = "has_alerts")
+  @JsonProperty("has_alerts")
+  private Boolean hasAlerts;
+
   @Indexed
   private List<String> managers; // List of users IDs who are managers of the plantation
 
@@ -52,6 +56,7 @@ public class Plantation extends Model  {
   public Plantation(PlantationDto plantationDto, User user) {
     super();
     this.name = plantationDto.name();
+    this.hasAlerts = false;
     this.country = plantationDto.country();
     this.province = plantationDto.province();
     this.city = plantationDto.city();
