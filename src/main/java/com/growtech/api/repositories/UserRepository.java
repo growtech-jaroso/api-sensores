@@ -14,7 +14,8 @@ public interface UserRepository extends ReactiveMongoRepository<User, String> {
   Mono<User> findByEmail(String email);
   Mono<User> findByEmailAndRoleNotIn(String email, List<UserRole> roles);
   Mono<User> findByUsername(String username);
-  Flux<User> findAllBy(PageRequest pageRequest);
+  Flux<User> findAllByUsernameContainsIgnoreCaseAndEmailContainsIgnoreCase(String username, String email, PageRequest pageRequest);
+  Mono<Long> countAllByUsernameContainsIgnoreCaseAndEmailContainsIgnoreCase(String username, String email);
   Flux<EmailProjection> findAllByRoleNotIn(List<UserRole> roles);
   Mono<User> findUserById(String id);
   Mono<User> findUserByIdIsNotAndEmail(String id, String email);

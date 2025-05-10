@@ -41,10 +41,14 @@ public class UserHandler {
   public Mono<ServerResponse> getAllUsers(ServerRequest request) {
     // Create a PageRequest object with default values
     PageRequest pageRequest = ParamsUtil.getPageRequest(request);
+    // Get the username name from the request parameters
+    String usernameFilter = request.queryParam("username").orElse("");
+    // Get the email name from the request parameters
+    String emailFilter = request.queryParam("email").orElse("");
 
     // Check if the user has the ADMIN role and return the users paginated
     return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
-      .then(userService.getAllUsersPaginated(pageRequest))
+      .then(userService.getAllUsersPaginated(usernameFilter, emailFilter, pageRequest))
       .flatMap(tuple2 -> ServerResponse
         .ok()
         .bodyValue(new PaginatedResponse<>(

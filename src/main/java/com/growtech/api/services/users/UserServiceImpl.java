@@ -61,17 +61,17 @@ public class UserServiceImpl implements  UserService {
   }
 
   @Override
-  public Mono<Tuple2<List<UserInfo>, Long>> getAllUsersPaginated(PageRequest pageRequest) {
+  public Mono<Tuple2<List<UserInfo>, Long>> getAllUsersPaginated(String usernameFilter, String emailFilter, PageRequest pageRequest) {
     return Mono.zip(
       // Fetch all users with pagination
-      this.userRepository.findAllBy(pageRequest)
+      this.userRepository.findAllByUsernameContainsIgnoreCaseAndEmailContainsIgnoreCase(usernameFilter, emailFilter, pageRequest)
         .collectList()
         // Map the users to UserInfo DTOs
         .map(users -> users.stream()
           .map(User::getUserInfoDto)
           .toList()
         ),
-      this.userRepository.count()
+      this.userRepository.countAllByUsernameContainsIgnoreCaseAndEmailContainsIgnoreCase(usernameFilter, emailFilter)
     );
   }
 

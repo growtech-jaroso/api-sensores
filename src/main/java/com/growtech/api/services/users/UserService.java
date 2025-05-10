@@ -19,7 +19,7 @@ public interface UserService {
   Mono<User> findByUsername(String username);
   Boolean passwordMatches(String rawPassword, String encodedPassword);
   Mono<User> create(UserRegisterDto userRegisterDTO);
-  Mono<Tuple2<List<UserInfo>, Long>> getAllUsersPaginated(PageRequest pageRequest);
+  Mono<Tuple2<List<UserInfo>, Long>> getAllUsersPaginated(String usernameFilter, String emailFilter, PageRequest pageRequest);
   Flux<String> getAllUserEmails();
   Mono<String> deleteUser(User authUser, String userId);
   Mono<UserInfo> getUserById(String userId);
