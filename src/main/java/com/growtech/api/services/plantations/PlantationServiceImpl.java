@@ -32,23 +32,23 @@ public class PlantationServiceImpl implements PlantationService {
   }
 
   @Override
-  public Mono<Tuple2<List<Plantation>, Long>> getAllPlantationsByUserPaginated(User user, PageRequest pageRequest) {
+  public Mono<Tuple2<List<Plantation>, Long>> getAllPlantationsByUserPaginated(User user, PageRequest pageRequest, String plantationName) {
     // Check if the user is associated with the plantation, doing with zip is more efficient because will be asynchronous
     return user.canViewAnything()
       ? Mono.zip(
-        this.plantationRepository.findAllByIsDeletedIsFalse(pageRequest).collectList(),
-        this.getTotalPlantationsByUser(user)
+        this.plantationRepository.findAllByNameContainsIgnoreCaseAndIsDeletedIsFalse(plantationName, pageRequest).collectList(),
+        this.getTotalPlantationsByUser(user, plantationName)
       )
       : Mono.zip(
-        this.plantationRepository.findAllByManagersContainingAndIsDeletedIsFalse(user.getId(), pageRequest).collectList(),
-        this.getTotalPlantationsByUser(user)
+        this.plantationRepository.findAllByManagersContainingAndNameContainsIgnoreCaseAndIsDeletedIsFalse(user.getId(), plantationName, pageRequest).collectList(),
+        this.getTotalPlantationsByUser(user, plantationName)
       );
   }
 
-  private Mono<Long> getTotalPlantationsByUser(User user) {
+  private Mono<Long> getTotalPlantationsByUser(User user, String plantationName) {
     return user.canViewAnything()
-      ? this.plantationRepository.countAllByIsDeletedIsFalse()
-      : this.plantationRepository.countAllByManagersContainingAndIsDeletedIsFalse(user.getId());
+      ? this.plantationRepository.countAllByNameContainsIgnoreCaseAndIsDeletedIsFalse(plantationName)
+      : this.plantationRepository.countAllByManagersContainingAndNameContainsIgnoreCaseAndIsDeletedIsFalse(user.getId(), plantationName);
   }
 
   @Override

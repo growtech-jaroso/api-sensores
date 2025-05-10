@@ -57,6 +57,8 @@ public class PlantationHandler {
   public Mono<ServerResponse> getAllPlantationsByUser(ServerRequest request) {
     // Create a page request from the request parameters
     PageRequest pageRequest = ParamsUtil.getPageRequest(request);
+    // Get the plantation name filter from the request parameters
+    String plantationNameFilter = request.queryParam("name").orElse("");
 
     // Retrieve the user from the request
     Mono<User> authUser = AuthUtil.getAuthUser();
@@ -66,7 +68,7 @@ public class PlantationHandler {
       flatMap(user -> {
         // Get all plantations by user
         return this.plantationService
-          .getAllPlantationsByUserPaginated(user, pageRequest)
+          .getAllPlantationsByUserPaginated(user, pageRequest, plantationNameFilter)
           // Create a paginated response
           .flatMap(tuple -> Response.builder(HttpStatus.OK)
             .bodyValue(new PaginatedResponse<>(
