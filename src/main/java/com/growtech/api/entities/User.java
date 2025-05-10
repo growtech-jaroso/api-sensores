@@ -52,10 +52,10 @@ public class User extends Model implements UserDetails {
     this.role = UserRole.USER;
   }
 
-  public User(UserRegisterDto dto, String password) {
+  public User(UserRegisterDto dto, String encryptedPassword) {
     super();
     this.username = dto.username();
-    this.password = password;
+    this.password = encryptedPassword;
     this.email = dto.email();
     this.role = UserRole.convertFromString(dto.role());
   }
