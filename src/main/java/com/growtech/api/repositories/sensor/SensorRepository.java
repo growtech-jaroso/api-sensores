@@ -1,4 +1,4 @@
-package com.growtech.api.repositories;
+package com.growtech.api.repositories.sensor;
 
 import com.growtech.api.entities.Sensor;
 import com.growtech.api.enums.SensorType;

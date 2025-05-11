@@ -7,7 +7,7 @@ import com.growtech.api.dtos.requests.passwords.UserRegisterDto;
 import com.growtech.api.entities.User;
 import com.growtech.api.enums.UserRole;
 import com.growtech.api.exceptions.CustomException;
-import com.growtech.api.repositories.PlantationRepository;
+import com.growtech.api.repositories.plantation.PlantationRepository;
 import com.growtech.api.repositories.user.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;

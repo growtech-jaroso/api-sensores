@@ -1,4 +1,4 @@
-package com.growtech.api.repositories;
+package com.growtech.api.repositories.plantation;
 
 import com.growtech.api.entities.Plantation;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;

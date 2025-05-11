@@ -1,8 +1,7 @@
-package com.growtech.api.services.sensorValue;
+package com.growtech.api.services.sensor_value;
 
 import com.growtech.api.entities.SensorValue;
 import com.growtech.api.entities.User;
-import com.growtech.api.enums.SensorType;
 import com.growtech.api.services.sensors.SensorIdProjection;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
