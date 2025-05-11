@@ -59,6 +59,20 @@ public class PlantationHandler {
     PageRequest pageRequest = ParamsUtil.getPageRequest(request);
     // Get the plantation name filter from the request parameters
     String plantationNameFilter = request.queryParam("name").orElse("");
+    // Get the plantation country filter from the request parameters
+    String plantationCountryFilter = request.queryParam("country").orElse("");
+    // Get the plantation province filter from the request parameters
+    String plantationProvinceFilter = request.queryParam("province").orElse("");
+    // Get the plantation city filter from the request parameters
+    String plantationCityFilter = request.queryParam("city").orElse("");
+    // Get the plantation type filter from the request parameters
+    String plantationTypeFilter = request.queryParam("type").orElse("");
+    // Get the plantation filter for has alerts from the request parameters
+    String hasAlertsStr = request.queryParam("has_alerts").orElse("");
+    Boolean hasAlertsFilter = null;
+    if (hasAlertsStr.equals("true")) hasAlertsFilter = true;
+    else if (hasAlertsStr.equals("false")) hasAlertsFilter = false;
+
 
     // Retrieve the user from the request
     Mono<User> authUser = AuthUtil.getAuthUser();
@@ -68,7 +82,16 @@ public class PlantationHandler {
       flatMap(user -> {
         // Get all plantations by user
         return this.plantationService
-          .getAllPlantationsByUserPaginated(user, pageRequest, plantationNameFilter)
+          .getAllPlantationsByUserPaginated(
+            user,
+            pageRequest,
+            plantationNameFilter,
+            plantationCountryFilter,
+            plantationProvinceFilter,
+            plantationCityFilter,
+            plantationTypeFilter,
+            hasAlertsFilter
+          )
           // Create a paginated response
           .flatMap(tuple -> Response.builder(HttpStatus.OK)
             .bodyValue(new PaginatedResponse<>(

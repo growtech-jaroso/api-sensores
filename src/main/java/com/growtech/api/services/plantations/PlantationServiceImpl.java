@@ -32,7 +32,17 @@ public class PlantationServiceImpl implements PlantationService {
   }
 
   @Override
-  public Mono<Tuple2<List<Plantation>, Long>> getAllPlantationsByUserPaginated(User user, PageRequest pageRequest, String plantationName) {
+  public Mono<Tuple2<List<Plantation>, Long>> getAllPlantationsByUserPaginated(
+    User user,
+    PageRequest pageRequest,
+    String plantationName,
+    String plantationCountry,
+    String plantationProvince,
+    String plantationCity,
+    String plantationTypeFilter,
+    Boolean hasAlertsFilter
+  ) {
+    if
     // Check if the user is associated with the plantation, doing with zip is more efficient because will be asynchronous
     return user.canViewAnything()
       ? Mono.zip(
