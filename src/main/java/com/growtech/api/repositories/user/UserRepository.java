@@ -1,4 +1,4 @@
-package com.growtech.api.repositories;
+package com.growtech.api.repositories.user;
 
 import com.growtech.api.entities.User;
 import com.growtech.api.enums.UserRole;
@@ -10,15 +10,16 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-public interface UserRepository extends ReactiveMongoRepository<User, String> {
+public interface UserRepository extends ReactiveMongoRepository<User, String>, UserRepositoryCustom {
   Mono<User> findByEmail(String email);
   Mono<User> findByEmailAndRoleNotIn(String email, List<UserRole> roles);
   Mono<User> findByUsername(String username);
-  Flux<User> findAllByUsernameContainsIgnoreCaseAndEmailContainsIgnoreCase(String username, String email, PageRequest pageRequest);
-  Mono<Long> countAllByUsernameContainsIgnoreCaseAndEmailContainsIgnoreCase(String username, String email);
+  Flux<User> findAllByUsernameContainsIgnoreCaseOrEmailContainsIgnoreCase(
+    String username, String email, PageRequest pageRequest
+  );
+  Mono<Long> countAllByUsernameContainsIgnoreCaseOrEmailContainsIgnoreCase(String username, String email);
   Flux<EmailProjection> findAllByRoleNotIn(List<UserRole> roles);
   Mono<User> findUserById(String id);
   Mono<User> findUserByIdIsNotAndEmail(String id, String email);
   Mono<User> findUserByIdIsNotAndUsername(String id, String username);
-  Mono<Long> countAllByRole(UserRole role);
 }

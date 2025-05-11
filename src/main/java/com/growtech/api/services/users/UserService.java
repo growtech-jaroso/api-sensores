@@ -5,6 +5,7 @@ import com.growtech.api.dtos.responses.UserInfo;
 import com.growtech.api.dtos.requests.passwords.ChangePasswordDto;
 import com.growtech.api.dtos.requests.passwords.UserRegisterDto;
 import com.growtech.api.entities.User;
+import com.growtech.api.enums.UserRole;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -19,7 +20,7 @@ public interface UserService {
   Mono<User> findByUsername(String username);
   Boolean passwordMatches(String rawPassword, String encodedPassword);
   Mono<User> create(UserRegisterDto userRegisterDTO);
-  Mono<Tuple2<List<UserInfo>, Long>> getAllUsersPaginated(String usernameFilter, String emailFilter, PageRequest pageRequest);
+  Mono<Tuple2<List<UserInfo>, Long>> getAllUsersPaginated(String usernameFilter, String emailFilter, UserRole roleFilter, PageRequest pageRequest);
   Flux<String> getAllUserEmails();
   Mono<String> deleteUser(User authUser, String userId);
   Mono<UserInfo> getUserById(String userId);

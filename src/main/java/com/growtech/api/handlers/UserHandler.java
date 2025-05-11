@@ -45,10 +45,16 @@ public class UserHandler {
     String usernameFilter = request.queryParam("username").orElse("");
     // Get the email name from the request parameters
     String emailFilter = request.queryParam("email").orElse("");
+    // Validate role name
+    UserRole roleFilter = null;
+    if (request.queryParam("role").isPresent()) {
+      String role = request.queryParam("role").get();
+       roleFilter = UserRole.convertFromString(role);
+    }
 
     // Check if the user has the ADMIN role and return the users paginated
     return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
-      .then(userService.getAllUsersPaginated(usernameFilter, emailFilter, pageRequest))
+      .then(userService.getAllUsersPaginated(usernameFilter, emailFilter, roleFilter, pageRequest))
       .flatMap(tuple2 -> ServerResponse
         .ok()
         .bodyValue(new PaginatedResponse<>(

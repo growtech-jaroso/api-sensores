@@ -2,7 +2,7 @@ package com.growtech.api.config;
 
 import com.growtech.api.entities.User;
 import com.growtech.api.enums.UserRole;
-import com.growtech.api.repositories.UserRepository;
+import com.growtech.api.repositories.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;

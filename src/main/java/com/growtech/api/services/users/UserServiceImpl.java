@@ -8,7 +8,7 @@ import com.growtech.api.entities.User;
 import com.growtech.api.enums.UserRole;
 import com.growtech.api.exceptions.CustomException;
 import com.growtech.api.repositories.PlantationRepository;
-import com.growtech.api.repositories.UserRepository;
+import com.growtech.api.repositories.user.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -61,17 +61,34 @@ public class UserServiceImpl implements  UserService {
   }
 
   @Override
-  public Mono<Tuple2<List<UserInfo>, Long>> getAllUsersPaginated(String usernameFilter, String emailFilter, PageRequest pageRequest) {
+  public Mono<Tuple2<List<UserInfo>, Long>> getAllUsersPaginated(String usernameFilter, String emailFilter, UserRole roleFilter, PageRequest pageRequest) {
+
+    // Check if the role filter is null to do a query without it
+    if (roleFilter == null) {
+      return Mono.zip(
+        // Get all users with pagination
+        this.userRepository.findAllByUsernameContainsIgnoreCaseOrEmailContainsIgnoreCase(usernameFilter, emailFilter, pageRequest)
+          .collectList()
+          // Map the users to UserInfo DTOs
+          .map(users -> users.stream()
+            .map(User::getUserInfoDto)
+            .toList()
+          ),
+        this.userRepository.countAllByUsernameContainsIgnoreCaseOrEmailContainsIgnoreCase(usernameFilter, emailFilter)
+      );
+    }
+
+    // If role filter is not null, do a query using it
     return Mono.zip(
-      // Fetch all users with pagination
-      this.userRepository.findAllByUsernameContainsIgnoreCaseAndEmailContainsIgnoreCase(usernameFilter, emailFilter, pageRequest)
+      // Get all users with pagination
+      this.userRepository.findMatchingUsers(usernameFilter, emailFilter, roleFilter, pageRequest)
         .collectList()
         // Map the users to UserInfo DTOs
         .map(users -> users.stream()
           .map(User::getUserInfoDto)
           .toList()
         ),
-      this.userRepository.countAllByUsernameContainsIgnoreCaseAndEmailContainsIgnoreCase(usernameFilter, emailFilter)
+      this.userRepository.countByUsernameOrEmailAndRole(usernameFilter, emailFilter, roleFilter)
     );
   }
 
