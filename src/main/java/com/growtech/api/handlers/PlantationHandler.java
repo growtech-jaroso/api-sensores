@@ -93,6 +93,25 @@ public class PlantationHandler {
       });
   }
 
+  public Mono<ServerResponse> getAllPlantationsOwners(ServerRequest request) {
+    // Create a page request from the request parameters
+    PageRequest pageRequest = ParamsUtil.getPageRequest(request);
+
+    // Check if the user has the ADMIN role and return the owners of the plantations
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+      .then(
+        this.plantationService.getAllPlantationsOwners(pageRequest)
+          .flatMap(tuple -> Response.builder(HttpStatus.OK)
+            .bodyValue(new PaginatedResponse<>(
+              HttpStatus.OK,
+              tuple.getT2(),
+              pageRequest,
+              tuple.getT1()
+            ))
+          )
+      );
+  }
+
   public Mono<ServerResponse> editPlantation(ServerRequest request) {
     // Get the plantation id from the request path
     String plantationId = request.pathVariable("plantation_id");

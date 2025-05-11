@@ -3,6 +3,7 @@ package com.growtech.api.services.plantations;
 import com.growtech.api.dtos.requests.EditPlantationDto;
 import com.growtech.api.dtos.requests.PlantationManagerDto;
 import com.growtech.api.dtos.requests.PlantationDto;
+import com.growtech.api.dtos.responses.OwnerInfo;
 import com.growtech.api.entities.Plantation;
 import com.growtech.api.entities.User;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +21,7 @@ public interface PlantationService {
     Boolean hasAlertsFilter,
     PageRequest pageRequest
   );
+  Mono<Tuple2<List<OwnerInfo>, Long>> getAllPlantationsOwners(PageRequest pageRequest);
   Mono<Plantation> createPlantation(PlantationDto plantationDto);
   Mono<String> addPlantationManager(User user, String plantationId, PlantationManagerDto plantationManagerDto);
   Mono<String> deletePlantationManager(User user, String plantationId, PlantationManagerDto plantationManagerDto);

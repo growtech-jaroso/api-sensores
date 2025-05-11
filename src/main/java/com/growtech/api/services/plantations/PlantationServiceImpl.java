@@ -3,6 +3,7 @@ package com.growtech.api.services.plantations;
 import com.growtech.api.dtos.requests.EditPlantationDto;
 import com.growtech.api.dtos.requests.PlantationManagerDto;
 import com.growtech.api.dtos.requests.PlantationDto;
+import com.growtech.api.dtos.responses.OwnerInfo;
 import com.growtech.api.entities.Plantation;
 import com.growtech.api.entities.Sensor;
 import com.growtech.api.entities.User;
@@ -14,6 +15,7 @@ import com.growtech.api.repositories.user.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
@@ -67,6 +69,11 @@ public class PlantationServiceImpl implements PlantationService {
         this.plantationRepository.countByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(user.getId(), plantationSearchFilter, hasAlertsFilter)
       );
     }
+  }
+
+  @Override
+  public Mono<Tuple2<List<OwnerInfo>, Long>> getAllPlantationsOwners(PageRequest pageRequest) {
+    Flux<String> ownersIds = this.plantationRepository.findAllByIsDeletedIsFalse().map(OwnerIdProjection::getOwnerId);
   }
 
   @Override

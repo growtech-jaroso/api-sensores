@@ -1,6 +1,7 @@
 package com.growtech.api.repositories.plantation;
 
 import com.growtech.api.entities.Plantation;
+import com.growtech.api.services.plantations.OwnerIdProjection;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.PageRequest;
@@ -16,4 +17,5 @@ public interface PlantationRepository extends ReactiveMongoRepository<Plantation
   Mono<Boolean> existsPlantationByOwnerIdAndIsDeletedIsFalse(String ownerId);
   Mono<Boolean> existsPlantationByNameAndOwnerIdAndIsDeletedIsFalse(String name, String ownerId);
   Mono<Boolean> existsPlantationByIdNotAndNameAndOwnerIdAndIsDeletedIsFalse(String plantationId, String name, String ownerId);
+  Flux<OwnerIdProjection> findAllByIsDeletedIsFalse();
 }

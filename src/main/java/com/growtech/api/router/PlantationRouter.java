@@ -28,6 +28,7 @@ public class PlantationRouter {
       .DELETE("/{plantation_id}", this.handler::deletePlantation) // Route: DELETE /api/plantations/{plantation_id}
       .POST("/{plantation_id}/assistants", this.handler::addPlantationManager) // Route: POST /api/plantations/{plantation_id}/assistants
       .DELETE("/{plantation_id}/assistants", this.handler::deletePlantationManager) // Route: DELETE /api/plantations/{plantation_id}/assistants
+      .GET("/owners", this.handler::getAllPlantationsOwners) // Route: GET /api/plantations/owners
       .build();
   }
 }
