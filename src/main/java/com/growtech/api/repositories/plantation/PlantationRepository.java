@@ -8,15 +8,12 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface PlantationRepository extends ReactiveMongoRepository<Plantation, String> {
-  Flux<Plantation> findAllByIsDeletedIsFalse(PageRequest pageRequest);
+public interface PlantationRepository extends ReactiveMongoRepository<Plantation, String>, PlantationRepositoryCustom {
   Flux<Plantation> findAllByManagersContainingAndIsDeletedIsFalse(String userId);
-  Flux<Plantation> findAllByManagersContainingAndIsDeletedIsFalse(String userId, PageRequest pageRequest);
-  Mono<Boolean> existsPlantationByNameAndIsDeletedIsFalse(String name);
-  Mono<Long> countAllByManagersContainingAndIsDeletedIsFalse(String userId);
   Mono<Plantation> findPlantationsByIdAndIsDeletedIsFalse(String plantationId);
   Mono<Boolean> existsPlantationByIdAndIsDeletedIsFalse(String plantationId);
-  Mono<Long> countAllByIsDeletedIsFalse();
   Mono<Plantation> findPlantationByManagersContainingAndIdAndIsDeletedIsFalse(String userId, String plantationId);
   Mono<Boolean> existsPlantationByOwnerIdAndIsDeletedIsFalse(String ownerId);
+  Mono<Boolean> existsPlantationByNameAndOwnerIdAndIsDeletedIsFalse(String name, String ownerId);
+  Mono<Boolean> existsPlantationByIdNotAndNameAndOwnerIdAndIsDeletedIsFalse(String plantationId, String name, String ownerId);
 }

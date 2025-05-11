@@ -39,25 +39,90 @@ public class PlantationServiceImpl implements PlantationService {
     String plantationCountry,
     String plantationProvince,
     String plantationCity,
-    String plantationTypeFilter,
+    String plantationType,
     Boolean hasAlertsFilter
   ) {
-    // Check if the user is associated with the plantation, doing with zip is more efficient because will be asynchronous
-    return user.canViewAnything()
-      ? Mono.zip(
-        this.plantationRepository.findAllByNameContainsIgnoreCaseAndIsDeletedIsFalse(plantationName, pageRequest).collectList(),
-        this.getTotalPlantationsByUser(user, plantationName)
+    if (hasAlertsFilter == null) {
+      return user.canViewAnything()
+        ? Mono.zip(
+        this.plantationRepository.findAllByFiltersAndIsDeletedIsFalse(
+          plantationName,
+          plantationCountry,
+          plantationProvince,
+          plantationCity,
+          plantationType,
+          pageRequest
+        ).collectList(),
+        this.plantationRepository.countAllByFiltersAndIsDeletedIsFalse(
+          plantationName,
+          plantationCountry,
+          plantationProvince,
+          plantationCity,
+          plantationType
+        )
       )
-      : Mono.zip(
-        this.plantationRepository.findAllByManagersContainingAndNameContainsIgnoreCaseAndIsDeletedIsFalse(user.getId(), plantationName, pageRequest).collectList(),
-        this.getTotalPlantationsByUser(user, plantationName)
+        : Mono.zip(
+        this.plantationRepository.findAllByManagersContainingAndFiltersAndIsDeletedIsFalse(
+          user.getId(),
+          plantationName,
+          plantationCountry,
+          plantationProvince,
+          plantationCity,
+          plantationType,
+          pageRequest
+        ).collectList(),
+        this.plantationRepository.countAllByManagersContainingAndFiltersAndIsDeletedIsFalse(
+          user.getId(),
+          plantationName,
+          plantationCountry,
+          plantationProvince,
+          plantationCity,
+          plantationType
+        )
       );
-  }
-
-  private Mono<Long> getTotalPlantationsByUser(User user, String plantationName) {
-    return user.canViewAnything()
-      ? this.plantationRepository.countAllByNameContainsIgnoreCaseAndIsDeletedIsFalse(plantationName)
-      : this.plantationRepository.countAllByManagersContainingAndNameContainsIgnoreCaseAndIsDeletedIsFalse(user.getId(), plantationName);
+    } else {
+      return user.canViewAnything()
+        ? Mono.zip(
+        this.plantationRepository.findAllByFiltersAndHasAlertsAndIsDeletedIsFalse(
+          plantationName,
+          plantationCountry,
+          plantationProvince,
+          plantationCity,
+          plantationType,
+          hasAlertsFilter,
+          pageRequest
+        ).collectList(),
+        this.plantationRepository.countAllByFiltersAndHasAlertsAndIsDeletedIsFalse(
+          plantationName,
+          plantationCountry,
+          plantationProvince,
+          plantationCity,
+          plantationType,
+          hasAlertsFilter
+        )
+      )
+        : Mono.zip(
+        this.plantationRepository.findAllByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(
+          user.getId(),
+          plantationName,
+          plantationCountry,
+          plantationProvince,
+          plantationCity,
+          plantationType,
+          hasAlertsFilter,
+          pageRequest
+        ).collectList(),
+        this.plantationRepository.countByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(
+          user.getId(),
+          plantationName,
+          plantationCountry,
+          plantationProvince,
+          plantationCity,
+          plantationType,
+          hasAlertsFilter
+        )
+      );
+    }
   }
 
   @Override
