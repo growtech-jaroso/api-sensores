@@ -57,16 +57,8 @@ public class PlantationHandler {
   public Mono<ServerResponse> getAllPlantationsByUser(ServerRequest request) {
     // Create a page request from the request parameters
     PageRequest pageRequest = ParamsUtil.getPageRequest(request);
-    // Get the plantation name filter from the request parameters
-    String plantationNameFilter = request.queryParam("name").orElse("");
-    // Get the plantation country filter from the request parameters
-    String plantationCountryFilter = request.queryParam("country").orElse("");
-    // Get the plantation province filter from the request parameters
-    String plantationProvinceFilter = request.queryParam("province").orElse("");
-    // Get the plantation city filter from the request parameters
-    String plantationCityFilter = request.queryParam("city").orElse("");
-    // Get the plantation type filter from the request parameters
-    String plantationTypeFilter = request.queryParam("type").orElse("");
+    // Get the plantation search filter from the request parameters
+    String plantationSearchFilter = request.queryParam("search").orElse("");
     // Get the plantation filter for has alerts from the request parameters
     String hasAlertsStr = request.queryParam("has_alerts").orElse("");
 
@@ -86,13 +78,9 @@ public class PlantationHandler {
         return this.plantationService
           .getAllPlantationsByUserPaginated(
             user,
-            pageRequest,
-            plantationNameFilter,
-            plantationCountryFilter,
-            plantationProvinceFilter,
-            plantationCityFilter,
-            plantationTypeFilter,
-            hasAlertsFilter
+            plantationSearchFilter,
+            hasAlertsFilter,
+            pageRequest
           )
           // Create a paginated response
           .flatMap(tuple -> Response.builder(HttpStatus.OK)

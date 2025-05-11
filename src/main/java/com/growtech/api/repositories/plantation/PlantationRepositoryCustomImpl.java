@@ -19,8 +19,8 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
   }
 
   @Override
-  public Flux<Plantation> findAllByFiltersAndIsDeletedIsFalse(String name, String country, String province, String city, String type, PageRequest pageRequest) {
-    Criteria criteria = getCriteriaForFiltersAndIsDeletedIsFalse(name, country, province, city, type);
+  public Flux<Plantation> findAllByFiltersAndIsDeletedIsFalse(String search, PageRequest pageRequest) {
+    Criteria criteria = getCriteriaForFiltersAndIsDeletedIsFalse(search);
 
     Query query = new Query(criteria);
     query.with(pageRequest); // Apply pagination
@@ -29,23 +29,16 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
   }
 
   @Override
-  public Mono<Long> countAllByFiltersAndIsDeletedIsFalse(String name, String country, String province, String city, String type) {
-    Criteria criteria = getCriteriaForFiltersAndIsDeletedIsFalse(name, country, province, city, type);
+  public Mono<Long> countAllByFiltersAndIsDeletedIsFalse(String search) {
+    Criteria criteria = getCriteriaForFiltersAndIsDeletedIsFalse(search);
 
     Query query = new Query(criteria);
     return reactiveMongoTemplate.count(query, Plantation.class);
   }
 
   @Override
-  public Flux<Plantation> findAllByManagersContainingAndFiltersAndIsDeletedIsFalse(String userId, String name, String country, String province, String city, String type, PageRequest pageRequest) {
-    Criteria criteria = getCriteriaForManagersContainingAndFiltersAndIsDeletedIsFalse(
-      userId,
-      name,
-      country,
-      province,
-      city,
-      type
-    );
+  public Flux<Plantation> findAllByManagersContainingAndFiltersAndIsDeletedIsFalse(String userId, String search, PageRequest pageRequest) {
+    Criteria criteria = getCriteriaForManagersContainingAndFiltersAndIsDeletedIsFalse(userId, search);
 
     Query query = new Query(criteria);
     query.with(pageRequest); // Apply pagination
@@ -54,30 +47,16 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
   }
 
   @Override
-  public Mono<Long> countAllByManagersContainingAndFiltersAndIsDeletedIsFalse(String userId, String name, String country, String province, String city, String type) {
-    Criteria criteria = getCriteriaForManagersContainingAndFiltersAndIsDeletedIsFalse(
-      userId,
-      name,
-      country,
-      province,
-      city,
-      type
-    );
+  public Mono<Long> countAllByManagersContainingAndFiltersAndIsDeletedIsFalse(String userId, String search) {
+    Criteria criteria = getCriteriaForManagersContainingAndFiltersAndIsDeletedIsFalse(userId, search);
 
     Query query = new Query(criteria);
     return reactiveMongoTemplate.count(query, Plantation.class);
   }
 
   @Override
-  public Flux<Plantation> findAllByFiltersAndHasAlertsAndIsDeletedIsFalse(String name, String country, String province, String city, String type, Boolean hasAlerts, PageRequest pageRequest) {
-    Criteria criteria = getCriteriaForFiltersAndHasAlertsAndIsDeletedIsFalse(
-      name,
-      country,
-      province,
-      city,
-      type,
-      hasAlerts
-    );
+  public Flux<Plantation> findAllByFiltersAndHasAlertsAndIsDeletedIsFalse(String search, Boolean hasAlerts, PageRequest pageRequest) {
+    Criteria criteria = getCriteriaForFiltersAndHasAlertsAndIsDeletedIsFalse(search, hasAlerts);
 
     Query query = new Query(criteria);
     query.with(pageRequest); // Apply pagination
@@ -86,31 +65,16 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
   }
 
   @Override
-  public Mono<Long> countAllByFiltersAndHasAlertsAndIsDeletedIsFalse(String name, String country, String province, String city, String type, Boolean hasAlerts) {
-    Criteria criteria = getCriteriaForFiltersAndHasAlertsAndIsDeletedIsFalse(
-      name,
-      country,
-      province,
-      city,
-      type,
-      hasAlerts
-    );
+  public Mono<Long> countAllByFiltersAndHasAlertsAndIsDeletedIsFalse(String search, Boolean hasAlerts) {
+    Criteria criteria = getCriteriaForFiltersAndHasAlertsAndIsDeletedIsFalse(search, hasAlerts);
 
     Query query = new Query(criteria);
     return reactiveMongoTemplate.count(query, Plantation.class);
   }
 
   @Override
-  public Flux<Plantation> findAllByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(String userId, String name, String country, String province, String city, String type, Boolean hasAlerts, PageRequest pageRequest) {
-    Criteria criteria = getCriteriaForManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(
-      userId,
-      name,
-      country,
-      province,
-      city,
-      type,
-      hasAlerts
-    );
+  public Flux<Plantation> findAllByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(String userId, String search, Boolean hasAlerts, PageRequest pageRequest) {
+    Criteria criteria = getCriteriaForManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(userId, search, hasAlerts);
 
     Query query = new Query(criteria);
     query.with(pageRequest); // Apply pagination
@@ -119,16 +83,8 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
   }
 
   @Override
-  public Mono<Long> countByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(String userId, String name, String country, String province, String city, String type, Boolean hasAlerts) {
-    Criteria criteria = getCriteriaForManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(
-      userId,
-      name,
-      country,
-      province,
-      city,
-      type,
-      hasAlerts
-    );
+  public Mono<Long> countByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(String userId, String search, Boolean hasAlerts) {
+    Criteria criteria = getCriteriaForManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(userId, search, hasAlerts);
 
     Query query = new Query(criteria);
     return reactiveMongoTemplate.count(query, Plantation.class);
@@ -136,27 +92,17 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
 
   /**
    * This method creates a Criteria object that combines multiple filters
-   * @param name name of the plantation
-   * @param country country of the plantation
-   * @param province province of the plantation
-   * @param city city of the plantation
-   * @param type type of the plantation
+   * @param search search filter of the plantation
    * @return Criteria object that combines multiple filters using an OR operator and is_deleted is false
    */
-  private Criteria getCriteriaForFiltersAndIsDeletedIsFalse(
-    String name,
-    String country,
-    String province,
-    String city,
-    String type
-  ) {
+  private Criteria getCriteriaForFiltersAndIsDeletedIsFalse(String search) {
     return new Criteria().andOperator(
       new Criteria().orOperator(
-        Criteria.where("name").regex(name, "i"),
-        Criteria.where("country").regex(country, "i"),
-        Criteria.where("province").regex(province, "i"),
-        Criteria.where("city").regex(city, "i"),
-        Criteria.where("type").regex(type, "i")
+        Criteria.where("name").regex(search, "i"),
+        Criteria.where("country").regex(search, "i"),
+        Criteria.where("province").regex(search, "i"),
+        Criteria.where("city").regex(search, "i"),
+        Criteria.where("type").regex(search, "i")
       ),
       Criteria.where("is_deleted").is(false)
     );
@@ -165,28 +111,17 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
   /**
    * This method creates a Criteria object that combines multiple filters
    * @param userId user id of the possible manager
-   * @param name name of the plantation
-   * @param country country of the plantation
-   * @param province province of the plantation
-   * @param city city of the plantation
-   * @param type type of the plantation
+   * @param search search filter of the plantation
    * @return Criteria object that combines multiple filters using an OR operator and is_deleted is false
    */
-  private Criteria getCriteriaForManagersContainingAndFiltersAndIsDeletedIsFalse(
-    String userId,
-    String name,
-    String country,
-    String province,
-    String city,
-    String type
-  ) {
+  private Criteria getCriteriaForManagersContainingAndFiltersAndIsDeletedIsFalse(String userId, String search) {
     return new Criteria().andOperator(
       new Criteria().orOperator(
-        Criteria.where("name").regex(name, "i"),
-        Criteria.where("country").regex(country, "i"),
-        Criteria.where("province").regex(province, "i"),
-        Criteria.where("city").regex(city, "i"),
-        Criteria.where("type").regex(type, "i")
+        Criteria.where("name").regex(search, "i"),
+        Criteria.where("country").regex(search, "i"),
+        Criteria.where("province").regex(search, "i"),
+        Criteria.where("city").regex(search, "i"),
+        Criteria.where("type").regex(search, "i")
       ),
       Criteria.where("is_deleted").is(false),
       Criteria.where("owner_id").is(userId)
@@ -195,29 +130,18 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
 
   /**
    * This method creates a Criteria object that combines multiple filters
-   * @param name name of the plantation
-   * @param country country of the plantation
-   * @param province province of the plantation
-   * @param city city of the plantation
-   * @param type type of the plantation
+   * @param search search filter of the plantation
    * @param hasAlerts has alerts of the plantation
    * @return Criteria object that combines multiple filters using an OR operator and is_deleted is false
    */
-  private Criteria getCriteriaForFiltersAndHasAlertsAndIsDeletedIsFalse(
-    String name,
-    String country,
-    String province,
-    String city,
-    String type,
-    Boolean hasAlerts
-  ) {
+  private Criteria getCriteriaForFiltersAndHasAlertsAndIsDeletedIsFalse(String search, Boolean hasAlerts) {
     return new Criteria().andOperator(
       new Criteria().orOperator(
-        Criteria.where("name").regex(name, "i"),
-        Criteria.where("country").regex(country, "i"),
-        Criteria.where("province").regex(province, "i"),
-        Criteria.where("city").regex(city, "i"),
-        Criteria.where("type").regex(type, "i")
+        Criteria.where("name").regex(search, "i"),
+        Criteria.where("country").regex(search, "i"),
+        Criteria.where("province").regex(search, "i"),
+        Criteria.where("city").regex(search, "i"),
+        Criteria.where("type").regex(search, "i")
       ),
       Criteria.where("is_deleted").is(false),
       Criteria.where("has_alerts").is(hasAlerts)
@@ -227,30 +151,18 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
   /**
    * This method creates a Criteria object that combines multiple filters
    * @param userId user id of the possible manager
-   * @param name name of the plantation
-   * @param country country of the plantation
-   * @param province province of the plantation
-   * @param city city of the plantation
-   * @param type type of the plantation
+   * @param search search filter of the plantation
    * @param hasAlerts has alerts of the plantation
    * @return Criteria object that combines multiple filters using an OR operator and is_deleted is false
    */
-  private Criteria getCriteriaForManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(
-    String userId,
-    String name,
-    String country,
-    String province,
-    String city,
-    String type,
-    Boolean hasAlerts
-  ) {
+  private Criteria getCriteriaForManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(String userId, String search, Boolean hasAlerts) {
     return new Criteria().andOperator(
       new Criteria().orOperator(
-        Criteria.where("name").regex(name, "i"),
-        Criteria.where("country").regex(country, "i"),
-        Criteria.where("province").regex(province, "i"),
-        Criteria.where("city").regex(city, "i"),
-        Criteria.where("type").regex(type, "i")
+        Criteria.where("name").regex(search, "i"),
+        Criteria.where("country").regex(search, "i"),
+        Criteria.where("province").regex(search, "i"),
+        Criteria.where("city").regex(search, "i"),
+        Criteria.where("type").regex(search, "i")
       ),
       Criteria.where("is_deleted").is(false),
       Criteria.where("owner_id").is(userId),

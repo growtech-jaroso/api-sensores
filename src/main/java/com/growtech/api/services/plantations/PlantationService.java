@@ -16,13 +16,9 @@ import java.util.List;
 public interface PlantationService {
   Mono<Tuple2<List<Plantation>, Long>> getAllPlantationsByUserPaginated(
     User user,
-    PageRequest pageRequest,
-    String plantationName,
-    String plantationCountry,
-    String plantationProvince,
-    String plantationCity,
-    String plantationTypeFilter,
-    Boolean hasAlertsFilter
+    String plantationSearchFilter,
+    Boolean hasAlertsFilter,
+    PageRequest pageRequest
   );
   Mono<Plantation> createPlantation(PlantationDto plantationDto);
   Mono<String> addPlantationManager(User user, String plantationId, PlantationManagerDto plantationManagerDto);

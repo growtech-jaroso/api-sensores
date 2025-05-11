@@ -34,93 +34,37 @@ public class PlantationServiceImpl implements PlantationService {
   @Override
   public Mono<Tuple2<List<Plantation>, Long>> getAllPlantationsByUserPaginated(
     User user,
-    PageRequest pageRequest,
-    String plantationName,
-    String plantationCountry,
-    String plantationProvince,
-    String plantationCity,
-    String plantationType,
-    Boolean hasAlertsFilter
+    String plantationSearchFilter,
+    Boolean hasAlertsFilter,
+    PageRequest pageRequest
   ) {
     if (hasAlertsFilter == null) {
       return user.canViewAnything()
         ? Mono.zip(
         this.plantationRepository.findAllByFiltersAndIsDeletedIsFalse(
-          plantationName,
-          plantationCountry,
-          plantationProvince,
-          plantationCity,
-          plantationType,
+          plantationSearchFilter,
           pageRequest
         ).collectList(),
         this.plantationRepository.countAllByFiltersAndIsDeletedIsFalse(
-          plantationName,
-          plantationCountry,
-          plantationProvince,
-          plantationCity,
-          plantationType
+          plantationSearchFilter
         )
       )
         : Mono.zip(
-        this.plantationRepository.findAllByManagersContainingAndFiltersAndIsDeletedIsFalse(
-          user.getId(),
-          plantationName,
-          plantationCountry,
-          plantationProvince,
-          plantationCity,
-          plantationType,
-          pageRequest
-        ).collectList(),
-        this.plantationRepository.countAllByManagersContainingAndFiltersAndIsDeletedIsFalse(
-          user.getId(),
-          plantationName,
-          plantationCountry,
-          plantationProvince,
-          plantationCity,
-          plantationType
-        )
+        this.plantationRepository.findAllByManagersContainingAndFiltersAndIsDeletedIsFalse(user.getId(), plantationSearchFilter, pageRequest)
+          .collectList(),
+        this.plantationRepository.countAllByManagersContainingAndFiltersAndIsDeletedIsFalse(user.getId(), plantationSearchFilter)
       );
     } else {
       return user.canViewAnything()
         ? Mono.zip(
-        this.plantationRepository.findAllByFiltersAndHasAlertsAndIsDeletedIsFalse(
-          plantationName,
-          plantationCountry,
-          plantationProvince,
-          plantationCity,
-          plantationType,
-          hasAlertsFilter,
-          pageRequest
-        ).collectList(),
-        this.plantationRepository.countAllByFiltersAndHasAlertsAndIsDeletedIsFalse(
-          plantationName,
-          plantationCountry,
-          plantationProvince,
-          plantationCity,
-          plantationType,
-          hasAlertsFilter
-        )
+        this.plantationRepository.findAllByFiltersAndHasAlertsAndIsDeletedIsFalse(plantationSearchFilter, hasAlertsFilter, pageRequest)
+          .collectList(),
+        this.plantationRepository.countAllByFiltersAndHasAlertsAndIsDeletedIsFalse(plantationSearchFilter, hasAlertsFilter)
       )
         : Mono.zip(
-        this.plantationRepository.findAllByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(
-          user.getId(),
-          plantationName,
-          plantationCountry,
-          plantationProvince,
-          plantationCity,
-          plantationType,
-          hasAlertsFilter,
-          pageRequest
-        ).collectList(),
-        this.plantationRepository.countByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(
-          user.getId(),
-          plantationName,
-          plantationCountry,
-          plantationProvince,
-          plantationCity,
-          plantationType,
-          hasAlertsFilter
-        )
+        this.plantationRepository.findAllByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(user.getId(), plantationSearchFilter, hasAlertsFilter, pageRequest)
+          .collectList(),
+        this.plantationRepository.countByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(user.getId(), plantationSearchFilter, hasAlertsFilter)
       );
     }
   }
