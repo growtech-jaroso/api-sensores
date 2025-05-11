@@ -25,14 +25,9 @@ public class SensorValueHandler {
     this.objectValidator = objectValidator;
   }
 
-  /**
-   *
-   * @param request
-   * @return
-   */
   public Mono<ServerResponse> getAllSensorValuesBySensorId(ServerRequest request) {
     Pair<LocalDateTime, LocalDateTime> checkedDates = ParamsUtil.getDateFilter(request);
-    // Recuperate the page request from the request parameters
+    // Get the page request from the request parameters
     String sensorId = request.pathVariable("sensor_id");
     String plantationId = request.pathVariable("plantation_id");
     return AuthUtil.getAuthUser().flatMap(
@@ -42,7 +37,5 @@ public class SensorValueHandler {
           .bodyValue(new DataResponse<>(HttpStatus.OK, sensorValues)))
     );
   }
-
-
 
 }

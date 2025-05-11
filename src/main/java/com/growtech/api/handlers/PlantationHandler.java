@@ -69,10 +69,12 @@ public class PlantationHandler {
     String plantationTypeFilter = request.queryParam("type").orElse("");
     // Get the plantation filter for has alerts from the request parameters
     String hasAlertsStr = request.queryParam("has_alerts").orElse("");
-    Boolean hasAlertsFilter = null;
+
+    // Check if the has alerts filter is true or false or null
+    Boolean hasAlertsFilter;
     if (hasAlertsStr.equals("true")) hasAlertsFilter = true;
     else if (hasAlertsStr.equals("false")) hasAlertsFilter = false;
-
+    else hasAlertsFilter = null;
 
     // Retrieve the user from the request
     Mono<User> authUser = AuthUtil.getAuthUser();

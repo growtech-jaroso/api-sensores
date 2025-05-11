@@ -33,14 +33,15 @@ public class SensorValueServiceImpl implements SensorValueService {
   public Flux<SensorValue> getAllSensorValuesBySensorId(User user, String sensorId, String plantationId, Pair<LocalDateTime, LocalDateTime> dateTimePair) {
 
     Mono<Plantation> plantation = this.plantationRepository.findPlantationByManagersContainingAndIdAndIsDeletedIsFalse(user.getId(), plantationId)
-      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation with id " + plantationId + " not found")));
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation not found")));
 
     Mono<Sensor> sensor = plantation.flatMap(
       plt -> this.sensorRepository.findSensorByIdAndPlantationIdAndIsDeletedIsFalse(sensorId, plt.getId())
-        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Sensor with id " + sensorId + " not found")))
+        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Sensor not found")))
     );
+
     return sensor.flatMapMany(
-      snr -> this.sensorValueRepository.findAllBySensorIdAndReadingTimestampBetween(sensorId, dateTimePair.getFirst(), dateTimePair.getSecond())
+      s -> this.sensorValueRepository.findAllBySensorIdAndReadingTimestampBetween(sensorId, dateTimePair.getFirst(), dateTimePair.getSecond())
     );
   }
 

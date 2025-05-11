@@ -42,7 +42,6 @@ public class PlantationServiceImpl implements PlantationService {
     String plantationTypeFilter,
     Boolean hasAlertsFilter
   ) {
-    if
     // Check if the user is associated with the plantation, doing with zip is more efficient because will be asynchronous
     return user.canViewAnything()
       ? Mono.zip(
