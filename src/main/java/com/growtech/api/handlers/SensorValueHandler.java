@@ -49,6 +49,7 @@ public class SensorValueHandler {
     Pair<LocalDateTime, LocalDateTime> checkedDates = ParamsUtil.getDateFilter(serverRequest);
     // Recuperate the page request from the request parameters
     String plantationId = serverRequest.pathVariable("plantation_id");
+
     return AuthUtil.getAuthUser().flatMap(
       user -> this.sensorValueService.getAllSensorValuesByPlantation(plantationId, checkedDates)
         .collectList()

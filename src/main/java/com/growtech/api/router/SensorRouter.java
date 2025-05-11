@@ -28,9 +28,6 @@ public class SensorRouter {
       .GET("/values", sensorValueHandler::getAllSensorValuesByPlantation) // Route: GET /api/plantations/{plantation_id}/sensors/values
       .GET("/{sensor_type}/values", sensorValueHandler::getAllSensorValuesByTypeByPlantation) // Route: GET /api/plantations/{plantation_id}/sensors/{sensor_type}/values
       .GET("/{sensor_id}/{plantation_id}/values", sensorValueHandler::getAllSensorValuesBySensorIdAndPlantationId) // Route: GET /api/plantations/{plantation_id}/sensors/{sensor_id}/values
-      //Revisar
-      .GET("/", sensorValueHandler::getAllBySensorIdIn)
-      .GET("/", sensorValueHandler::getAllBySensorIdInAndReadingTimestampBetween)
       .build();
   }
 }
