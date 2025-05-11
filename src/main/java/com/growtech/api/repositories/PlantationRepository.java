@@ -9,14 +9,13 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface PlantationRepository extends ReactiveMongoRepository<Plantation, String> {
-  Flux<Plantation> findAllByNameContainsIgnoreCaseAndIsDeletedIsFalse(String name, PageRequest pageRequest);
+  Flux<Plantation> findAllByIsDeletedIsFalse(PageRequest pageRequest);
   Flux<Plantation> findAllByManagersContainingAndIsDeletedIsFalse(String userId);
-  Flux<Plantation> findAllByManagersContainingAndNameContainsIgnoreCaseAndIsDeletedIsFalse(String userId, String name, PageRequest pageRequest);
-  Mono<Boolean> existsPlantationByNameAndOwnerIdAndIsDeletedIsFalse(String name, String ownerId);
-  Mono<Boolean> existsPlantationByIdNotAndNameAndOwnerIdAndIsDeletedIsFalse(String id, String name, String ownerId);
-  Mono<Long> countAllByManagersContainingAndNameContainsIgnoreCaseAndIsDeletedIsFalse(String userId, String name);
+  Flux<Plantation> findAllByManagersContainingAndIsDeletedIsFalse(String userId, PageRequest pageRequest);
+  Mono<Boolean> existsPlantationByNameAndIsDeletedIsFalse(String name);
+  Mono<Long> countAllByManagersContainingAndIsDeletedIsFalse(String userId);
   Mono<Plantation> findPlantationsByIdAndIsDeletedIsFalse(String plantationId);
   Mono<Boolean> existsPlantationByIdAndIsDeletedIsFalse(String plantationId);
-  Mono<Long> countAllByNameContainsIgnoreCaseAndIsDeletedIsFalse(String name);
+  Mono<Long> countAllByIsDeletedIsFalse();
   Mono<Boolean> existsPlantationByOwnerIdAndIsDeletedIsFalse(String ownerId);
 }
