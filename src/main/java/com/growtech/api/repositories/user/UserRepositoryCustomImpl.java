@@ -20,8 +20,8 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
   }
 
   @Override
-  public Mono<Long> countByUsernameOrEmailAndRole(String username, String email, UserRole role) {
-    Criteria criteria = getCriteriaForUsernameOrEmailAndRole(username, email, role);
+  public Mono<Long> countByUsernameOrEmailAndRole(String search, UserRole role) {
+    Criteria criteria = getCriteriaForUsernameOrEmailAndRole(search, role);
 
     // Create query with the criteria
     Query query = new Query(criteria);
@@ -30,9 +30,9 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
   }
 
   @Override
-  public Flux<User> findMatchingUsers(String username, String email, UserRole role, PageRequest pageRequest) {
+  public Flux<User> findMatchingUsers(String search, UserRole role, PageRequest pageRequest) {
 
-    Criteria criteria = getCriteriaForUsernameOrEmailAndRole(username, email, role);
+    Criteria criteria = getCriteriaForUsernameOrEmailAndRole(search, role);
 
     // Create query with the criteria
     Query query = new Query(criteria);
@@ -44,16 +44,15 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
 
   /**
    * Creates a criteria for finding users by username or email and role.
-   * @param username username to search for
-   * @param email email to search for
+   * @param search search filter of the user
    * @param role role to search for
    * @return Criteria object for the query
    */
-  private Criteria getCriteriaForUsernameOrEmailAndRole(String username, String email, UserRole role) {
+  private Criteria getCriteriaForUsernameOrEmailAndRole(String search, UserRole role) {
     return new Criteria().andOperator(
       new Criteria().orOperator(
-        Criteria.where("username").regex(username, "i"),
-        Criteria.where("email").regex(email, "i")
+        Criteria.where("username").regex(search, "i"),
+        Criteria.where("email").regex(search, "i")
       ),
       Criteria.where("role").is(role)
     );

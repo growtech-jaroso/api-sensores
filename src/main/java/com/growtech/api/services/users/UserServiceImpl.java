@@ -61,34 +61,34 @@ public class UserServiceImpl implements  UserService {
   }
 
   @Override
-  public Mono<Tuple2<List<UserInfo>, Long>> getAllUsersPaginated(String usernameFilter, String emailFilter, UserRole roleFilter, PageRequest pageRequest) {
+  public Mono<Tuple2<List<UserInfo>, Long>> getAllUsersPaginated(String searchFilter, UserRole roleFilter, PageRequest pageRequest) {
 
     // Check if the role filter is null to do a query without it
     if (roleFilter == null) {
       return Mono.zip(
         // Get all users with pagination
-        this.userRepository.findAllByUsernameContainsIgnoreCaseOrEmailContainsIgnoreCase(usernameFilter, emailFilter, pageRequest)
+        this.userRepository.findAllByUsernameContainsIgnoreCaseOrEmailContainsIgnoreCase(searchFilter, searchFilter, pageRequest)
           .collectList()
           // Map the users to UserInfo DTOs
           .map(users -> users.stream()
             .map(User::getUserInfoDto)
             .toList()
           ),
-        this.userRepository.countAllByUsernameContainsIgnoreCaseOrEmailContainsIgnoreCase(usernameFilter, emailFilter)
+        this.userRepository.countAllByUsernameContainsIgnoreCaseOrEmailContainsIgnoreCase(searchFilter, searchFilter)
       );
     }
 
     // If role filter is not null, do a query using it
     return Mono.zip(
       // Get all users with pagination
-      this.userRepository.findMatchingUsers(usernameFilter, emailFilter, roleFilter, pageRequest)
+      this.userRepository.findMatchingUsers(searchFilter, roleFilter, pageRequest)
         .collectList()
         // Map the users to UserInfo DTOs
         .map(users -> users.stream()
           .map(User::getUserInfoDto)
           .toList()
         ),
-      this.userRepository.countByUsernameOrEmailAndRole(usernameFilter, emailFilter, roleFilter)
+      this.userRepository.countByUsernameOrEmailAndRole(searchFilter, roleFilter)
     );
   }
 
