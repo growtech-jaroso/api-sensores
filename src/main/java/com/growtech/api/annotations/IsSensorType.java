@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = UserRoleValidator.class)
+@Constraint(validatedBy = SensorTypeValidator.class) // Specify
 public @interface IsSensorType {
   String message() default "Invalid sensor type"; // Error message
   Class<?>[] groups() default {};

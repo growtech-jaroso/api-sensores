@@ -25,9 +25,7 @@ public class SensorRouter {
       .POST("", handler::createSensor) // Route: POST /api/plantations/{plantation_id}/sensors
       .DELETE("/{sensor_id}", handler::deleteSensor) // Route: DELETE /api/plantations/{plantation_id}/sensors/{sensor_id}
       .GET("/{sensor_id}/values", sensorValueHandler::getAllSensorValuesBySensorId) // Route: GET /api/plantations/{plantation_id}/sensors/{sensor_id}/values
-      .GET("/values", sensorValueHandler::getAllSensorValuesByPlantation) // Route: GET /api/plantations/{plantation_id}/sensors/values
       .GET("/{sensor_type}/values", sensorValueHandler::getAllSensorValuesByTypeByPlantation) // Route: GET /api/plantations/{plantation_id}/sensors/{sensor_type}/values
-      .GET("/{sensor_id}/{plantation_id}/values", sensorValueHandler::getAllSensorValuesBySensorIdAndPlantationId) // Route: GET /api/plantations/{plantation_id}/sensors/{sensor_id}/values
       .build();
   }
 }
