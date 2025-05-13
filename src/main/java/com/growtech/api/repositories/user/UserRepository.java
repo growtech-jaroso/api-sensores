@@ -1,5 +1,6 @@
 package com.growtech.api.repositories.user;
 
+import com.growtech.api.dtos.responses.OwnerInfo;
 import com.growtech.api.entities.User;
 import com.growtech.api.enums.UserRole;
 import com.growtech.api.services.users.EmailProjection;
@@ -22,4 +23,6 @@ public interface UserRepository extends ReactiveMongoRepository<User, String>, U
   Mono<User> findUserById(String id);
   Mono<User> findUserByIdIsNotAndEmail(String id, String email);
   Mono<User> findUserByIdIsNotAndUsername(String id, String username);
+  Flux<OwnerInfo> findAllByIdInAndRoleNotInAndIsDeletedIsFalse(List<String> ids, List<UserRole> roles, PageRequest pageRequest);
+  Mono<Long> countAllByIdInAndRoleNotInAndIsDeletedIsFalse(List<String> ids, List<UserRole> roles);
 }

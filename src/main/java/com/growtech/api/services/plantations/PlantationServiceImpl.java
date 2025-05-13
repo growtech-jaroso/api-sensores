@@ -73,7 +73,18 @@ public class PlantationServiceImpl implements PlantationService {
 
   @Override
   public Mono<Tuple2<List<OwnerInfo>, Long>> getAllPlantationsOwners(PageRequest pageRequest) {
+    // Get all plantations owners ids
     Flux<String> ownersIds = this.plantationRepository.findAllByIsDeletedIsFalse().map(OwnerIdProjection::getOwnerId);
+
+    // Get all plantations owners by ids and not admin or support roles
+    return ownersIds.collectList()
+      .flatMap(ids ->
+        Mono.zip(
+          this.userRepository.findAllByIdInAndRoleNotInAndIsDeletedIsFalse(ids, List.of(UserRole.ADMIN, UserRole.SUPPORT), pageRequest)
+            .collectList(),
+          this.userRepository.countAllByIdInAndRoleNotInAndIsDeletedIsFalse(ids, List.of(UserRole.ADMIN, UserRole.SUPPORT))
+        )
+      );
   }
 
   @Override
