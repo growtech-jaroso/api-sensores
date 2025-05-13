@@ -29,7 +29,8 @@ public class AppRouter implements WebFluxConfigurer {
   public RouterFunction<ServerResponse> routes(
     PlantationRouter plantationRouter,
     AuthRouter authRouter,
-    UserRouter userRouter
+    UserRouter userRouter,
+    InformationRouter informationRouter
   ) {
     return RouterFunctions.route()
       // Base API prefix
@@ -37,6 +38,7 @@ public class AppRouter implements WebFluxConfigurer {
         .path("/plantations", plantationRouter::plantationRoutes) // Routes for plantations
         .path("/users", userRouter::userRoutes) // Routes for users information
         .path("/auth", authRouter::authRoutes) // Routes for auth
+        .path("/information", informationRouter::informationRoutes) // Routes for information
       )
       .build();
   }
