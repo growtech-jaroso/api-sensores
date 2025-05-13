@@ -37,4 +37,8 @@ logging:
     name: "var/logs/application.log"
   level:
     root: INFO
-    org.springframework.web: DEBUG
+    org:
+      springframework:
+        web: DEBUG
+        security: DEBUG
+        data: DEBUG
