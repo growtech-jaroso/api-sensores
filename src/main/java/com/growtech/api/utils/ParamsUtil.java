@@ -97,7 +97,7 @@ public class ParamsUtil {
     LocalDateTime afterChecked = checkDate(dateAfter, "The after date is not a valid date");
     LocalDateTime beforeChecked = checkDate(dateBefore, "The before date is not a valid date");
     // Check if the after date is before the before date
-    if (afterChecked.isAfter(beforeChecked)) {
+    if (afterChecked.isBefore(beforeChecked)) {
       throw new CustomException(HttpStatus.BAD_REQUEST, "The after date must be before the before date");
     }
 
