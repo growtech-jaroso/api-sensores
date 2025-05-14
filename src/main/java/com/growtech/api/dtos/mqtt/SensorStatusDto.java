@@ -5,7 +5,7 @@ import com.growtech.api.enums.SensorStatus;
 
 public record SensorStatusDto(
   SensorStatus status,
-  @JsonProperty("message_timestamp")
-  String messageTimestamp
+  @JsonProperty("status_timestamp")
+  String statusTimestamp
 ) {
 }

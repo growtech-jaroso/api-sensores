@@ -40,5 +40,6 @@ mongo
 *.log
 *.log.*
 .env
+.lck
 
 .DS_Store
