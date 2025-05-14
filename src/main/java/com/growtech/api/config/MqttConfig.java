@@ -34,49 +34,16 @@ public class MqttConfig {
       this.mqttClient = new MqttClient(broker, clientId);
       this.setCallback();
       this.connect();
-      this.subscribe("plantation/+/sensor/+/event/reading");
-      this.subscribe("plantation/+/sensor/+/event/status");
     } catch (MqttException e) {
       log.error("Error creating MQTT client {}", e.getMessage());
     }
   }
 
+  /**
+   * Set the callback for the MQTT client
+   */
   private void setCallback() {
-    this.mqttClient.setCallback(new MqttCallback() {
-      @Override
-      public void disconnected(MqttDisconnectResponse disconnectResponse) {
-        log.error("MQTT client disconnected: {}", disconnectResponse.getReasonString());
-      }
-
-      @Override
-      public void mqttErrorOccurred(MqttException exception) {
-        log.error("MQTT error occurred: {}", exception.getMessage());
-      }
-
-      @Override
-      public void messageArrived(String topic, MqttMessage message) throws Exception {
-        String payload = new String(message.getPayload());
-        log.info("Message arrived for topic {}: {}", topic, payload);
-
-        // Process the message
-        log.info("Processing message for topic {}", topic);
-      }
-
-      @Override
-      public void deliveryComplete(IMqttToken token) {
-        log.info("Delivery complete for token {}", token);
-      }
-
-      @Override
-      public void connectComplete(boolean reconnect, String serverURI) {
-        log.info("MQTT client connected to {}", serverURI);
-      }
-
-      @Override
-      public void authPacketArrived(int reasonCode, MqttProperties properties) {
-        log.info("Auth packet arrived with reason code {}", reasonCode);
-      }
-    });
+    this.mqttClient.setCallback(new MqttCallbackConfig(this.mqttClient));
   }
 
   /**
@@ -101,19 +68,5 @@ public class MqttConfig {
       .automaticReconnect(true)
       .password(this.password.getBytes(StandardCharsets.UTF_8))
       .build();
-  }
-
-  public void subscribe(String topic) {
-    if (mqttClient == null || !this.mqttClient.isConnected()) {
-      log.error("MQTT client is not connected and cannot subscribe to topic {}", topic);
-      return;
-    }
-
-    try {
-      this.mqttClient.subscribe(topic, 1);
-    } catch (MqttException e) {
-      log.error("Error subscribing to topic {}", topic);
-    }
-
   }
 }

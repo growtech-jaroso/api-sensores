@@ -1,5 +1,6 @@
 package com.growtech.api.services.sensor_value;
 
+import com.growtech.api.dtos.mqtt.SensorValueDto;
 import com.growtech.api.entities.Plantation;
 import com.growtech.api.entities.Sensor;
 import com.growtech.api.entities.SensorValue;
@@ -85,6 +86,11 @@ public class SensorValueServiceImpl implements SensorValueService {
             })
           .flatMapMany(sensors -> this.sensorValueRepository.findAllBySensorIdInAndReadingTimestampBetween(sensors, checkedDates.getFirst(), checkedDates.getSecond()));
       });
+  }
+
+  @Override
+  public Mono<SensorValue> createSensorValue(SensorValueDto sensorValueDto) {
+    return null;
   }
 
 

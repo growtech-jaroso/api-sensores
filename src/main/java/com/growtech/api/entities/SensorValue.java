@@ -1,6 +1,7 @@
 package com.growtech.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.growtech.api.enums.MeasureTimespan;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,15 +25,19 @@ public class SensorValue extends Model {
   @Field(name = "reading_timestamp")
   private LocalDateTime readingTimestamp;
 
+  @JsonProperty("measure_timespan")
+  private MeasureTimespan measureTimespan;
+
   @Indexed
   @JsonProperty("sensor_id")
   @Field("sensor_id")
   private String sensorId;
 
-  public SensorValue(Double value, LocalDateTime readingTimestamp, String sensorId) {
+  public SensorValue(Double value, LocalDateTime readingTimestamp, MeasureTimespan measureTimespan, String sensorId) {
     super();
     this.value = value;
     this.readingTimestamp = readingTimestamp;
+    this.measureTimespan = measureTimespan;
     this.sensorId = sensorId;
   }
 }
