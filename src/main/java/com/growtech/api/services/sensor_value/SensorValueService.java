@@ -17,6 +17,4 @@ public interface SensorValueService {
   Flux<SensorValue> getAllSensorValuesBySensorId(User user, String sensorId, String plantationId, Pair<LocalDateTime, LocalDateTime> dateTimePair);
 
   Flux<SensorValue> getAllSensorValuesByTypeByPlantation(User user, String plantationId, SensorType sensorType, Pair<LocalDateTime, LocalDateTime> checkedDates);
-
-  Mono<SensorValue> createSensorValue(SensorValueDto sensorValueDto);
 }

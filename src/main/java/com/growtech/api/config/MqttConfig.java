@@ -1,10 +1,9 @@
 package com.growtech.api.config;
 
+import com.growtech.api.services.mqtt.MqttMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.mqttv5.client.*;
 import org.eclipse.paho.mqttv5.common.MqttException;
-import org.eclipse.paho.mqttv5.common.MqttMessage;
-import org.eclipse.paho.mqttv5.common.packet.MqttProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -23,6 +22,12 @@ public class MqttConfig {
   private String password;
 
   private MqttClient mqttClient;
+
+  private final MqttMessageService mqttMessageService;
+
+  public MqttConfig(MqttMessageService mqttMessageService) {
+    this.mqttMessageService = mqttMessageService;
+  }
 
   /**
    * Create the MQTT client and connect to the broker
@@ -43,7 +48,7 @@ public class MqttConfig {
    * Set the callback for the MQTT client
    */
   private void setCallback() {
-    this.mqttClient.setCallback(new MqttCallbackConfig(this.mqttClient));
+    this.mqttClient.setCallback(new MqttCallbackConfig(this.mqttClient, mqttMessageService));
   }
 
   /**
@@ -68,5 +73,18 @@ public class MqttConfig {
       .automaticReconnect(true)
       .password(this.password.getBytes(StandardCharsets.UTF_8))
       .build();
+  }
+
+  public void subscribe(String topic) {
+    if (mqttClient == null || !this.mqttClient.isConnected()) {
+      log.error("MQTT client is not connected and cannot subscribe to topic {}", topic);
+      return;
+    }
+
+    try {
+      this.mqttClient.subscribe(topic, 1);
+    } catch (MqttException e) {
+      log.error("Error subscribing to topic {}", topic);
+    }
   }
 }

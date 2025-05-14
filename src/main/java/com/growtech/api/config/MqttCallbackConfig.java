@@ -1,5 +1,6 @@
 package com.growtech.api.config;
 
+import com.growtech.api.services.mqtt.MqttMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.mqttv5.client.IMqttToken;
 import org.eclipse.paho.mqttv5.client.MqttCallback;
@@ -15,13 +16,15 @@ import java.util.List;
 public class MqttCallbackConfig implements MqttCallback {
 
   private final MqttClient mqttClient;
+  private final MqttMessageService mqttMessageService;
   private final List<String> topics = List.of(
     "plantation/+/sensor/+/event/reading",
     "plantation/+/sensor/+/event/status"
   );
 
-  public MqttCallbackConfig(MqttClient mqttClient) {
+  public MqttCallbackConfig(MqttClient mqttClient, MqttMessageService mqttMessageService) {
     this.mqttClient = mqttClient;
+    this.mqttMessageService = mqttMessageService;
   }
 
   @Override
@@ -36,11 +39,10 @@ public class MqttCallbackConfig implements MqttCallback {
 
   @Override
   public void messageArrived(String topic, MqttMessage message) throws Exception {
-    String payload = new String(message.getPayload());
-    log.info("Message arrived for topic {}: {}", topic, payload);
+    log.info("Message arrived for topic {}: {}", topic, message.toString());
 
     // Process the message
-    log.info("Processing message for topic {}", topic);
+    this.mqttMessageService.processMessage(topic, message);
   }
 
   @Override

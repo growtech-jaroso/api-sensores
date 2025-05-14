@@ -87,11 +87,4 @@ public class SensorValueServiceImpl implements SensorValueService {
           .flatMapMany(sensors -> this.sensorValueRepository.findAllBySensorIdInAndReadingTimestampBetween(sensors, checkedDates.getFirst(), checkedDates.getSecond()));
       });
   }
-
-  @Override
-  public Mono<SensorValue> createSensorValue(SensorValueDto sensorValueDto) {
-    return null;
-  }
-
-
 }
