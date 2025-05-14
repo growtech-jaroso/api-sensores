@@ -12,6 +12,9 @@ REQUIRED_VARS=(
 "JWT_EXP_TIME"
 "JWT_SECRET"
 "ALLOWED_ORIGINS"
+"MQTT_BROKER_URL"
+"MQTT_CLIENT_ID"
+"MQTT_PASSWORD"
 )
 
 # Check if required environment variables are set

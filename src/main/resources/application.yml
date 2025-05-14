@@ -3,6 +3,11 @@ server:
 
 
 app:
+  mqtt:
+    broker:
+      url: ${MQTT_BROKER_URL}
+      client_id: ${MQTT_CLIENT_ID}
+      password: ${MQTT_PASSWORD}
   users:
     admin:
       email: ${ADMIN_EMAIL:admin@growtech.com}
