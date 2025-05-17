@@ -13,6 +13,7 @@ public interface SensorRepository extends ReactiveMongoRepository<Sensor, String
   Flux<Sensor> getAllByPlantationIdAndIsDeletedIsFalse(String plantationId);
   Mono<Sensor> findByIdAndIsDeletedIsFalse(String id);
   Mono<Long> countAllByPlantationIdAndIsDeletedIsFalse(String plantationId);
+  Mono<Boolean> existsByIdAndIsDeletedIsFalse(String id);
   Flux<SensorIdProjection> findAllByPlantationIdAndIsDeletedIsFalse(String plantationId);
   Flux<SensorIdProjection> findAllByTypeAndPlantationIdAndIsDeletedIsFalse(SensorType sensorType, String plantationId);
   Mono<Sensor> findSensorByIdAndPlantationIdAndIsDeletedIsFalse(String id, String plantationId);

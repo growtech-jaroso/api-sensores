@@ -8,3 +8,30 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+
+  nodered:
+    image: nodered/node-red:4.0.9
+    restart: unless-stopped
+    ports:
+      - "${NODERED_PORT:-1880}:1880"
+    volumes:
+      - nodered-data:/data
+    environment:
+      - TZ=Europe/Madrid
+
+  mosquitto:
+    image: eclipse-mosquitto:openssl
+    restart: unless-stopped
+    volumes:
+      - ./mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-logs:/mosquitto/log
+    ports:
+      - "${MOSQUITTO_PORT:-1883}:1883"
+    environment:
+      - TZ=Europe/Madrid
+
+volumes:
+  nodered-data:
+  mosquitto-data:
+  mosquitto-logs:

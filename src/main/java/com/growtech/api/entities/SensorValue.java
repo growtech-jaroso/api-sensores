@@ -1,6 +1,7 @@
 package com.growtech.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.growtech.api.dtos.mqtt.SensorValueDto;
 import com.growtech.api.enums.MeasureTimespan;
 import lombok.Builder;
 import lombok.Getter;

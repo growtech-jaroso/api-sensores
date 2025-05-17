@@ -19,7 +19,7 @@ public class MqttCallbackConfig implements MqttCallback {
   private final MqttMessageService mqttMessageService;
   private final List<String> topics = List.of(
     "plantation/+/sensor/+/event/reading",
-    "plantation/+/sensor/+/event/status"
+    "plantation/+/event/status"
   );
 
   public MqttCallbackConfig(MqttClient mqttClient, MqttMessageService mqttMessageService) {
