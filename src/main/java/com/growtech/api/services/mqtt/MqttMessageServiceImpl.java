@@ -51,6 +51,7 @@ public class MqttMessageServiceImpl implements MqttMessageService {
    * @param message The message to process as a MqttMessage
    */
   private void processSensorReading(String topic, MqttMessage message) {
+    System.out.println("Processing sensor reading: " + message.toString());
     String plantationId = this.getPlantationId(topic);
     String sensorId = this.getSensorId(topic);
 

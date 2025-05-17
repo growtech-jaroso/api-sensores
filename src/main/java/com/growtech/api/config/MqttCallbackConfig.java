@@ -81,6 +81,7 @@ public class MqttCallbackConfig implements MqttCallback {
     topics.forEach(topic -> {
       try {
         this.mqttClient.subscribe(topic, 1);
+        log.info("Subscribed to topic {}", topic);
       } catch (MqttException e) {
         log.error("Error subscribing to topic {}", topic);
       }
