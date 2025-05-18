@@ -11,8 +11,6 @@ import org.eclipse.paho.mqttv5.common.MqttMessage;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.Objects;
-
 @Service
 @Slf4j
 public class MqttMessageServiceImpl implements MqttMessageService {
@@ -51,49 +49,58 @@ public class MqttMessageServiceImpl implements MqttMessageService {
     String plantationId = this.getPlantationId(topic);
     String sensorId = this.getSensorId(topic);
 
-    // Check if the plantation exists in the database
-    if (!this.checkIfPlantationExists(plantationId).block()) {
-      log.warn("Plantation with ID {} does not exist", plantationId);
-      return;
-    }
+    // Check if the plantation and sensor exist
+    this.checkIfPlantationExists(plantationId)
+      .flatMap(exists -> {
+        if (!exists) {
+          log.error("Plantation with ID '{}' does not exist", plantationId);
+          return Mono.empty(); // Stop the flow without error
+        }
+        return this.checkIfSensorExists(sensorId);
+      })
+      .flatMap(sensorExists -> {
+        if (!sensorExists) {
+          log.error("Sensor with ID '{}' does not exist", sensorId);
+          return Mono.empty(); // Stop the flow without error
+        }
 
-    // Check if the sensor exists in the database
-    if (!this.checkIfSensorExists(sensorId).block()) {
-      log.warn("Sensor with ID {} does not exist", sensorId);
-      return;
-    }
+        // Deserialize the message to SensorReadingDto
+        SensorReadingDto dto = this.getObjectFromJson(message.toString(), SensorReadingDto.class);
+        if (dto == null) {
+          log.error("SensorReadingDto is null or malformed for message: {}", message);
+          return Mono.empty(); // Stop the flow without error
+        }
 
-    // Deserialize the message to a SensorReadingDto
-    SensorReadingDto sensorReadingDto = this.getObjectFromJson(message.toString(), SensorReadingDto.class);
+        // Convert the DTO to SensorValue
+        SensorValue value = dto.toSensorValue(sensorId);
+        if (value == null) {
+          log.error("Failed to convert SensorReadingDto to SensorValue");
+          return Mono.empty(); // Stop the flow without error
+        }
 
-    // Check if the deserialization was successful
-    if (sensorReadingDto == null) {
-      log.warn("Failed to parse sensor reading DTO from message: {}", message);
-      return;
-    }
-
-    // Convert the DTO to a SensorValue entity
-    SensorValue sensorValue = sensorReadingDto.toSensorValue(sensorId);
-
-    // Check if the conversion was successful
-    if (sensorValue == null) {
-      log.warn("Failed to convert sensor reading DTO to SensorValue entity");
-      return;
-    }
-
-    // Save the sensor value to the database
-    this.sensorValueRepository.save(sensorValue)
-      .doOnSuccess(savedSensorValue -> log.info("Sensor value saved: {}", savedSensorValue))
-      .doOnError(error -> log.error("Error saving sensor value", error))
-      .subscribe();
+        // Save the SensorValue to the database
+        return this.sensorValueRepository.save(value)
+          .doOnSuccess(saved -> log.info("Sensor value saved: {}", saved));
+      })
+      .doOnError(e -> log.error("Unexpected error during processing: {}", e.getMessage()))
+      .subscribe(); // no onErrorConsumer
   }
+
+
 
   private void processDeviceStatus(String topic, MqttMessage message) {
     log.info("Processing device status message: {}", message);
     String plantationId = this.getPlantationId(topic);
 
-    // TODO: Process the device status
-    Boolean plantationExists = this.checkIfPlantationExists(plantationId).block();
+    // Check if the plantation exists
+    this.checkIfPlantationExists(plantationId)
+      .flatMap(exists -> {
+        if (!exists) {
+          log.error("Plantation with ID '{}' does not exist", plantationId);
+          return Mono.empty(); // Stop the flow without error
+        }
+        return Mono.empty();
+      });
   }
 
   /**
