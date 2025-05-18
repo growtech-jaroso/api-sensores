@@ -1,6 +1,5 @@
 package com.growtech.api.services.sensor_value;
 
-import com.growtech.api.dtos.mqtt.SensorValueDto;
 import com.growtech.api.entities.Plantation;
 import com.growtech.api.entities.Sensor;
 import com.growtech.api.entities.SensorValue;
@@ -18,7 +17,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class SensorValueServiceImpl implements SensorValueService {

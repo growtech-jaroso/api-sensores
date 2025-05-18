@@ -1,7 +1,7 @@
 package com.growtech.api.enums;
 
 public enum MeasureTimespan {
-  AVG_LAST_1_MINUTE;
+  AVG_LAST_1_MIN;
 
   /**
    * Convert a string to a SensorType enum.

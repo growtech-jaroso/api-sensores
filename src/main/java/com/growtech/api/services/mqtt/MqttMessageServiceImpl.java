@@ -1,7 +1,7 @@
 package com.growtech.api.services.mqtt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.growtech.api.dtos.mqtt.SensorValueDto;
+import com.growtech.api.dtos.mqtt.SensorReadingDto;
 import com.growtech.api.entities.SensorValue;
 import com.growtech.api.repositories.plantation.PlantationRepository;
 import com.growtech.api.repositories.sensor.SensorRepository;
@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.mqttv5.common.MqttMessage;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -34,15 +36,9 @@ public class MqttMessageServiceImpl implements MqttMessageService {
 
   @Override
   public void processMessage(String topic, MqttMessage message) {
-    log.info("Processing message for topic {}", topic);
-    switch (topic) {
-      case "plantation/+/sensor/+/event/reading":
-        processSensorReading(topic, message);
-        break;
-      case "plantation/+/event/status":
-        processDeviceStatus(topic, message);
-        break;
-    }
+    if (topic.contains("event/reading")) this.processSensorReading(topic, message);
+    else if (topic.contains("event/status")) this.processDeviceStatus(topic, message);
+    else log.warn("Unknown topic: {}", topic);
   }
 
   /**
@@ -51,25 +47,53 @@ public class MqttMessageServiceImpl implements MqttMessageService {
    * @param message The message to process as a MqttMessage
    */
   private void processSensorReading(String topic, MqttMessage message) {
-    System.out.println("Processing sensor reading: " + message.toString());
+    log.info("Processing sensor reading message: {}", message);
     String plantationId = this.getPlantationId(topic);
     String sensorId = this.getSensorId(topic);
 
-    this.checkIfPlantationExists(plantationId)
-      .then(this.checkIfSensorExists(sensorId))
-      .then(Mono.just(this.getObjectFromJson(message.toString(), SensorValueDto.class)))
-      .map(sensorValueDto -> sensorValueDto.toSensorValue(sensorId))
-      .flatMap(this.sensorValueRepository::save)
-      .subscribe(sensorValue -> log.info("Sensor value saved: {}", sensorValue));
+    // Check if the plantation exists in the database
+    if (!this.checkIfPlantationExists(plantationId).block()) {
+      log.warn("Plantation with ID {} does not exist", plantationId);
+      return;
+    }
+
+    // Check if the sensor exists in the database
+    if (!this.checkIfSensorExists(sensorId).block()) {
+      log.warn("Sensor with ID {} does not exist", sensorId);
+      return;
+    }
+
+    // Deserialize the message to a SensorReadingDto
+    SensorReadingDto sensorReadingDto = this.getObjectFromJson(message.toString(), SensorReadingDto.class);
+
+    // Check if the deserialization was successful
+    if (sensorReadingDto == null) {
+      log.warn("Failed to parse sensor reading DTO from message: {}", message);
+      return;
+    }
+
+    // Convert the DTO to a SensorValue entity
+    SensorValue sensorValue = sensorReadingDto.toSensorValue(sensorId);
+
+    // Check if the conversion was successful
+    if (sensorValue == null) {
+      log.warn("Failed to convert sensor reading DTO to SensorValue entity");
+      return;
+    }
+
+    // Save the sensor value to the database
+    this.sensorValueRepository.save(sensorValue)
+      .doOnSuccess(savedSensorValue -> log.info("Sensor value saved: {}", savedSensorValue))
+      .doOnError(error -> log.error("Error saving sensor value", error))
+      .subscribe();
   }
 
   private void processDeviceStatus(String topic, MqttMessage message) {
+    log.info("Processing device status message: {}", message);
     String plantationId = this.getPlantationId(topic);
 
     // TODO: Process the device status
-    this.checkIfPlantationExists(plantationId)
-      .subscribe(unused -> System.out.println("Device status: " + message.toString()));
-//      .then(this.plantationRepository.updateDeviceStatus(plantationId, message));
+    Boolean plantationExists = this.checkIfPlantationExists(plantationId).block();
   }
 
   /**
@@ -97,19 +121,10 @@ public class MqttMessageServiceImpl implements MqttMessageService {
    * @param plantationId The ID of the plantation to check
    * @return A Mono that completes when the check is done
    */
-  private Mono<Void> checkIfPlantationExists(String plantationId) {
+  private Mono<Boolean> checkIfPlantationExists(String plantationId) {
     // Check if the plantation exists in the database
-    Mono<Boolean> existsPlantation = this.plantationRepository.existsPlantationByIdAndIsDeletedIsFalse(plantationId)
+    return this.plantationRepository.existsPlantationByIdAndIsDeletedIsFalse(plantationId)
       .switchIfEmpty(Mono.just(false));
-
-    // If the plantation does not exist, log an error and return an empty Mono
-    return existsPlantation.flatMap(existsPlantationResult -> {
-      if (!existsPlantationResult) {
-        log.warn("Plantation with ID {} does not exist", plantationId);
-      }
-
-      return Mono.empty();
-    });
   }
 
   /**
@@ -117,27 +132,17 @@ public class MqttMessageServiceImpl implements MqttMessageService {
    * @param sensorId The ID of the sensor to check
    * @return A Mono that completes when the check is done
    */
-  private Mono<Void> checkIfSensorExists(String sensorId) {
-    // Check if the plantation exists in the database
-    Mono<Boolean> existsPlantation = this.sensorRepository.existsByIdAndIsDeletedIsFalse(sensorId)
+  private Mono<Boolean> checkIfSensorExists(String sensorId) {
+    // Check if the sensor exists in the database
+    return this.sensorRepository.existsByIdAndIsDeletedIsFalse(sensorId)
       .switchIfEmpty(Mono.just(false));
-
-    // If the plantation does not exist, log an error and return an empty Mono
-    return existsPlantation.flatMap(existsPlantationResult -> {
-      if (!existsPlantationResult) {
-        log.warn("Sensor with ID {} does not exist", sensorId);
-      }
-
-      return Mono.empty();
-    });
   }
 
   private <T> T getObjectFromJson(String json, Class<T> clazz) {
     try {
       return objectMapper.readValue(json, clazz);
     } catch (Exception e) {
-      log.error("Error parsing JSON: {}", e.getMessage());
-      throw new RuntimeException();
+      return null;
     }
   }
 }
