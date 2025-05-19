@@ -7,7 +7,9 @@ import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 public class ParamsUtil {
   private static Integer checkPage(String page) {
@@ -54,11 +56,10 @@ public class ParamsUtil {
    * @param message
    */
   private static LocalDateTime checkDate(String date, String message){
-    // Check if the date is a valid date
-    LocalDateTime dateTime = null;
 
     try {
-      return LocalDateTime.parse(date);
+      Instant instant = Instant.parse(date);
+      return LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
     } catch (Exception e) {
       // If the date is not a valid date, return null
       throw new CustomException(HttpStatus.BAD_REQUEST, message);
@@ -90,8 +91,8 @@ public class ParamsUtil {
    */
   public static Pair<LocalDateTime, LocalDateTime> getDateFilter(ServerRequest request) {
     // Retrieve the date parameters from the request
-    String dateAfter = request.queryParam("after").orElse(LocalDateTime.now().toString());
-    String dateBefore = request.queryParam("before").orElse(LocalDateTime.of(1970, 1, 1, 0, 0).toString());
+    String dateAfter = request.queryParam("after").orElse(LocalDateTime.now().toInstant(ZoneOffset.UTC).toString());
+    String dateBefore = request.queryParam("before").orElse(LocalDateTime.of(1970, 1, 1, 0, 0).toInstant(ZoneOffset.UTC).toString());
 
     // Check if the date parameters are not null
     LocalDateTime afterChecked = checkDate(dateAfter, "The after date is not a valid date");
@@ -101,6 +102,6 @@ public class ParamsUtil {
       throw new CustomException(HttpStatus.BAD_REQUEST, "The after date must be before the before date");
     }
 
-    return Pair.of(afterChecked, beforeChecked);
+    return Pair.of(beforeChecked, afterChecked);
   }
 }

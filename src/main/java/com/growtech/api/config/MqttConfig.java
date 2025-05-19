@@ -75,16 +75,4 @@ public class MqttConfig {
       .build();
   }
 
-  public void subscribe(String topic) {
-    if (mqttClient == null || !this.mqttClient.isConnected()) {
-      log.error("MQTT client is not connected and cannot subscribe to topic {}", topic);
-      return;
-    }
-
-    try {
-      this.mqttClient.subscribe(topic, 1);
-    } catch (MqttException e) {
-      log.error("Error subscribing to topic {}", topic);
-    }
-  }
 }

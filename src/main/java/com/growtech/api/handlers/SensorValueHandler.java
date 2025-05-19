@@ -22,13 +22,9 @@ import java.util.List;
 public class SensorValueHandler {
 
   private final SensorValueService sensorValueService;
-  private final ObjectValidator objectValidator;
-  private final ApplicationEventPublisher applicationEventPublisher;
 
-  public SensorValueHandler(SensorValueService sensorValueService, ObjectValidator objectValidator, ApplicationEventPublisher applicationEventPublisher) {
+  public SensorValueHandler(SensorValueService sensorValueService) {
     this.sensorValueService = sensorValueService;
-    this.objectValidator = objectValidator;
-    this.applicationEventPublisher = applicationEventPublisher;
   }
 
   /**
@@ -50,6 +46,7 @@ public class SensorValueHandler {
   }
 
   public Mono<ServerResponse> getAllSensorValuesByTypeByPlantation(ServerRequest serverRequest) {
+    System.out.println("LLegaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     Pair<LocalDateTime, LocalDateTime> checkedDates = ParamsUtil.getDateFilter(serverRequest);
     // Recuperate the page request from the request parameters
     String plantationId = serverRequest.pathVariable("plantation_id");

@@ -1,6 +1,7 @@
 package com.growtech.api.repositories.sensor_value;
 
 import com.growtech.api.entities.SensorValue;
+import org.reactivestreams.Publisher;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
 

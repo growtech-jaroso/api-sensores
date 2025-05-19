@@ -67,7 +67,7 @@ public class SensorValueServiceImpl implements SensorValueService {
 
     return plantation.flatMapMany(
       plt -> {
-        if (!plt.getManagers().contains(user.getId())) {
+        if (!plt.getManagers().contains(user.getId()) && !user.canViewAnything()) {
           return Mono.error(new CustomException(HttpStatus.FORBIDDEN, "FORBIDDEN"));
         }
         return this.sensorRepository.findAllByTypeAndPlantationIdAndIsDeletedIsFalse(sensorType, plt.getId())
