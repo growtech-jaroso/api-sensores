@@ -8,6 +8,8 @@ import org.springframework.data.domain.PageRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Repository
 public interface PlantationRepository extends ReactiveMongoRepository<Plantation, String>, PlantationRepositoryCustom {
   Flux<Plantation> findAllByManagersContainingAndIsDeletedIsFalse(String userId);
@@ -18,4 +20,5 @@ public interface PlantationRepository extends ReactiveMongoRepository<Plantation
   Mono<Boolean> existsPlantationByNameAndOwnerIdAndIsDeletedIsFalse(String name, String ownerId);
   Mono<Boolean> existsPlantationByIdNotAndNameAndOwnerIdAndIsDeletedIsFalse(String plantationId, String name, String ownerId);
   Flux<OwnerIdProjection> findAllByIsDeletedIsFalse();
+  Flux<Plantation> findAllByOwnerIdAndIsDeletedIsFalse(String ownerId);
 }

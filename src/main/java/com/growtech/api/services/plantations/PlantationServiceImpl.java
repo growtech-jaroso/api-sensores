@@ -212,4 +212,15 @@ public class PlantationServiceImpl implements PlantationService {
         });
     });
   }
+
+  @Override
+  public Mono<List<Plantation>> getPlantationsByUserId(String userId) {
+    // Get the user by id if not exists, throw bad request exception
+    Mono<User> user = this.userRepository.findUserById(userId)
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "User not found")));
+
+    // Get all plantations by user id
+    return user.flatMapMany(u -> this.plantationRepository.findAllByOwnerIdAndIsDeletedIsFalse(u.getId()))
+      .collectList();
+  }
 }

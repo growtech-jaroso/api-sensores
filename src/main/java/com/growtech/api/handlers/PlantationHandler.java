@@ -186,4 +186,19 @@ public class PlantationHandler {
         .bodyValue(new SuccessResponse(HttpStatus.OK, message))
       );
   }
+
+  // Get all plantations by user id
+  public Mono<ServerResponse> getPlantationsByUserId(ServerRequest serverRequest) {
+  String userId = serverRequest.pathVariable("user_id");
+
+    // Check if the user has the ADMIN role
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+      .then(
+        this.plantationService.getPlantationsByUserId(userId)
+          .flatMap(plantations -> Response
+            .builder(HttpStatus.OK)
+            .bodyValue(new DataResponse<>(HttpStatus.OK, plantations))
+          )
+      );
+    }
 }
