@@ -3,6 +3,7 @@ package com.growtech.api.entities;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.growtech.api.dtos.requests.EditPlantationDto;
 import com.growtech.api.dtos.requests.PlantationDto;
+import com.growtech.api.enums.PlantationStatus;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -34,9 +35,7 @@ public class Plantation extends Model  {
   @JsonProperty("owner_id")
   private String ownerId; // ID of the user who owns the plantation
 
-  @Field(name = "has_alerts")
-  @JsonProperty("has_alerts")
-  private Boolean hasAlerts;
+  private PlantationStatus status; // Status of the plantation
 
   @Indexed
   private List<String> managers; // List of users IDs who are managers of the plantation
@@ -56,7 +55,7 @@ public class Plantation extends Model  {
   public Plantation(PlantationDto plantationDto, User user) {
     super();
     this.name = plantationDto.name();
-    this.hasAlerts = false;
+    this.status = PlantationStatus.ONLINE;
     this.country = plantationDto.country();
     this.province = plantationDto.province();
     this.city = plantationDto.city();

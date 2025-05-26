@@ -1,8 +1,10 @@
 package com.growtech.api.services.mqtt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.growtech.api.dtos.mqtt.PlantationStatusDto;
 import com.growtech.api.dtos.mqtt.SensorReadingDto;
 import com.growtech.api.entities.SensorValue;
+import com.growtech.api.enums.PlantationStatus;
 import com.growtech.api.repositories.plantation.PlantationRepository;
 import com.growtech.api.repositories.sensor.SensorRepository;
 import com.growtech.api.repositories.sensor_value.SensorValueRepository;
@@ -35,7 +37,7 @@ public class MqttMessageServiceImpl implements MqttMessageService {
   @Override
   public void processMessage(String topic, MqttMessage message) {
     if (topic.contains("event/reading")) this.processSensorReading(topic, message);
-    else if (topic.contains("event/status")) this.processDeviceStatus(topic, message);
+    else if (topic.contains("event/status")) this.processPlantationStatus(topic, message);
     else log.warn("Unknown topic: {}", topic);
   }
 
@@ -88,19 +90,41 @@ public class MqttMessageServiceImpl implements MqttMessageService {
 
 
 
-  private void processDeviceStatus(String topic, MqttMessage message) {
+  private void processPlantationStatus(String topic, MqttMessage message) {
     log.info("Processing device status message: {}", message);
     String plantationId = this.getPlantationId(topic);
 
     // Check if the plantation exists
-    this.checkIfPlantationExists(plantationId)
-      .flatMap(exists -> {
-        if (!exists) {
+    this.plantationRepository.findPlantationsByIdAndIsDeletedIsFalse(plantationId)
+      .flatMap(plantation -> {
+        if (plantation == null) {
           log.error("Plantation with ID '{}' does not exist", plantationId);
           return Mono.empty(); // Stop the flow without error
         }
-        return Mono.empty();
-      });
+
+        PlantationStatusDto plantationStatusDto = this.getObjectFromJson(message.toString(), PlantationStatusDto.class);
+
+        if (plantationStatusDto == null) {
+          log.error("PlantationStatusDto is null or malformed for message: {}", message);
+          return Mono.empty(); // Stop the flow without error
+        }
+
+        // Convert the DTO to PlantationStatus
+        PlantationStatus status = plantationStatusDto.toPlantationStatus();
+        if (status == null) {
+          log.error("Failed to convert PlantationStatusDto to PlantationStatus");
+          return Mono.empty(); // Stop the flow without error
+        }
+
+        // Set the status of the plantation
+        plantation.setStatus(status);
+
+        // Save the plantation to the database
+        return this.plantationRepository.save(plantation)
+          .doOnSuccess(saved -> log.info("Plantation status saved: {}", saved));
+      })
+      .doOnError(e -> log.error("Unexpected error during processing: {}", e.getMessage()))
+      .subscribe(); // no onErrorConsumer
   }
 
   /**
