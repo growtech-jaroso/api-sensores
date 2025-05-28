@@ -37,10 +37,10 @@ public class PlantationServiceImpl implements PlantationService {
   public Mono<Tuple2<List<Plantation>, Long>> getAllPlantationsByUserPaginated(
     User user,
     String plantationSearchFilter,
-    Boolean hasAlertsFilter,
+    String plantationStatus,
     PageRequest pageRequest
   ) {
-    if (hasAlertsFilter == null) {
+    if (plantationStatus == null) {
       return user.canViewAnything()
         ? Mono.zip(
         this.plantationRepository.findAllByFiltersAndIsDeletedIsFalse(
@@ -59,14 +59,14 @@ public class PlantationServiceImpl implements PlantationService {
     } else {
       return user.canViewAnything()
         ? Mono.zip(
-        this.plantationRepository.findAllByFiltersAndHasAlertsAndIsDeletedIsFalse(plantationSearchFilter, hasAlertsFilter, pageRequest)
+        this.plantationRepository.findAllByFiltersAndPlantationStatusAndIsDeletedIsFalse(plantationSearchFilter, plantationStatus, pageRequest)
           .collectList(),
-        this.plantationRepository.countAllByFiltersAndHasAlertsAndIsDeletedIsFalse(plantationSearchFilter, hasAlertsFilter)
+        this.plantationRepository.countAllByFiltersAndPlantationStatusAndIsDeletedIsFalse(plantationSearchFilter, plantationStatus)
       )
         : Mono.zip(
-        this.plantationRepository.findAllByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(user.getId(), plantationSearchFilter, hasAlertsFilter, pageRequest)
+        this.plantationRepository.findAllByManagersContainingAndFiltersAndPlantationStatusAndIsDeletedIsFalse(user.getId(), plantationSearchFilter, plantationStatus, pageRequest)
           .collectList(),
-        this.plantationRepository.countByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(user.getId(), plantationSearchFilter, hasAlertsFilter)
+        this.plantationRepository.countByManagersContainingAndFiltersAndPlantationStatusAndIsDeletedIsFalse(user.getId(), plantationSearchFilter, plantationStatus)
       );
     }
   }

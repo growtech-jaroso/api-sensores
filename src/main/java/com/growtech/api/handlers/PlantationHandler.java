@@ -4,6 +4,7 @@ import com.growtech.api.dtos.requests.EditPlantationDto;
 import com.growtech.api.dtos.requests.PlantationManagerDto;
 import com.growtech.api.dtos.requests.PlantationDto;
 import com.growtech.api.entities.User;
+import com.growtech.api.enums.PlantationStatus;
 import com.growtech.api.enums.UserRole;
 import com.growtech.api.exceptions.EmptyBody;
 import com.growtech.api.responses.Response;
@@ -60,13 +61,14 @@ public class PlantationHandler {
     // Get the plantation search filter from the request parameters
     String plantationSearchFilter = request.queryParam("search").orElse("");
     // Get the plantation filter for has alerts from the request parameters
-    String hasAlertsStr = request.queryParam("has_alerts").orElse("");
+    String plantationStatusStr = request.queryParam("status").orElse("");
 
-    // Check if the has alerts filter is true or false or null
-    Boolean hasAlertsFilter;
-    if (hasAlertsStr.equals("true")) hasAlertsFilter = true;
-    else if (hasAlertsStr.equals("false")) hasAlertsFilter = false;
-    else hasAlertsFilter = null;
+    // Convert the plantation status string to an enum
+    PlantationStatus plantationStatus = PlantationStatus.convertFromString(plantationStatusStr);
+
+    if (plantationStatus == null) plantationStatusStr = "";
+
+    String finalPlantationStatusStr = plantationStatusStr;
 
     // Retrieve the user from the request
     Mono<User> authUser = AuthUtil.getAuthUser();
@@ -79,7 +81,7 @@ public class PlantationHandler {
           .getAllPlantationsByUserPaginated(
             user,
             plantationSearchFilter,
-            hasAlertsFilter,
+            finalPlantationStatusStr,
             pageRequest
           )
           // Create a paginated response

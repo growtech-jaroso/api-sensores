@@ -55,8 +55,8 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
   }
 
   @Override
-  public Flux<Plantation> findAllByFiltersAndHasAlertsAndIsDeletedIsFalse(String search, Boolean hasAlerts, PageRequest pageRequest) {
-    Criteria criteria = getCriteriaForFiltersAndHasAlertsAndIsDeletedIsFalse(search, hasAlerts);
+  public Flux<Plantation> findAllByFiltersAndPlantationStatusAndIsDeletedIsFalse(String search, String status, PageRequest pageRequest) {
+    Criteria criteria = getCriteriaForFiltersAndHasAlertsAndIsDeletedIsFalse(search, status);
 
     Query query = new Query(criteria);
     query.with(pageRequest); // Apply pagination
@@ -65,16 +65,16 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
   }
 
   @Override
-  public Mono<Long> countAllByFiltersAndHasAlertsAndIsDeletedIsFalse(String search, Boolean hasAlerts) {
-    Criteria criteria = getCriteriaForFiltersAndHasAlertsAndIsDeletedIsFalse(search, hasAlerts);
+  public Mono<Long> countAllByFiltersAndPlantationStatusAndIsDeletedIsFalse(String search, String status) {
+    Criteria criteria = getCriteriaForFiltersAndHasAlertsAndIsDeletedIsFalse(search, status);
 
     Query query = new Query(criteria);
     return reactiveMongoTemplate.count(query, Plantation.class);
   }
 
   @Override
-  public Flux<Plantation> findAllByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(String userId, String search, Boolean hasAlerts, PageRequest pageRequest) {
-    Criteria criteria = getCriteriaForManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(userId, search, hasAlerts);
+  public Flux<Plantation> findAllByManagersContainingAndFiltersAndPlantationStatusAndIsDeletedIsFalse(String userId, String search, String status, PageRequest pageRequest) {
+    Criteria criteria = getCriteriaForManagersContainingAndFiltersAndPlantationStatusAndIsDeletedIsFalse(userId, search, status);
 
     Query query = new Query(criteria);
     query.with(pageRequest); // Apply pagination
@@ -83,8 +83,8 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
   }
 
   @Override
-  public Mono<Long> countByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(String userId, String search, Boolean hasAlerts) {
-    Criteria criteria = getCriteriaForManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(userId, search, hasAlerts);
+  public Mono<Long> countByManagersContainingAndFiltersAndPlantationStatusAndIsDeletedIsFalse(String userId, String search, String status) {
+    Criteria criteria = getCriteriaForManagersContainingAndFiltersAndPlantationStatusAndIsDeletedIsFalse(userId, search, status);
 
     Query query = new Query(criteria);
     return reactiveMongoTemplate.count(query, Plantation.class);
@@ -131,10 +131,10 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
   /**
    * This method creates a Criteria object that combines multiple filters
    * @param search search filter of the plantation
-   * @param hasAlerts has alerts of the plantation
+   * @param status plantation status of the plantation
    * @return Criteria object that combines multiple filters using an OR operator and is_deleted is false
    */
-  private Criteria getCriteriaForFiltersAndHasAlertsAndIsDeletedIsFalse(String search, Boolean hasAlerts) {
+  private Criteria getCriteriaForFiltersAndHasAlertsAndIsDeletedIsFalse(String search, String status) {
     return new Criteria().andOperator(
       new Criteria().orOperator(
         Criteria.where("name").regex(search, "i"),
@@ -144,7 +144,7 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
         Criteria.where("type").regex(search, "i")
       ),
       Criteria.where("is_deleted").is(false),
-      Criteria.where("has_alerts").is(hasAlerts)
+      Criteria.where("status").regex(status, "i")
     );
   }
 
@@ -152,10 +152,10 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
    * This method creates a Criteria object that combines multiple filters
    * @param userId user id of the possible manager
    * @param search search filter of the plantation
-   * @param hasAlerts has alerts of the plantation
+   * @param status plantation status of the plantation
    * @return Criteria object that combines multiple filters using an OR operator and is_deleted is false
    */
-  private Criteria getCriteriaForManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(String userId, String search, Boolean hasAlerts) {
+  private Criteria getCriteriaForManagersContainingAndFiltersAndPlantationStatusAndIsDeletedIsFalse(String userId, String search, String status) {
     return new Criteria().andOperator(
       new Criteria().orOperator(
         Criteria.where("name").regex(search, "i"),
@@ -166,7 +166,7 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
       ),
       Criteria.where("is_deleted").is(false),
       Criteria.where("owner_id").is(userId),
-      Criteria.where("has_alerts").is(hasAlerts)
+      Criteria.where("status").regex(status, "i")
     );
   }
 }
