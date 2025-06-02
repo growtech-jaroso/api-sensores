@@ -37,6 +37,12 @@ spring:
   config:
     import: optional:file:.env[.properties]
 
+  rsocket:
+    server:
+      port: ${RSOCKET_PORT}
+      mapping-path: ${RSOCKET_PATH}
+      transport: ${RSOCKET_TRANSPORT}
+
 logging:
   file:
     name: "var/logs/application.log"
