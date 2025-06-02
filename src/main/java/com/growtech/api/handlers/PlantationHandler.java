@@ -194,7 +194,7 @@ public class PlantationHandler {
   String userId = serverRequest.pathVariable("user_id");
 
     // Check if the user has the ADMIN role
-    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN, UserRole.SUPPORT)
       .then(
         this.plantationService.getPlantationsByUserId(userId)
           .flatMap(plantations -> Response
