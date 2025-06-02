@@ -100,7 +100,7 @@ public class PlantationHandler {
     PageRequest pageRequest = ParamsUtil.getPageRequest(request);
 
     // Check if the user has the ADMIN role and return the owners of the plantations
-    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN, UserRole.SUPPORT)
       .then(
         this.plantationService.getAllPlantationsOwners(pageRequest)
           .flatMap(tuple -> Response.builder(HttpStatus.OK)
