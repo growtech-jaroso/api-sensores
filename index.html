@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>RSocket JS Client</title>
+    <script src="https://unpkg.com/rsocket-core@0.0.27/dist/rsocket-core.min.js"></script>
+    <script src="https://unpkg.com/rsocket-websocket-client@0.0.27/dist/rsocket-websocket-client.min.js"></script>
+</head>
+<body>
+<h1>RSocket Test</h1>
+<button id="sendRequest">Enviar mensaje al backend</button>
+
+<script>
+    const {
+        RSocketClient,
+        JsonSerializer,
+        IdentitySerializer
+    } = rsocketCore;
+
+    const RSocketWebSocketClient = rsocketWebSocketClient.RSocketWebSocketClient;
+
+    // Crear cliente RSocket
+    const client = new RSocketClient({
+        serializers: {
+            data: JsonSerializer,
+            metadata: IdentitySerializer
+        },
+        setup: {
+            // Tiempo de vida del socket (ms)
+            keepAlive: 60000,
+            lifetime: 180000,
+            dataMimeType: 'application/json',
+            metadataMimeType: 'message/x.rsocket.routing.v0'
+        },
+        transport: new RSocketWebSocketClient({ url: 'ws://localhost:7000/rsocket' })
+    });
+
+    // Conectar y hacer una request-response
+    document.getElementById('sendRequest').addEventListener('click', () => {
+        client.connect().subscribe({
+            onComplete: socket => {
+                socket.requestResponse({
+                    data: { mensaje: 'Hola desde el frontend' },
+                    metadata: String.fromCharCode(0) + 'mensaje.route' // ruta definida en el backend
+                }).subscribe({
+                    onComplete: payload => {
+                        console.log('Respuesta del servidor:', payload.data);
+                        alert('Respuesta: ' + JSON.stringify(payload.data));
+                    },
+                    onError: error => {
+                        console.error('Error en la respuesta:', error);
+                    }
+                });
+            },
+            onError: error => {
+                console.error('Error al conectar:', error);
+            }
+        });
+    });
+</script>
+</body>
+</html>
