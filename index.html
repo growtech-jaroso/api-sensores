@@ -11,22 +11,15 @@
 <button id="sendRequest">Enviar mensaje al backend</button>
 
 <script>
-    const {
-        RSocketClient,
-        JsonSerializer,
-        IdentitySerializer
-    } = rsocketCore;
+    const { RSocketClient, JsonSerializer, IdentitySerializer } = window.rsocketCore;
+    const { RSocketWebSocketClient } = window.rsocketWebSocketClient;
 
-    const RSocketWebSocketClient = rsocketWebSocketClient.RSocketWebSocketClient;
-
-    // Crear cliente RSocket
     const client = new RSocketClient({
         serializers: {
             data: JsonSerializer,
             metadata: IdentitySerializer
         },
         setup: {
-            // Tiempo de vida del socket (ms)
             keepAlive: 60000,
             lifetime: 180000,
             dataMimeType: 'application/json',
@@ -35,13 +28,21 @@
         transport: new RSocketWebSocketClient({ url: 'ws://localhost:7000/rsocket' })
     });
 
-    // Conectar y hacer una request-response
+    // Helper para crear el metadata con routing
+    function encodeRoute(route) {
+        const length = String.fromCharCode(route.length);
+        return length + route;
+    }
+
     document.getElementById('sendRequest').addEventListener('click', () => {
         client.connect().subscribe({
             onComplete: socket => {
                 socket.requestResponse({
-                    data: { mensaje: 'Hola desde el frontend' },
-                    metadata: String.fromCharCode(0) + 'mensaje.route' // ruta definida en el backend
+                    data: {
+                        plantacion_id : '682230e449add36ebeaac933',
+                        sensor_id: '6822318bbcd9906adbdf3aa8'
+                    },
+                    metadata: encodeRoute('sensor.values') // ruta mapeada en el backend
                 }).subscribe({
                     onComplete: payload => {
                         console.log('Respuesta del servidor:', payload.data);
@@ -49,11 +50,13 @@
                     },
                     onError: error => {
                         console.error('Error en la respuesta:', error);
+                        alert('Error: ' + error.message);
                     }
                 });
             },
             onError: error => {
-                console.error('Error al conectar:', error);
+                console.error('Error al conectar con el servidor RSocket:', error);
+                alert('No se pudo conectar con el backend RSocket');
             }
         });
     });

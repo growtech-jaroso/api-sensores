@@ -25,7 +25,7 @@ public class RSocketHandler {
   }
 
 
-  @MessageMapping("sensor.updates")
+  @MessageMapping("sensor.values")
   public Flux<SensorValue> streamSensorUpdates(SensorSubscriptionRequest request) {
 
     Mono<Sensor> sensor = this.rsocketService.getSensorId(request.sensorId())

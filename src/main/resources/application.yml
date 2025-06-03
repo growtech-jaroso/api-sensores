@@ -39,9 +39,9 @@ spring:
 
   rsocket:
     server:
-      port: ${RSOCKET_PORT}
-      mapping-path: ${RSOCKET_PATH}
-      transport: ${RSOCKET_TRANSPORT}
+      port: ${RSOCKET_PORT:7000}
+      mapping-path: rsocket
+      transport: WEBSOCKET
 
 logging:
   file:
