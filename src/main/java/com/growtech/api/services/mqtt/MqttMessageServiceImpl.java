@@ -5,6 +5,7 @@ import com.growtech.api.dtos.mqtt.PlantationStatusDto;
 import com.growtech.api.dtos.mqtt.SensorReadingDto;
 import com.growtech.api.entities.SensorValue;
 import com.growtech.api.enums.PlantationStatus;
+import com.growtech.api.handlers.RSocketHandler;
 import com.growtech.api.repositories.plantation.PlantationRepository;
 import com.growtech.api.repositories.sensor.SensorRepository;
 import com.growtech.api.repositories.sensor_value.SensorValueRepository;
@@ -21,17 +22,20 @@ public class MqttMessageServiceImpl implements MqttMessageService {
   private final SensorRepository sensorRepository;
   private final SensorValueRepository sensorValueRepository;
   private final ObjectMapper objectMapper;
+  private final RSocketHandler rSocketHandler;
 
   public MqttMessageServiceImpl(
     PlantationRepository plantationRepository,
     SensorRepository sensorRepository,
     SensorValueRepository sensorValueRepository,
-    ObjectMapper objectMapper
+    ObjectMapper objectMapper,
+    RSocketHandler rSocketHandler
   ) {
     this.plantationRepository = plantationRepository;
     this.sensorRepository = sensorRepository;
     this.sensorValueRepository = sensorValueRepository;
     this.objectMapper = objectMapper;
+    this.rSocketHandler = rSocketHandler;
   }
 
   @Override
@@ -82,7 +86,8 @@ public class MqttMessageServiceImpl implements MqttMessageService {
 
         // Save the SensorValue to the database
         return this.sensorValueRepository.save(value)
-          .doOnSuccess(saved -> log.info("Sensor value saved: {}", saved));
+          .doOnSuccess(saved -> log.info("Sensor value saved: {}", saved))
+          .doOnNext(rSocketHandler::update);
       })
       .doOnError(e -> log.error("Unexpected error during processing: {}", e.getMessage()))
       .subscribe(); // no onErrorConsumer

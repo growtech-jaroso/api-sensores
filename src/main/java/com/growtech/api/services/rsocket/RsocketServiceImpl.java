@@ -1,22 +1,24 @@
 package com.growtech.api.services.rsocket;
 
 
+import com.growtech.api.entities.Sensor;
+import com.growtech.api.repositories.sensor.SensorRepository;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-@Component
-public class RsocketServiceImpl {
+@Service
+public class RsocketServiceImpl implements RSocketService{
 
-  private final RSocketRequester rSocketRequester;
+  private final SensorRepository sensorRepository;
 
-  public RsocketServiceImpl(RSocketRequester rSocketRequester) {
-    this.rSocketRequester = rSocketRequester;
-  }
-  public Mono<String> sendRequest(String message){
-    return rSocketRequester.route("")
-      .data(message)
-      .retrieveMono(String.class);
+  public RsocketServiceImpl(SensorRepository sensorRepository) {
+    this.sensorRepository = sensorRepository;
   }
 
+  @Override
+  public Mono<Sensor> getSensorId(String id) {
+    return this.sensorRepository.findById(id);
+  }
 }
