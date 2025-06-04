@@ -5,7 +5,6 @@ import com.growtech.api.entities.Sensor;
 import com.growtech.api.entities.SensorValue;
 import com.growtech.api.exceptions.CustomException;
 import com.growtech.api.services.rsocket.RSocketService;
-import com.growtech.api.services.sensors.SensorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
