@@ -3,8 +3,6 @@ package com.growtech.api.services.rsocket;
 
 import com.growtech.api.entities.Sensor;
 import com.growtech.api.repositories.sensor.SensorRepository;
-import org.springframework.messaging.rsocket.RSocketRequester;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
