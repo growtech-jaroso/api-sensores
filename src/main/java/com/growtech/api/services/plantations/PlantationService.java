@@ -28,4 +28,5 @@ public interface PlantationService {
   Mono<String> deletePlantation(String plantationId);
   Mono<Plantation> editPlantation(User user, String plantationId, EditPlantationDto plantationDto);
   Mono<List<Plantation>> getPlantationsByUserId(String userId);
+  Mono<Plantation> getPlantationById(String plantationId, User user);
 }

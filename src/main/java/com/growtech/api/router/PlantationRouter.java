@@ -25,6 +25,7 @@ public class PlantationRouter {
     return RouterFunctions.route()
       .path("/{plantation_id}/sensors", this.sensorRouter::sensorRoutes) // Sensors routes
       .GET("", this.handler::getAllPlantationsByUser) // Route: GET /api/plantations
+      .GET("/{plantation_id}", this.handler::getPlantationById) // Route: GET /api/plantations/{plantation_id}
       .PUT("/{plantation_id}", this.handler::editPlantation) // Route: PUT /api/plantations/{plantation_id}
       .POST("" , this.handler::createPlantation) // Route: POST /api/plantations
       .DELETE("/{plantation_id}", this.handler::deletePlantation) // Route: DELETE /api/plantations/{plantation_id}

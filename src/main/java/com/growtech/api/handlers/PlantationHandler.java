@@ -191,7 +191,7 @@ public class PlantationHandler {
 
   // Get all plantations by user id
   public Mono<ServerResponse> getPlantationsByUserId(ServerRequest serverRequest) {
-  String userId = serverRequest.pathVariable("user_id");
+    String userId = serverRequest.pathVariable("user_id");
 
     // Check if the user has the ADMIN role
     return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN, UserRole.SUPPORT)
@@ -203,4 +203,17 @@ public class PlantationHandler {
           )
       );
     }
+
+  public Mono<ServerResponse> getPlantationById(ServerRequest serverRequest) {
+    String plantationId = serverRequest.pathVariable("plantation_id");
+
+    // Get the user from the request
+    return AuthUtil.getAuthUser()
+      .flatMap(user -> this.plantationService.getPlantationById(plantationId, user)
+          .flatMap(plantation -> Response
+            .builder(HttpStatus.OK)
+            .bodyValue(new DataResponse<>(HttpStatus.OK, plantation))
+          )
+      );
+  }
 }

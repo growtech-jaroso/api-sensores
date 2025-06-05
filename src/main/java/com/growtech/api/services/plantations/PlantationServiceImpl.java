@@ -223,4 +223,18 @@ public class PlantationServiceImpl implements PlantationService {
     return user.flatMapMany(u -> this.plantationRepository.findAllByOwnerIdAndIsDeletedIsFalse(u.getId()))
       .collectList();
   }
+
+  @Override
+  public Mono<Plantation> getPlantationById(String plantationId, User user) {
+    Mono<Plantation> plantation = this.plantationRepository.findPlantationsByIdAndIsDeletedIsFalse(plantationId)
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation not found")));
+
+    return plantation.flatMap(pl -> {
+      if (!pl.getManagers().contains(user.getId()) && !user.canViewAnything()) {
+        return Mono.error(new CustomException(HttpStatus.FORBIDDEN, "Forbidden"));
+      }
+
+      return Mono.just(pl);
+    });
+  }
 }
