@@ -1,9 +1,9 @@
 package com.growtech.api.enums;
 
 public enum SensorType {
-  TEMPERATURE,
-  HUMIDITY,
-  PRESSURE;
+  ATMOSPHERIC_PRESSURE,
+  AMBIENT_HUMIDITY,
+  AMBIENT_TEMPERATURE;
 
   /**
    * Convert a string to a SensorType enum.
