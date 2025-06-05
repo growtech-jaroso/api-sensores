@@ -25,14 +25,14 @@ public class PlantationRouter {
     return RouterFunctions.route()
       .path("/{plantation_id}/sensors", this.sensorRouter::sensorRoutes) // Sensors routes
       .GET("", this.handler::getAllPlantationsByUser) // Route: GET /api/plantations
+      .GET("/owners", this.handler::getAllPlantationsOwners) // Route: GET /api/plantations/owners
+      .GET("/owners/{user_id}", this.handler::getPlantationsByUserId) // Route: GET /api/plantations/owners/{user_id}
       .GET("/{plantation_id}", this.handler::getPlantationById) // Route: GET /api/plantations/{plantation_id}
       .PUT("/{plantation_id}", this.handler::editPlantation) // Route: PUT /api/plantations/{plantation_id}
       .POST("" , this.handler::createPlantation) // Route: POST /api/plantations
       .DELETE("/{plantation_id}", this.handler::deletePlantation) // Route: DELETE /api/plantations/{plantation_id}
       .POST("/{plantation_id}/assistants", this.handler::addPlantationManager) // Route: POST /api/plantations/{plantation_id}/assistants
       .DELETE("/{plantation_id}/assistants", this.handler::deletePlantationManager) // Route: DELETE /api/plantations/{plantation_id}/assistants
-      .GET("/owners", this.handler::getAllPlantationsOwners) // Route: GET /api/plantations/owners
-      .GET("/owners/{user_id}", this.handler::getPlantationsByUserId) // Route: GET /api/plantations/owners/{user_id}
       .build();
   }
 }
