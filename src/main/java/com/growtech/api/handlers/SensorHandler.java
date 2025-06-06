@@ -12,6 +12,7 @@ import com.growtech.api.services.sensors.SensorService;
 import com.growtech.api.utils.AuthUtil;
 import com.growtech.api.utils.ParamsUtil;
 import com.growtech.api.validators.ObjectValidator;
+import com.mongodb.internal.connection.Server;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -73,6 +74,27 @@ public class SensorHandler {
     // Create a new sensor and return in response
     return sensorDto
       .flatMap(sensorInfo -> this.sensorService.createSensor(sensorInfo, plantationId))
+      .flatMap(sensor -> Response
+        .builder(HttpStatus.CREATED)
+        .bodyValue(new DataResponse<>(HttpStatus.CREATED, sensor))
+      );
+  }
+
+  public Mono<ServerResponse> createActuatorSensor(ServerRequest request) {
+    Mono<SensorDto> sensorDto = AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+      // Validate the request body
+      .then(
+        request.bodyToMono(SensorDto.class)
+          .doOnNext(objectValidator::validate)
+          .switchIfEmpty(Mono.error(new EmptyBody()))
+      );
+
+    // Get the plantation id from the request
+    String plantationId = request.pathVariable("plantation_id");
+
+    // Create a new sensor and return in response
+    return sensorDto
+      .flatMap(sensorInfo -> this.sensorService.createActuatorSensor(plantationId))
       .flatMap(sensor -> Response
         .builder(HttpStatus.CREATED)
         .bodyValue(new DataResponse<>(HttpStatus.CREATED, sensor))
