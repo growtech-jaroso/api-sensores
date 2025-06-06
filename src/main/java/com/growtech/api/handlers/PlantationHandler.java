@@ -4,6 +4,7 @@ import com.growtech.api.dtos.requests.EditPlantationDto;
 import com.growtech.api.dtos.requests.PlantationManagerDto;
 import com.growtech.api.dtos.requests.PlantationDto;
 import com.growtech.api.entities.User;
+import com.growtech.api.enums.PlantationStatus;
 import com.growtech.api.enums.UserRole;
 import com.growtech.api.exceptions.EmptyBody;
 import com.growtech.api.responses.Response;
@@ -60,13 +61,14 @@ public class PlantationHandler {
     // Get the plantation search filter from the request parameters
     String plantationSearchFilter = request.queryParam("search").orElse("");
     // Get the plantation filter for has alerts from the request parameters
-    String hasAlertsStr = request.queryParam("has_alerts").orElse("");
+    String plantationStatusStr = request.queryParam("status").orElse("");
 
-    // Check if the has alerts filter is true or false or null
-    Boolean hasAlertsFilter;
-    if (hasAlertsStr.equals("true")) hasAlertsFilter = true;
-    else if (hasAlertsStr.equals("false")) hasAlertsFilter = false;
-    else hasAlertsFilter = null;
+    // Convert the plantation status string to an enum
+    PlantationStatus plantationStatus = PlantationStatus.convertFromString(plantationStatusStr);
+
+    if (plantationStatus == null) plantationStatusStr = "";
+
+    String finalPlantationStatusStr = plantationStatusStr;
 
     // Retrieve the user from the request
     Mono<User> authUser = AuthUtil.getAuthUser();
@@ -79,7 +81,7 @@ public class PlantationHandler {
           .getAllPlantationsByUserPaginated(
             user,
             plantationSearchFilter,
-            hasAlertsFilter,
+            finalPlantationStatusStr,
             pageRequest
           )
           // Create a paginated response
@@ -98,7 +100,7 @@ public class PlantationHandler {
     PageRequest pageRequest = ParamsUtil.getPageRequest(request);
 
     // Check if the user has the ADMIN role and return the owners of the plantations
-    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN, UserRole.SUPPORT)
       .then(
         this.plantationService.getAllPlantationsOwners(pageRequest)
           .flatMap(tuple -> Response.builder(HttpStatus.OK)
@@ -189,10 +191,10 @@ public class PlantationHandler {
 
   // Get all plantations by user id
   public Mono<ServerResponse> getPlantationsByUserId(ServerRequest serverRequest) {
-  String userId = serverRequest.pathVariable("user_id");
+    String userId = serverRequest.pathVariable("user_id");
 
     // Check if the user has the ADMIN role
-    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN, UserRole.SUPPORT)
       .then(
         this.plantationService.getPlantationsByUserId(userId)
           .flatMap(plantations -> Response
@@ -201,4 +203,17 @@ public class PlantationHandler {
           )
       );
     }
+
+  public Mono<ServerResponse> getPlantationById(ServerRequest serverRequest) {
+    String plantationId = serverRequest.pathVariable("plantation_id");
+
+    // Get the user from the request
+    return AuthUtil.getAuthUser()
+      .flatMap(user -> this.plantationService.getPlantationById(plantationId, user)
+          .flatMap(plantation -> Response
+            .builder(HttpStatus.OK)
+            .bodyValue(new DataResponse<>(HttpStatus.OK, plantation))
+          )
+      );
+  }
 }

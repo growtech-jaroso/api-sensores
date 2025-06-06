@@ -2,7 +2,7 @@
   {
     "id": "69b6870fd5e443fd",
     "type": "tab",
-    "label": "create demon values",
+    "label": "create demo values",
     "disabled": false,
     "info": ""
   },
@@ -38,6 +38,16 @@
     "sessionExpiry": ""
   },
   {
+    "id": "3cc11d24.ff01a2",
+    "type": "comment",
+    "z": "f6f2187d.f17ca8",
+    "name": "WARNING: please check you have started this container with a volume that is mounted to /data\\n otherwise any flow changes are lost when you redeploy or upgrade the container\\n (e.g. upgrade to a more recent node-red docker image).\\n  If you are using named volumes you can ignore this warning.\\n Double click or see info side panel to learn how to start Node-RED in Docker to save your work",
+    "info": "\nTo start docker with a bind mount volume (-v option), for example:\n\n```\ndocker run -it -p 1880:1880 -v /home/user/node_red_data:/data --name mynodered nodered/node-red\n```\n\nwhere `/home/user/node_red_data` is a directory on your host machine where you want to store your flows.\n\nIf you do not do this then you can experiment and redploy flows, but if you restart or upgrade the container the flows will be disconnected and lost. \n\nThey will still exist in a hidden data volume, which can be recovered using standard docker techniques, but that is much more complex than just starting with a named volume as described above.",
+    "x": 350,
+    "y": 80,
+    "wires": []
+  },
+  {
     "id": "621615218d35467f",
     "type": "inject",
     "z": "69b6870fd5e443fd",
@@ -52,7 +62,7 @@
     "once": false,
     "onceDelay": 0.1,
     "topic": "",
-    "payload": "{\"plantation_id\":\"681f27bfca5c20033059d52c\",\"sensor_id\":\"6828a77e9130e51af5d5deeb\",\"multiplier\":30}",
+    "payload": "{\"plantation_id\":\"683756a8f9b4a31464b18bcd\",\"sensor_id\":\"683f3239a0e5e8570be17f35\",\"multiplier\":30}",
     "payloadType": "json",
     "x": 450,
     "y": 360,
@@ -67,7 +77,7 @@
     "type": "function",
     "z": "69b6870fd5e443fd",
     "name": "function 1",
-    "func": "const PLANTATION_ID = msg.payload.plantation_id\nconst SENSOR_ID = msg.payload.sensor_id\n\nmsg.topic = `plantation/${PLANTATION_ID}/sensor/${SENSOR_ID}/event/reading`\n\nconst now = new Date()\nnow.setUTCSeconds(0)\nnow.setUTCMilliseconds(0)\n\nmsg.payload = {\n    measure_timespan: \"AVG_LAST_1_MIN\",\n    measurement: Math.random() * msg.payload.multiplier,\n    reading_timestamp: now.toISOString()\n}\n\nreturn msg;",
+    "func": "const PLANTATION_ID = msg.payload.plantation_id\nconst SENSOR_ID = msg.payload.sensor_id\n\nmsg.topic = `plantation/${PLANTATION_ID}/sensor/${SENSOR_ID}/event/reading`\n\nconst now = new Date()\nnow.setUTCSeconds(0)\nnow.setUTCMilliseconds(0)\n\nmsg.payload = {\n    measure_timespan: \"AVG_1_MIN\",\n    measurement: Math.random() * msg.payload.multiplier,\n    reading_timestamp: now.toISOString()\n}\n\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "noerr": 0,
@@ -110,34 +120,12 @@
     "tosidebar": true,
     "console": false,
     "tostatus": false,
-    "complete": "false",
+    "complete": "payload",
+    "targetType": "msg",
     "statusVal": "",
     "statusType": "auto",
     "x": 720,
     "y": 420,
     "wires": []
-  },
-  {
-    "id": "1ef2f0d4f73a2713",
-    "type": "inject",
-    "z": "69b6870fd5e443fd",
-    "name": "",
-    "props": [
-      {
-        "p": "payload"
-      }
-    ],
-    "repeat": "5",
-    "crontab": "",
-    "once": false,
-    "onceDelay": 0.1,
-    "topic": "",
-    "payload": "{\"plantation_id\":\"681f27bfca5c20033059d52c\",\"sensor_id\":\"6828a77e9130e51af5d5deeb\",\"multiplier\":30}",
-    "payloadType": "json",
-    "x": 490,
-    "y": 260,
-    "wires": [
-      []
-    ]
   }
 ]

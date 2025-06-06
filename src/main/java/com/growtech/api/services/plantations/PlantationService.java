@@ -18,7 +18,7 @@ public interface PlantationService {
   Mono<Tuple2<List<Plantation>, Long>> getAllPlantationsByUserPaginated(
     User user,
     String plantationSearchFilter,
-    Boolean hasAlertsFilter,
+    String plantationStatus,
     PageRequest pageRequest
   );
   Mono<Tuple2<List<OwnerInfo>, Long>> getAllPlantationsOwners(PageRequest pageRequest);
@@ -28,4 +28,5 @@ public interface PlantationService {
   Mono<String> deletePlantation(String plantationId);
   Mono<Plantation> editPlantation(User user, String plantationId, EditPlantationDto plantationDto);
   Mono<List<Plantation>> getPlantationsByUserId(String userId);
+  Mono<Plantation> getPlantationById(String plantationId, User user);
 }

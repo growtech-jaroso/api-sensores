@@ -2,7 +2,8 @@ package com.growtech.api.enums;
 
 public enum SensorUnit {
   CELSIUS,
-  PERCENTAGE;
+  PERCENTAGE,
+  HECTOPASCALS;
 
   /**
    * Convert a string to a SensorUnit enum.

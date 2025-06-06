@@ -51,39 +51,39 @@ public interface PlantationRepositoryCustom {
   /**
    * Find all plantations by filters and has alerts and is deleted is false
    * @param search search filter of the plantation
-   * @param hasAlerts has alerts of the plantation
+   * @param plantationStatus plantation status of the plantation
    * @param pageRequest page request for pagination
    * @return a flux of plantations
    */
-  Flux<Plantation> findAllByFiltersAndHasAlertsAndIsDeletedIsFalse(
+  Flux<Plantation> findAllByFiltersAndPlantationStatusAndIsDeletedIsFalse(
     String search,
-    Boolean hasAlerts,
+    String plantationStatus,
     PageRequest pageRequest
   );
 
   /**
    * Count all plantations by filters and has alerts and is deleted is false
    * @param search search filter of the plantation
-   * @param hasAlerts has alerts of the plantation
+   * @param plantationStatus plantation status of the plantation
    * @return a mono of the count of plantations
    */
-  Mono<Long> countAllByFiltersAndHasAlertsAndIsDeletedIsFalse(
+  Mono<Long> countAllByFiltersAndPlantationStatusAndIsDeletedIsFalse(
     String search,
-    Boolean hasAlerts
+    String plantationStatus
   );
 
   /**
    * Find all plantations by managers containing and filters and has alerts and is deleted is false
    * @param userId user id of the user
    * @param search search filter of the plantation
-   * @param hasAlerts has alerts of the plantation
+   * @param plantationStatus plantation status of the plantation
    * @param pageRequest page request for pagination
    * @return a flux of plantations
    */
-  Flux<Plantation> findAllByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(
+  Flux<Plantation> findAllByManagersContainingAndFiltersAndPlantationStatusAndIsDeletedIsFalse(
     String userId,
     String search,
-    Boolean hasAlerts,
+    String plantationStatus,
     PageRequest pageRequest
   );
 
@@ -91,12 +91,12 @@ public interface PlantationRepositoryCustom {
    * Count all plantations by managers containing and filters and has alerts and is deleted is false
    * @param userId user id of the possible manager
    * @param search search filter of the plantation
-   * @param hasAlerts has alerts of the plantation
+   * @param plantationStatus plantation status of the plantation
    * @return a mono of the count of plantations
    */
-  Mono<Long> countByManagersContainingAndFiltersAndHasAlertsAndIsDeletedIsFalse(
+  Mono<Long> countByManagersContainingAndFiltersAndPlantationStatusAndIsDeletedIsFalse(
     String userId,
     String search,
-    Boolean hasAlerts
+    String plantationStatus
   );
 }
