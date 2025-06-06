@@ -1,8 +1,11 @@
 package com.growtech.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.growtech.api.dtos.requests.SensorDto;
+import com.growtech.api.enums.DeviceType;
 import com.growtech.api.enums.SensorType;
 import com.growtech.api.enums.SensorUnit;
+import com.growtech.api.enums.Status;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,7 +23,13 @@ import java.util.List;
 public class Sensor extends Model {
   private SensorType type;
 
+  @Field("device_type")
+  @JsonProperty("device_type")
+  private DeviceType deviceType;
+
   private SensorUnit unit;
+
+  private Status status;
 
   @Field("plantation_id")
   @Indexed
@@ -38,9 +47,22 @@ public class Sensor extends Model {
     super();
     this.unit = SensorUnit.convertFromString(sensorDto.sensorUnit());
     this.type = SensorType.convertFromString(sensorDto.sensorType());
+    this.deviceType = DeviceType.Sensor;
     this.plantationId = plantationId;
     this.thresholdMinAlert = 0.0;
     this.thresholdMaxAlert = 0.0;
+    this.coordinates = new ArrayList<>();
+  }
+
+  public Sensor(String plantationId) {
+    super();
+    this.unit = null;
+    this.type = null;
+    this.deviceType = DeviceType.Actuator;
+    this.status = Status.OFF;
+    this.plantationId = plantationId;
+    this.thresholdMinAlert = null;
+    this.thresholdMaxAlert = null;
     this.coordinates = new ArrayList<>();
   }
 

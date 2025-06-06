@@ -39,7 +39,7 @@ spring:
 
   rsocket:
     server:
-      port: ${RSOCKET_PORT:7000}
+      port: ${RSOCKET_PORT}
       mapping-path: rsocket
       transport: WEBSOCKET
 
