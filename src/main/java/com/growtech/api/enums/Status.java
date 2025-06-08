@@ -1,5 +1,7 @@
 package com.growtech.api.enums;
 
+import com.growtech.api.dtos.mqtt.SensorStatusDto;
+
 public enum Status {
   ON,
   OFF;
@@ -7,10 +9,11 @@ public enum Status {
 
   /**
    * Convert a string to a SensorType enum.
+   *
    * @param statusStr string representation of the sensor type
    * @return the corresponding SensorType enum
    */
-  public static Status convertFromString(String statusStr) {
+  public static SensorStatusDto convertFromString(String statusStr) {
     try {
       return Status.valueOf(statusStr.toUpperCase());
     } catch (IllegalArgumentException e) {

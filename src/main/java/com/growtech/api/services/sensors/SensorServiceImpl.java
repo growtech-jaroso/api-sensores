@@ -1,12 +1,16 @@
 package com.growtech.api.services.sensors;
 
+import com.growtech.api.dtos.mqtt.SensorStatusDto;
 import com.growtech.api.dtos.requests.SensorDto;
 import com.growtech.api.entities.Plantation;
 import com.growtech.api.entities.Sensor;
 import com.growtech.api.entities.User;
+import com.growtech.api.enums.DeviceType;
+import com.growtech.api.enums.Status;
 import com.growtech.api.exceptions.CustomException;
 import com.growtech.api.repositories.plantation.PlantationRepository;
 import com.growtech.api.repositories.sensor.SensorRepository;
+import com.growtech.api.services.mqtt.MqttMessageServiceImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,10 +24,12 @@ public class SensorServiceImpl implements SensorService {
 
   private final SensorRepository sensorRepository;
   private final PlantationRepository plantationRepository;
+  private final MqttMessageServiceImpl mqttMessageService;
 
-  public SensorServiceImpl(SensorRepository sensorRepository, PlantationRepository plantationRepository) {
+  public SensorServiceImpl(SensorRepository sensorRepository, PlantationRepository plantationRepository, MqttMessageServiceImpl mqttMessageService) {
     this.sensorRepository = sensorRepository;
     this.plantationRepository = plantationRepository;
+    this.mqttMessageService = mqttMessageService;
   }
 
   @Override
@@ -76,6 +82,35 @@ public class SensorServiceImpl implements SensorService {
         return this.sensorRepository.save(sensor);
       });
   }
+
+  @Override
+  public Mono<Sensor> updateActuatorSensor(String sensorId, String plantationId, SensorStatusDto statusDto) {
+
+    return plantationRepository.findPlantationsByIdAndIsDeletedIsFalse(plantationId)
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation not found")))
+      .flatMap(plantation -> sensorRepository.findByIdAndIsDeletedIsFalse(sensorId))
+      .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Sensor not found")))
+      .flatMap(sensor -> {
+        if (sensor.getDeviceType() != DeviceType.Actuator) {
+          return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Sensor is not an actuator"));
+        }
+
+        Status newStatus = Status.convertFromString(statusDto.status());
+        if (newStatus == null) {
+          return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Invalid status value"));
+        }
+
+        sensor.setStatus(newStatus);
+
+        return sensorRepository.save(sensor)
+          .doOnSuccess(savedSensor -> {
+            // Publicar el cambio de estado via MQTT
+            mqttMessageService.publishActuatorStatus(plantationId, sensorId, newStatus);
+          });
+      });
+  }
+
+
 
   @Override
   public Mono<String> deleteSensor(String sensorId, String plantationId) {

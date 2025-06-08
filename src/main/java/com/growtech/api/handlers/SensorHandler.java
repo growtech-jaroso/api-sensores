@@ -1,7 +1,9 @@
 package com.growtech.api.handlers;
 
+import com.growtech.api.dtos.mqtt.SensorStatusDto;
 import com.growtech.api.dtos.requests.SensorDto;
 import com.growtech.api.entities.User;
+import com.growtech.api.enums.Status;
 import com.growtech.api.enums.UserRole;
 import com.growtech.api.exceptions.EmptyBody;
 import com.growtech.api.responses.Response;
@@ -81,25 +83,32 @@ public class SensorHandler {
   }
 
   public Mono<ServerResponse> createActuatorSensor(ServerRequest request) {
-    Mono<SensorDto> sensorDto = AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
-      // Validate the request body
-      .then(
-        request.bodyToMono(SensorDto.class)
-          .doOnNext(objectValidator::validate)
-          .switchIfEmpty(Mono.error(new EmptyBody()))
-      );
-
     // Get the plantation id from the request
     String plantationId = request.pathVariable("plantation_id");
 
-    // Create a new sensor and return in response
-    return sensorDto
-      .flatMap(sensorInfo -> this.sensorService.createActuatorSensor(plantationId))
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+      // Validate the request body
+      .then(
+        this.sensorService.createActuatorSensor(plantationId)
       .flatMap(sensor -> Response
         .builder(HttpStatus.CREATED)
         .bodyValue(new DataResponse<>(HttpStatus.CREATED, sensor))
+      ));
+  }
+
+  public Mono<ServerResponse> updateActuatorSensor(ServerRequest request) {
+    String plantationId = request.pathVariable("plantation_id");
+    String sensorId = request.pathVariable("sensor_id");
+
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+      .then(request.bodyToMono(SensorStatusDto.class))
+      .flatMap(dto -> this.sensorService.updateActuatorSensor(sensorId, plantationId, Status.convertFromString(dto.status())))
+      .flatMap(sensor -> Response
+        .builder(HttpStatus.OK)
+        .bodyValue(new DataResponse<>(HttpStatus.OK, sensor))
       );
   }
+
 
   public Mono<ServerResponse> deleteSensor(ServerRequest request) {
     // Get the plantation id from the request

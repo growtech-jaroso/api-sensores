@@ -5,14 +5,20 @@ import com.growtech.api.dtos.mqtt.PlantationStatusDto;
 import com.growtech.api.dtos.mqtt.SensorReadingDto;
 import com.growtech.api.entities.SensorValue;
 import com.growtech.api.enums.PlantationStatus;
+import com.growtech.api.enums.Status;
 import com.growtech.api.handlers.RSocketHandler;
 import com.growtech.api.repositories.plantation.PlantationRepository;
 import com.growtech.api.repositories.sensor.SensorRepository;
 import com.growtech.api.repositories.sensor_value.SensorValueRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.paho.mqttv5.client.MqttClient;
 import org.eclipse.paho.mqttv5.common.MqttMessage;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -23,19 +29,22 @@ public class MqttMessageServiceImpl implements MqttMessageService {
   private final SensorValueRepository sensorValueRepository;
   private final ObjectMapper objectMapper;
   private final RSocketHandler rSocketHandler;
+  private final MqttClient mqttClient;
 
   public MqttMessageServiceImpl(
     PlantationRepository plantationRepository,
     SensorRepository sensorRepository,
     SensorValueRepository sensorValueRepository,
     ObjectMapper objectMapper,
-    RSocketHandler rSocketHandler
+    RSocketHandler rSocketHandler,
+    MqttClient mqttClient
   ) {
     this.plantationRepository = plantationRepository;
     this.sensorRepository = sensorRepository;
     this.sensorValueRepository = sensorValueRepository;
     this.objectMapper = objectMapper;
     this.rSocketHandler = rSocketHandler;
+    this.mqttClient = mqttClient;
   }
 
   @Override
@@ -130,6 +139,30 @@ public class MqttMessageServiceImpl implements MqttMessageService {
       })
       .doOnError(e -> log.error("Unexpected error during processing: {}", e.getMessage()))
       .subscribe(); // no onErrorConsumer
+  }
+
+  public void publishActuatorStatus(String plantationId, String sensorId, Status status) {
+    try {
+      String topic = String.format("plantation/%s/actuator/%s/status", plantationId, sensorId);
+
+      Map<String, Object> payloadMap = Map.of(
+        "sensorId", sensorId,
+        "plantationId", plantationId,
+        "status", status.name(),
+        "timestamp", Instant.now().toString()
+      );
+
+      String payload = objectMapper.writeValueAsString(payloadMap);
+
+      MqttMessage mqttMessage = new MqttMessage(payload.getBytes(StandardCharsets.UTF_8));
+      mqttMessage.setQos(1);
+
+      log.info("Publishing actuator status to MQTT topic '{}': {}", topic, payload);
+      mqttClient.publish(topic, mqttMessage);
+
+    } catch (Exception e) {
+      log.error("Error publishing actuator status to MQTT", e);
+    }
   }
 
   /**
