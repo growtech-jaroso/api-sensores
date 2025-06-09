@@ -50,4 +50,13 @@ public class InformationHandler {
       );
   }
 
+  public Mono<ServerResponse> getAllDeviceSensor(ServerRequest serverRequest) {
+    // Check if user is admin and get all sensor units
+    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
+      .then(informationService.getAllDeviceSensor())
+      .flatMap(deviceSensor -> Response
+        .builder(HttpStatus.OK)
+        .bodyValue(new DataResponse<>(HttpStatus.OK, deviceSensor))
+      );
+  }
 }

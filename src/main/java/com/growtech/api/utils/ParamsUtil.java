@@ -85,6 +85,24 @@ public class ParamsUtil {
   }
 
   /**
+   * Get the page request from the request
+   * @param request actual request
+   * @return PageRequest
+   */
+  public static PageRequest getPageRequest(ServerRequest request, Integer defaultLimit) {
+    // Retrieve the page and limit parameters from the request
+    String page = request.queryParam("page").orElse("1");
+    String limit = request.queryParam("limit").orElse(defaultLimit.toString());
+
+    // Convert the page and limit to integers
+    Integer pageNumber = ParamsUtil.checkPage(page);
+    Integer limitNumber = ParamsUtil.checkLimit(limit);
+
+    // Create a PageRequest object with the page and limit and return
+    return PageRequest.of(pageNumber, limitNumber);
+  }
+
+  /**
    * Get the date filter from the request
    * @param request
    * @return Pair<LocalDateTime, LocalDateTime>

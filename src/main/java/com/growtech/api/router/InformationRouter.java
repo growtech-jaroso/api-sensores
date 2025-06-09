@@ -22,6 +22,7 @@ public class InformationRouter {
       .GET("/user_roles", handler::getAllUserRoles) // Route: GET /api/information/user_roles
       .GET("/sensor_types", handler::getAllSensorTypes) // Route: GET /api/information/sensor_types
       .GET("/sensor_units", handler::getAllSensorUnits) // Route: GET /api/information/sensor_units
+      .GET("/device_type", handler::getAllDeviceSensor) // Route: GET /api/information/device_type
       .build();
   }
 }

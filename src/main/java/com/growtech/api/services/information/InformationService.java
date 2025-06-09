@@ -1,5 +1,6 @@
 package com.growtech.api.services.information;
 
+import com.growtech.api.enums.DeviceType;
 import com.growtech.api.enums.SensorType;
 import com.growtech.api.enums.SensorUnit;
 import com.growtech.api.enums.UserRole;
@@ -13,4 +14,5 @@ public interface InformationService {
   Mono<List<UserRole>> getAllUserRoles();
   Mono<List<SensorType>> getAllSensorTypes();
   Mono<List<SensorUnit>> getAllSensorUnits();
+  Mono<List<DeviceType>> getAllDeviceSensor();
 }

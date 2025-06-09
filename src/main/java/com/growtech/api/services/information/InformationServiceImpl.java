@@ -1,5 +1,6 @@
 package com.growtech.api.services.information;
 
+import com.growtech.api.enums.DeviceType;
 import com.growtech.api.enums.SensorType;
 import com.growtech.api.enums.SensorUnit;
 import com.growtech.api.enums.UserRole;
@@ -23,5 +24,10 @@ public class InformationServiceImpl implements InformationService {
   @Override
   public Mono<List<SensorUnit>> getAllSensorUnits() {
     return Mono.just(List.of(SensorUnit.values()));
+  }
+
+  @Override
+  public Mono<List<DeviceType>> getAllDeviceSensor() {
+    return Mono.just(List.of(DeviceType.values()));
   }
 }

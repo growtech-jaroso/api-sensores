@@ -35,7 +35,7 @@ public class SensorHandler {
 
   public Mono<ServerResponse> getAllSensorsByPlantation(ServerRequest request) {
     // Create a page request from the request parameters
-    PageRequest pageRequest = ParamsUtil.getPageRequest(request);
+    PageRequest pageRequest = ParamsUtil.getPageRequest(request, 1000);
 
     // Get the plantation id from the request
     String plantationId = request.pathVariable("plantation_id");
