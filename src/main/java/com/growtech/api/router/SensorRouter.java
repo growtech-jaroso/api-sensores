@@ -24,7 +24,7 @@ public class SensorRouter {
       .GET("", handler::getAllSensorsByPlantation) // Route: POST /api/plantations/{plantation_id}/sensors
       .POST("", handler::createSensor) // Route: POST /api/plantations/{plantation_id}/sensors
       .POST("/actuator", handler::createActuatorSensor) // Route: POST /api/plantations/{plantation_id}/sensors/actuator
-      .PUT("/actuator/update/{sensor_id}", handler::updateActuatorSensor) // Route: POST /api/plantations/{plantation_id}/sensors/actuator/update/{sensor_id}
+      .PUT("/{sensor_id}/actuator/update", handler::updateActuatorSensor) // Route: POST /api/plantations/{plantation_id}/sensors/{sensor_id}/actuator/update
       .DELETE("/{sensor_id}", handler::deleteSensor) // Route: DELETE /api/plantations/{plantation_id}/sensors/{sensor_id}
       .GET("/{sensor_id}/values", sensorValueHandler::getAllSensorValuesBySensorId) // Route: GET /api/plantations/{plantation_id}/sensors/{sensor_id}/values
       .GET("/type/{sensor_type}/values", sensorValueHandler::getAllSensorValuesByTypeByPlantation) // Route: GET /api/plantations/{plantation_id}/sensors/{sensor_type}/values

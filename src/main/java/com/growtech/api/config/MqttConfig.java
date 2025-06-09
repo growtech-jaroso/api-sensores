@@ -37,6 +37,7 @@ public class MqttConfig {
       this.mqttClient = new MqttClient(broker, clientId);
       this.setCallback();
       this.connect();
+      this.mqttMessageService.setMqttClient(this.mqttClient);
     } catch (MqttException e) {
       log.error("Error creating MQTT client {}", e.getMessage());
     }

@@ -1,7 +1,6 @@
 package com.growtech.api.services.mqtt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.growtech.api.config.MqttConfig;
 import com.growtech.api.dtos.mqtt.PlantationStatusDto;
 import com.growtech.api.dtos.mqtt.SensorReadingDto;
 import com.growtech.api.entities.SensorValue;
@@ -28,6 +27,7 @@ public class MqttMessageServiceImpl implements MqttMessageService {
   private final SensorRepository sensorRepository;
   private final SensorValueRepository sensorValueRepository;
   private final ObjectMapper objectMapper;
+  private MqttClient mqttClient;
 
   public MqttMessageServiceImpl(
     PlantationRepository plantationRepository,
@@ -39,6 +39,12 @@ public class MqttMessageServiceImpl implements MqttMessageService {
     this.sensorRepository = sensorRepository;
     this.sensorValueRepository = sensorValueRepository;
     this.objectMapper = objectMapper;
+    this.mqttClient = null;
+  }
+
+  @Override
+  public void setMqttClient(MqttClient mqttClient) {
+    this.mqttClient = mqttClient;
   }
 
   @Override
@@ -149,7 +155,7 @@ public class MqttMessageServiceImpl implements MqttMessageService {
       mqttMessage.setQos(1);
 
       log.info("Publishing actuator status to MQTT topic '{}': {}", topic, payload);
-      // this.mqttClient.publish(topic, mqttMessage);
+      this.mqttClient.publish(topic, mqttMessage);
 
     } catch (Exception e) {
       log.error("Error publishing actuator status to MQTT", e);

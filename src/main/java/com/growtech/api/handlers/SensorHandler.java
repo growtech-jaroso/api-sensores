@@ -100,8 +100,15 @@ public class SensorHandler {
     String plantationId = request.pathVariable("plantation_id");
     String sensorId = request.pathVariable("sensor_id");
 
+    // Get the sensor status from the request body and throw an error if body is empty
+    Mono<SensorStatusDto> sensorStatusDto = request.bodyToMono(SensorStatusDto.class)
+      .switchIfEmpty(Mono.error(new EmptyBody()));
+
+    // Validate the sensor status
+    var validatedSensorStatus = sensorStatusDto.doOnNext(objectValidator::validate);
+
     return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
-      .then(request.bodyToMono(SensorStatusDto.class))
+      .then(validatedSensorStatus)
       .flatMap(dto -> this.sensorService.updateActuatorSensor(sensorId, plantationId, ActuatorStatus.convertFromString(dto.status())))
       .flatMap(sensor -> Response
         .builder(HttpStatus.OK)
