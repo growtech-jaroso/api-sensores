@@ -14,16 +14,14 @@ import java.nio.charset.StandardCharsets;
 @Component
 @Slf4j
 public class MqttConfig {
+  private final MqttMessageService mqttMessageService;
   @Value("${app.mqtt.broker.url}")
   private String broker;
   @Value("${app.mqtt.broker.client_id}")
   private String clientId;
   @Value("${app.mqtt.broker.password}")
   private String password;
-
   private MqttClient mqttClient;
-
-  private final MqttMessageService mqttMessageService;
 
   public MqttConfig(MqttMessageService mqttMessageService) {
     this.mqttMessageService = mqttMessageService;

@@ -1,12 +1,12 @@
 package com.growtech.api.services.mqtt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.growtech.api.config.MqttConfig;
 import com.growtech.api.dtos.mqtt.PlantationStatusDto;
 import com.growtech.api.dtos.mqtt.SensorReadingDto;
 import com.growtech.api.entities.SensorValue;
+import com.growtech.api.enums.ActuatorStatus;
 import com.growtech.api.enums.PlantationStatus;
-import com.growtech.api.enums.Status;
-import com.growtech.api.handlers.RSocketHandler;
 import com.growtech.api.repositories.plantation.PlantationRepository;
 import com.growtech.api.repositories.sensor.SensorRepository;
 import com.growtech.api.repositories.sensor_value.SensorValueRepository;
@@ -28,23 +28,17 @@ public class MqttMessageServiceImpl implements MqttMessageService {
   private final SensorRepository sensorRepository;
   private final SensorValueRepository sensorValueRepository;
   private final ObjectMapper objectMapper;
-  private final RSocketHandler rSocketHandler;
-  private final MqttClient mqttClient;
 
   public MqttMessageServiceImpl(
     PlantationRepository plantationRepository,
     SensorRepository sensorRepository,
     SensorValueRepository sensorValueRepository,
-    ObjectMapper objectMapper,
-    RSocketHandler rSocketHandler,
-    MqttClient mqttClient
+    ObjectMapper objectMapper
   ) {
     this.plantationRepository = plantationRepository;
     this.sensorRepository = sensorRepository;
     this.sensorValueRepository = sensorValueRepository;
     this.objectMapper = objectMapper;
-    this.rSocketHandler = rSocketHandler;
-    this.mqttClient = mqttClient;
   }
 
   @Override
@@ -95,8 +89,7 @@ public class MqttMessageServiceImpl implements MqttMessageService {
 
         // Save the SensorValue to the database
         return this.sensorValueRepository.save(value)
-          .doOnSuccess(saved -> log.info("Sensor value saved: {}", saved))
-          .doOnNext(rSocketHandler::update);
+          .doOnSuccess(saved -> log.info("Sensor value saved: {}", saved));
       })
       .doOnError(e -> log.error("Unexpected error during processing: {}", e.getMessage()))
       .subscribe(); // no onErrorConsumer
@@ -141,13 +134,11 @@ public class MqttMessageServiceImpl implements MqttMessageService {
       .subscribe(); // no onErrorConsumer
   }
 
-  public void publishActuatorStatus(String plantationId, String sensorId, Status status) {
+  public void publishActuatorStatus(String plantationId, String sensorId, ActuatorStatus status) {
     try {
       String topic = String.format("plantation/%s/actuator/%s/status", plantationId, sensorId);
 
-      Map<String, Object> payloadMap = Map.of(
-        "sensorId", sensorId,
-        "plantationId", plantationId,
+      Map<String, String> payloadMap = Map.of(
         "status", status.name(),
         "timestamp", Instant.now().toString()
       );
@@ -158,7 +149,7 @@ public class MqttMessageServiceImpl implements MqttMessageService {
       mqttMessage.setQos(1);
 
       log.info("Publishing actuator status to MQTT topic '{}': {}", topic, payload);
-      mqttClient.publish(topic, mqttMessage);
+      // this.mqttClient.publish(topic, mqttMessage);
 
     } catch (Exception e) {
       log.error("Error publishing actuator status to MQTT", e);

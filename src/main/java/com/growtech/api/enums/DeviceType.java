@@ -1,13 +1,13 @@
 package com.growtech.api.enums;
 
 public enum DeviceType {
-  Sensor,
-  Actuator;
+  SENSOR,
+  ACTUATOR;
 
   /**
-   * Convert a string to a SensorType enum.
-   * @param deviceTypeStr string representation of the sensor type
-   * @return the corresponding SensorType enum
+   * Convert a string to a DeviceType enum.
+   * @param deviceTypeStr string representation of device type
+   * @return the corresponding DeviceType enum∫
    */
   public static DeviceType convertFromString(String deviceTypeStr) {
     try {
@@ -18,11 +18,11 @@ public enum DeviceType {
     }
   }
 
-  public static String getAllSensorDeviceTypes() {
+  public static String getAllDeviceTypes() {
     StringBuilder deviceTypes = new StringBuilder();
 
     // Iterate through all enum constants and append their names to the StringBuilder
-    for (SensorType type : SensorType.values()) {
+    for (DeviceType type : DeviceType.values()) {
       deviceTypes.append(type.name().toLowerCase()).append(", ");
     }
 

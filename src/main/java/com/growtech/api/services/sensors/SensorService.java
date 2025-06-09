@@ -1,10 +1,9 @@
 package com.growtech.api.services.sensors;
 
-import com.growtech.api.dtos.mqtt.SensorStatusDto;
 import com.growtech.api.dtos.requests.SensorDto;
 import com.growtech.api.entities.Sensor;
 import com.growtech.api.entities.User;
-import jakarta.validation.constraints.NotBlank;
+import com.growtech.api.enums.ActuatorStatus;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -18,7 +17,7 @@ public interface SensorService {
   Mono<Sensor> createSensor(SensorDto sensorDto, String plantationId);
   Mono<Sensor> createActuatorSensor(String plantationId);
 
-  Mono<Sensor> updateActuatorSensor(String sensorId, String plantationId, SensorStatusDto statusDto);
+  Mono<Sensor> updateActuatorSensor(String sensorId, String plantationId, ActuatorStatus status);
 
   Mono<String> deleteSensor(String sensorId, String plantationId);
 

@@ -3,7 +3,7 @@ package com.growtech.api.handlers;
 import com.growtech.api.dtos.mqtt.SensorStatusDto;
 import com.growtech.api.dtos.requests.SensorDto;
 import com.growtech.api.entities.User;
-import com.growtech.api.enums.Status;
+import com.growtech.api.enums.ActuatorStatus;
 import com.growtech.api.enums.UserRole;
 import com.growtech.api.exceptions.EmptyBody;
 import com.growtech.api.responses.Response;
@@ -102,7 +102,7 @@ public class SensorHandler {
 
     return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
       .then(request.bodyToMono(SensorStatusDto.class))
-      .flatMap(dto -> this.sensorService.updateActuatorSensor(sensorId, plantationId, Status.convertFromString(dto.status())))
+      .flatMap(dto -> this.sensorService.updateActuatorSensor(sensorId, plantationId, ActuatorStatus.convertFromString(dto.status())))
       .flatMap(sensor -> Response
         .builder(HttpStatus.OK)
         .bodyValue(new DataResponse<>(HttpStatus.OK, sensor))

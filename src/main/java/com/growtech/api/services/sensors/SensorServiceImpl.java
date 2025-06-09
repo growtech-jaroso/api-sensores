@@ -1,12 +1,11 @@
 package com.growtech.api.services.sensors;
 
-import com.growtech.api.dtos.mqtt.SensorStatusDto;
 import com.growtech.api.dtos.requests.SensorDto;
 import com.growtech.api.entities.Plantation;
 import com.growtech.api.entities.Sensor;
 import com.growtech.api.entities.User;
+import com.growtech.api.enums.ActuatorStatus;
 import com.growtech.api.enums.DeviceType;
-import com.growtech.api.enums.Status;
 import com.growtech.api.exceptions.CustomException;
 import com.growtech.api.repositories.plantation.PlantationRepository;
 import com.growtech.api.repositories.sensor.SensorRepository;
@@ -84,28 +83,27 @@ public class SensorServiceImpl implements SensorService {
   }
 
   @Override
-  public Mono<Sensor> updateActuatorSensor(String sensorId, String plantationId, SensorStatusDto statusDto) {
+  public Mono<Sensor> updateActuatorSensor(String sensorId, String plantationId, ActuatorStatus status) {
 
     return plantationRepository.findPlantationsByIdAndIsDeletedIsFalse(plantationId)
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation not found")))
       .flatMap(plantation -> sensorRepository.findByIdAndIsDeletedIsFalse(sensorId))
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Sensor not found")))
       .flatMap(sensor -> {
-        if (sensor.getDeviceType() != DeviceType.Actuator) {
+        if (sensor.getDeviceType() != DeviceType.ACTUATOR) {
           return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Sensor is not an actuator"));
         }
 
-        Status newStatus = Status.convertFromString(statusDto.status());
-        if (newStatus == null) {
+        if (status == null) {
           return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Invalid status value"));
         }
 
-        sensor.setStatus(newStatus);
+        sensor.setStatus(status);
 
         return sensorRepository.save(sensor)
           .doOnSuccess(savedSensor -> {
             // Publicar el cambio de estado via MQTT
-            mqttMessageService.publishActuatorStatus(plantationId, sensorId, newStatus);
+            mqttMessageService.publishActuatorStatus(plantationId, sensorId, status);
           });
       });
   }
