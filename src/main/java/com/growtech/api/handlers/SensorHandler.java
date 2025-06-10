@@ -14,7 +14,6 @@ import com.growtech.api.services.sensors.SensorService;
 import com.growtech.api.utils.AuthUtil;
 import com.growtech.api.utils.ParamsUtil;
 import com.growtech.api.validators.ObjectValidator;
-import com.mongodb.internal.connection.Server;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -107,9 +106,8 @@ public class SensorHandler {
     // Validate the sensor status
     var validatedSensorStatus = sensorStatusDto.doOnNext(objectValidator::validate);
 
-    return AuthUtil.checkIfUserHaveRoles(UserRole.ADMIN)
-      .then(validatedSensorStatus)
-      .flatMap(dto -> this.sensorService.updateActuatorSensor(sensorId, plantationId, ActuatorStatus.convertFromString(dto.status())))
+    return Mono.zip(validatedSensorStatus, AuthUtil.getAuthUser())
+      .flatMap(tuple -> this.sensorService.updateActuatorSensor(tuple.getT2(), sensorId, plantationId, ActuatorStatus.convertFromString(tuple.getT1().status())))
       .flatMap(sensor -> Response
         .builder(HttpStatus.OK)
         .bodyValue(new DataResponse<>(HttpStatus.OK, sensor))

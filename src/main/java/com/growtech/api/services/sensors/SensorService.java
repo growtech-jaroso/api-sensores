@@ -17,7 +17,7 @@ public interface SensorService {
   Mono<Sensor> createSensor(SensorDto sensorDto, String plantationId);
   Mono<Sensor> createActuatorSensor(String plantationId);
 
-  Mono<Sensor> updateActuatorSensor(String sensorId, String plantationId, ActuatorStatus status);
+  Mono<Sensor> updateActuatorSensor(User user, String sensorId, String plantationId, ActuatorStatus status);
 
   Mono<String> deleteSensor(String sensorId, String plantationId);
 

@@ -40,7 +40,7 @@ public class SensorServiceImpl implements SensorService {
     return plantation
       .flatMap(pl -> {
         // Check if the user is associated with the plantation
-        if (!pl.getOwnerId().contains(user.getId()) && !user.canViewAnything()) {
+        if (!pl.getManagers().contains(user.getId()) && !user.canViewAnything()) {
           return Mono.error(new CustomException(HttpStatus.FORBIDDEN, "Forbidden"));
         }
 
@@ -83,11 +83,19 @@ public class SensorServiceImpl implements SensorService {
   }
 
   @Override
-  public Mono<Sensor> updateActuatorSensor(String sensorId, String plantationId, ActuatorStatus status) {
+  public Mono<Sensor> updateActuatorSensor(User user, String sensorId, String plantationId, ActuatorStatus status) {
 
     return plantationRepository.findPlantationsByIdAndIsDeletedIsFalse(plantationId)
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Plantation not found")))
-      .flatMap(plantation -> sensorRepository.findByIdAndIsDeletedIsFalse(sensorId))
+      .flatMap(plantation -> {
+        // Check if the user is associated with the plantation
+        if (!plantation.getManagers().contains(user.getId()) && !user.canViewAnything()) {
+          return Mono.error(new CustomException(HttpStatus.FORBIDDEN, "Forbidden"));
+        }
+
+        // Find the sensor by id and if not found throw not found exception
+        return sensorRepository.findByIdAndIsDeletedIsFalse(sensorId);
+      })
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Sensor not found")))
       .flatMap(sensor -> {
         if (sensor.getDeviceType() != DeviceType.ACTUATOR) {
