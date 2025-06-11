@@ -111,7 +111,7 @@ public class User extends Model implements UserDetails {
   }
 
   public AuthInfo getAuthInfo(String token) {
-    return new AuthInfo(token, this.username, this.email, this.role);
+    return new AuthInfo(this.id, token, this.username, this.email, this.role);
   }
 
   /**
