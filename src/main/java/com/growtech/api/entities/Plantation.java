@@ -62,7 +62,7 @@ public class Plantation extends Model  {
     this.type = plantationDto.type();
     this.ownerId = user.getId();
     this.managers = List.of(user.getId());
-    this.centralCoordinates = new Coordinate(plantationDto.centralCoordinates());
+    this.centralCoordinates = null; // This should be set later when the plantation is created with coordinates;
   }
 
   /**

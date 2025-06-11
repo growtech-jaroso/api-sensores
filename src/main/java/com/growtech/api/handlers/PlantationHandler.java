@@ -41,8 +41,6 @@ public class PlantationHandler {
         request.bodyToMono(PlantationDto.class)
           .doOnNext(objectValidator::validate)
           .switchIfEmpty(Mono.error(new EmptyBody()))
-          // Validate the central coordinates object
-          .doOnNext(plDto -> objectValidator.validate(plDto.centralCoordinates()))
       );
 
 
