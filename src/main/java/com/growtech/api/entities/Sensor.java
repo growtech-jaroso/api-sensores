@@ -33,6 +33,7 @@ public class Sensor extends Model {
 
   @Field("plantation_id")
   @Indexed
+  @JsonProperty("plantation_id")
   private String plantationId;
 
   @Field("threshold_min_alert")
