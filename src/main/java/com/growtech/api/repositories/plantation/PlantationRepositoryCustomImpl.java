@@ -124,7 +124,7 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
         Criteria.where("type").regex(search, "i")
       ),
       Criteria.where("is_deleted").is(false),
-      Criteria.where("owner_id").is(userId)
+      Criteria.where("managers").is(userId)
     );
   }
 
@@ -165,7 +165,7 @@ public class PlantationRepositoryCustomImpl implements PlantationRepositoryCusto
         Criteria.where("type").regex(search, "i")
       ),
       Criteria.where("is_deleted").is(false),
-      Criteria.where("owner_id").is(userId),
+      Criteria.where("managers").is(userId),
       Criteria.where("status").regex(status, "i")
     );
   }
